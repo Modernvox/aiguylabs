@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 3,
+  "projectId": "aigl-hero-desktop",
+  "name": "AI Guy Labs Desktop Hero",
+  "image": null,
+  "hotspots": [
+    {
+      "id": "hero-open-contact",
+      "name": "Open contact modal",
+      "shape": "rectangle",
+      "x": 6.4,
+      "y": 55.4,
+      "width": 15.2,
+      "height": 6.3,
+      "visible": true,
+      "locked": false,
+      "tooltip": "Contact AI Guy Labs",
+      "cursor": "pointer",
+      "animation": "pulse",
+      "action": {
+        "type": "dispatcher",
+        "value": "open-contact",
+        "newTab": false
+      }
+    },
+    {
+      "id": "hero-projects",
+      "name": "Go to projects",
+      "shape": "rectangle",
+      "x": 43.3,
+      "y": 3.2,
+      "width": 6.6,
+      "height": 3.5,
+      "visible": true,
+      "locked": false,
+      "tooltip": "View projects",
+      "cursor": "pointer",
+      "animation": "glow",
+      "action": {
+        "type": "dispatcher",
+        "value": "projects",
+        "newTab": false
+      }
+    }
+  ]
+}

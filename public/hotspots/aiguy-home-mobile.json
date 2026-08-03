@@ -1,0 +1,27 @@
+﻿{
+    "schemaVersion":  3,
+    "projectId":  "aigl-home-mobile",
+    "name":  "AI Guy Labs Home Mobile",
+    "image":  null,
+    "hotspots":  [
+                     {
+                         "id":  "see-what-we-build",
+                         "name":  "See What We Build",
+                         "shape":  "rectangle",
+                         "x":  10.5,
+                         "y":  36.2,
+                         "width":  42.5,
+                         "height":  3.9,
+                         "visible":  true,
+                         "locked":  false,
+                         "tooltip":  "See what we build",
+                         "cursor":  "pointer",
+                         "animation":  "glow",
+                         "action":  {
+                                        "type":  "dispatcher",
+                                        "value":  "software",
+                                        "newTab":  false
+                                    }
+                     }
+                 ]
+}

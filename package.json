@@ -1,0 +1,21 @@
+{
+  "name": "ai-guy-labs-landing",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 3000",
+    "start": "npm run dev",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 3000",
+    "lint": "node --check vite.config.mjs && node --check public/js/aiguylabs-hotspots.js"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "vite": "^8.2.0"
+  }
+}

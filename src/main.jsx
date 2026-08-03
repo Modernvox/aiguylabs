@@ -1,0 +1,1745 @@
+import React, { useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import './styles.css';
+
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Products', href: '/products' },
+  { label: 'Services', href: '/services' },
+  { label: 'About Me', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const technologies = [
+  { name: 'React Native', mark: 'RN' },
+  { name: 'TypeScript', mark: 'TS' },
+  { name: 'Supabase', mark: 'SB' },
+  { name: 'LiveKit', mark: 'LK' },
+  { name: 'Node.js', mark: 'N' },
+  { name: 'Cloudflare', mark: 'CF' },
+];
+
+const services = [
+  {
+    title: 'Custom Software Development',
+    description: 'Design and build custom web and mobile applications tailored to your business, workflow, and customers. AI Guy Labs turns specific operational problems into focused software that people can actually use.',
+    icon: 'stack',
+    slug: 'custom-software-development',
+    productSlugs: ['saasquatch', 'sizzle'],
+  },
+  {
+    title: 'AI-Powered Solutions',
+    description: 'Integrate artificial intelligence into existing processes, automate repetitive work, analyze data, and create smarter customer experiences. The goal is practical AI that reduces friction instead of adding complexity.',
+    icon: 'ai',
+    slug: 'ai-powered-solutions',
+    productSlugs: ['movescan'],
+  },
+  {
+    title: 'Product Development',
+    description: 'From concept and validation to launch and long-term improvement, build scalable software products with a focus on usability and performance. This work is shaped by shipping real AI Guy Labs products, not theory.',
+    icon: 'rocket',
+    slug: 'product-development',
+    productSlugs: ['hotspot-studio', 'movescan'],
+  },
+  {
+    title: 'Business Automation',
+    description: 'Replace manual workflows with software that saves time, reduces errors, and improves operational efficiency. AI Guy Labs builds automation around how the business actually operates.',
+    icon: 'flow',
+    slug: 'business-automation',
+    productSlugs: ['batchflow'],
+  },
+  {
+    title: 'Interactive Platforms',
+    description: 'Develop interactive customer experiences including live engagement, synchronized events, training platforms, image experiences, and digital collaboration tools. These platforms are built for participation, clarity, and real-time use.',
+    icon: 'interactive',
+    slug: 'interactive-platforms',
+    productSlugs: ['hotspot-studio', 'pulsar'],
+  },
+  {
+    title: 'Technical Consulting',
+    description: 'Architecture planning, technical strategy, product planning, and guidance for companies building modern software. Consulting is grounded in product decisions from AI, automation, SaaS, and interactive platforms already built inside AI Guy Labs.',
+    icon: 'compass',
+    slug: 'technical-consulting',
+    productSlugs: ['batchflow', 'saasquatch'],
+  },
+];
+
+const serviceDifferentiators = ['AI', 'Automation', 'SaaS', 'Interactive platforms', 'Workflow optimization', 'Customer engagement'];
+
+const serviceProcess = [
+  { title: 'Discover', description: 'Understand the business problem and define clear objectives.' },
+  { title: 'Design', description: 'Plan the user experience, architecture, and technical approach.' },
+  { title: 'Develop', description: 'Build reliable, scalable software using modern technologies.' },
+  { title: 'Launch & Improve', description: 'Deploy, monitor, iterate, and continue improving based on real usage.' },
+];
+
+const premiumServices = [
+  {
+    title: 'Custom Software Development',
+    slug: 'custom-software-development',
+    description: 'Purpose-built web and mobile software designed around the way your business actually operates.',
+    capabilities: ['Web and mobile apps', 'Business workflow systems', 'User-focused interfaces'],
+  },
+  {
+    title: 'AI Tools and Automation',
+    slug: 'ai-tools-and-automation',
+    description: 'Practical AI systems that reduce repetitive work, organize information, and help teams move faster.',
+    capabilities: ['AI-assisted operations', 'Document and data workflows', 'Team productivity tools'],
+  },
+  {
+    title: 'Product Design and Development',
+    slug: 'product-design-and-development',
+    description: 'From concept and workflow planning through interface design, development, testing, and launch.',
+    capabilities: ['Product strategy', 'UX and interface design', 'Build, test, and launch'],
+  },
+  {
+    title: 'Cloud Applications and Infrastructure',
+    slug: 'cloud-applications-and-infrastructure',
+    description: 'Reliable, scalable platforms built for real users, real data, and long-term growth.',
+    capabilities: ['Cloud architecture', 'API and database design', 'Deployment and monitoring'],
+  },
+  {
+    title: 'Workflow and Operations Software',
+    slug: 'workflow-and-operations-software',
+    description: 'Internal tools that replace disconnected spreadsheets, manual processes, and inefficient handoffs.',
+    capabilities: ['Operations dashboards', 'Approval and handoff flows', 'Reporting and visibility'],
+  },
+  {
+    title: 'Existing Product Improvement',
+    slug: 'existing-product-improvement',
+    description: 'Redesign, rebuild, or expand an existing product that is difficult to use, slow, or no longer meeting the business need.',
+    capabilities: ['Product audits', 'Performance improvements', 'Feature expansion'],
+  },
+];
+
+const premiumProcess = [
+  'Understand the problem',
+  'Design the right solution',
+  'Build and test',
+  'Launch and improve',
+];
+const products = [
+  {
+    name: 'MoveScan',
+    slug: 'movescan',
+    logo: '/images/movescan.png',
+    glow: 'blue',
+    accent: '#2d7dff',
+    tagline: 'AI-powered moving estimates',
+    description: 'AI-powered moving estimate platform that transforms customer video walkthroughs into organized inventories and professional moving quotes.',
+    longDescription: 'MoveScan transforms customer video walkthroughs into organized moving inventories and professional moving quotes, helping moving companies create faster, clearer estimates from real customer-submitted footage.',
+    status: 'Production',
+    technologies: ['React Native', 'TypeScript', 'Supabase', 'OpenAI'],
+    keywords: ['AI', 'moving', 'inventory', 'estimate', 'business', 'automation'],
+    filters: ['AI', 'Business', 'Automation'],
+    website: '/products/movescan',
+    demoUrl: '/contact',
+    documentationUrl: '/contact',
+    features: ['AI-assisted inventory capture', 'Estimate-ready workflows', 'Field-friendly product experience'],
+  },
+  {
+    name: 'Hotspot Studio',
+    slug: 'hotspot-studio',
+    logo: '/images/hotspotstudio.png',
+    glow: 'electric',
+    accent: '#38a8ff',
+    tagline: 'Turn any image into an interactive experience',
+    description: 'Visual editor for building interactive image experiences with hotspots, overlays, preview mode, and exportable project JSON.',
+    longDescription: 'Hotspot Studio is a visual editor for creating interactive image experiences, layering supporting artwork, defining hotspots, previewing interactions, and exporting structured project JSON for embedded runtimes.',
+    status: 'Production',
+    technologies: ['React', 'TypeScript', 'Vite', 'Canvas'],
+    keywords: ['interactive', 'hotspots', 'overlays', 'preview mode', 'export json', 'developer tools', 'editor'],
+    filters: ['Interactive', 'Developer Tools'],
+    website: '/products/hotspot-studio',
+    demoUrl: '/contact',
+    documentationUrl: '/contact',
+    features: ['Visual hotspot editing', 'Import and export workflows', 'Embeddable runtime integration'],
+  },
+  {
+    name: 'BatchFlow',
+    slug: 'batchflow',
+    logo: '/images/batchflow.png',
+    glow: 'green',
+    accent: '#39d77b',
+    tagline: 'Production workflow automation',
+    description: 'Production software for batch manufacturing and process management.',
+    longDescription: 'BatchFlow brings batch production, process tracking, and operational handoffs into a focused software workflow for teams that need repeatable execution.',
+    status: 'Production',
+    technologies: ['React', 'Node.js', 'PostgreSQL', 'Cloudflare'],
+    keywords: ['automation', 'manufacturing', 'batch', 'workflow', 'process management'],
+    filters: ['Automation', 'Business'],
+    website: '/products/batchflow',
+    demoUrl: '/contact',
+    documentationUrl: '/contact',
+    features: ['Batch process tracking', 'Production visibility', 'Workflow automation'],
+  },
+  {
+    name: 'SwiftSale',
+    slug: 'swiftsale',
+    logo: '/images/swiftsale.png',
+    glow: 'electric',
+    accent: '#38a8ff',
+    tagline: 'Live selling workflow automation',
+    description: 'SwiftSale helps live sellers organize orders, assign bins in real time, speed fulfillment, and streamline the entire live selling process from auction to pickup.',
+    longDescription: 'SwiftSale helps live sellers organize orders, assign bins in real time, speed fulfillment, and streamline the entire live selling process from auction to pickup.',
+    status: 'Coming Soon',
+    technologies: ['React', 'Node.js', 'PostgreSQL', 'Cloudflare'],
+    keywords: ['live selling', 'auction', 'orders', 'bins', 'fulfillment', 'workflow automation'],
+    filters: ['Automation', 'Business'],
+    website: '/products/swiftsale',
+    demoUrl: '/contact',
+    documentationUrl: '/contact',
+    features: ['Real-time bin assignment', 'Order organization', 'Fulfillment workflow automation'],
+  },
+  {
+    name: 'Sizzle',
+    slug: 'sizzle',
+    logo: '/images/sizzle.png',
+    glow: 'orange',
+    accent: '#ff5f30',
+    tagline: 'Interactive live cooking platform',
+    description: 'Interactive live cooking platform that keeps hosts and participants synchronized in real time.',
+    longDescription: 'Sizzle supports live cooking experiences where hosts and participants stay aligned through shared timing, steps, interaction, and real-time event flow.',
+    status: 'Beta',
+    technologies: ['React', 'LiveKit', 'TypeScript', 'Node.js'],
+    keywords: ['interactive', 'live cooking', 'real time', 'participants', 'video'],
+    filters: ['Interactive', 'Business'],
+    website: '/products/sizzle',
+    demoUrl: '/contact',
+    documentationUrl: '/contact',
+    features: ['Synchronized live sessions', 'Participant interaction', 'Host-led experience flow'],
+  },
+  {
+    name: 'Pulsar',
+    slug: 'pulsar',
+    logo: '/images/pulsar.png',
+    glow: 'purple',
+    accent: '#915cff',
+    tagline: 'Live audience engagement platform',
+    description: 'Live audience engagement platform.',
+    longDescription: 'Pulsar synchronizes hosts and viewers in real time through interactive experiences, polls, games, reactions, and audience participation.',
+    status: 'Beta',
+    technologies: ['React', 'LiveKit', 'Supabase', 'Cloudflare'],
+    keywords: ['interactive', 'audience engagement', 'polls', 'games', 'reactions', 'real time'],
+    filters: ['Interactive', 'Business'],
+    website: '/products/pulsar',
+    demoUrl: '/contact',
+    documentationUrl: '/contact',
+    features: ['Real-time audience participation', 'Polls, games, and reactions', 'Host and viewer synchronization'],
+  },
+  {
+    name: 'SaaSquatch',
+    slug: 'saasquatch',
+    logo: '/images/saasquatch.png',
+    glow: 'olive',
+    accent: '#9fbd4a',
+    tagline: 'SaaS software marketplace',
+    description: 'SaaS software marketplace - currently in development.',
+    longDescription: 'SaaS software marketplace - currently in development.',
+    status: 'IN DEVELOPMENT',
+    technologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'Cloudflare'],
+    keywords: ['marketplace', 'saas', 'software', 'business', 'purchasing'],
+    filters: ['Business'],
+    website: '/products/saasquatch',
+    demoUrl: '/contact',
+    documentationUrl: '/contact',
+    features: ['Curated SaaS discovery', 'Evaluation-first marketplace', 'Purchase-ready software catalog'],
+  },
+];
+
+const movescanScreenshots = [
+  {
+    title: 'Guided customer walkthrough',
+    description: 'MoveScan guides customers room by room so moving companies receive structured footage instead of scattered messages.',
+    src: '/images/products/movescan/movescan-walkthrough.png',
+    alt: 'MoveScan customer guided room-by-room walkthrough interface.',
+  },
+  {
+    title: 'Customer inventory review',
+    description: 'Customers can review detected rooms and inventory before submitting a cleaner estimate request.',
+    src: '/images/products/movescan/movescan-inventory-review.png',
+    alt: 'MoveScan customer inventory review interface showing reviewed rooms and items.',
+  },
+  {
+    title: 'Staff estimate review',
+    description: 'Staff can review inventory summaries and estimate recommendations before preparing a customer quote.',
+    src: '/images/products/movescan/movescan-estimate-review.png',
+    alt: 'MoveScan staff estimate review interface with quote-ready recommendations.',
+  },
+];
+
+const batchflowScreenshots = [
+  {
+    title: 'Production queue optimization',
+    description: 'BatchFlow shows production teams the day\'s run order with workflow-aware recommendations and clear station readiness.',
+    src: '/images/products/batchflow/batchflow-production-queue.png',
+    alt: 'BatchFlow production queue showing optimized run order and scheduled batches.',
+  },
+  {
+    title: 'Guided station workflow',
+    description: 'Operators see the current production step, required prompts, progress, and completion controls without exposing unnecessary recipe complexity.',
+    src: '/images/products/batchflow/batchflow-guided-workflow.png',
+    alt: 'BatchFlow guided production workflow showing the active station step and progress.',
+  },
+  {
+    title: 'Admin queue review',
+    description: 'Managers can review, adjust, and approve the production queue while keeping prep and juicing work coordinated.',
+    src: '/images/products/batchflow/batchflow-admin-queue.png',
+    alt: 'BatchFlow admin production queue review showing scheduled products and workflow recommendations.',
+  },
+];
+
+
+const sizzleScreenshots = [
+  {
+    title: 'Sizzle live cooking experience',
+    description: 'Sizzle brings live cooking, host controls, audience interaction, and guided recipe timing into one polished cook-along interface.',
+    src: '/images/products/sizzle/sizzle_screenshot.png',
+    alt: 'Sizzle product interface screenshot showing the live cooking experience.',
+  },
+  {
+    title: 'Interactive cook-along room',
+    description: 'Hosts and viewers stay synchronized with live chat, recipe steps, timers, reactions, and cook-along progress.',
+    src: '/images/products/sizzle/sizzle-live-cookalong.png',
+    alt: 'Sizzle live cook-along room showing host controls, chat, step timer, and reactions.',
+  },
+  {
+    title: 'Live kitchen creation',
+    description: 'Hosts can prepare a live kitchen with cover artwork, session details, cooking style, ingredients, steps, and timing before going live.',
+    src: '/images/products/sizzle/sizzle-create-live-kitchen.png',
+    alt: 'Sizzle host creation screen for starting a live kitchen.',
+  },
+];
+
+
+const swiftsaleScreenshots = [
+  {
+    title: 'Live show command center',
+    description: 'SwiftSale gives live sellers a real-time operating surface for orders, bins, pickup flow, and fulfillment while the sale is happening.',
+    src: '/images/products/swiftsale/live-show-ready.png',
+    alt: 'SwiftSale live show workflow screen with order and fulfillment controls.',
+  },
+  {
+    title: 'Buyer engagement tools',
+    description: 'Interactive selling tools help sellers keep the audience engaged while orders and claims stay organized behind the scenes.',
+    src: '/images/products/swiftsale/games.png',
+    alt: 'SwiftSale audience engagement and live selling tools screen.',
+  },
+  {
+    title: 'Order annotation and organization',
+    description: 'Sellers can mark up products, organize claims, and keep fulfillment details clear from auction to pickup.',
+    src: '/images/products/swiftsale/annotate.png',
+    alt: 'SwiftSale product annotation and order organization screen.',
+  },
+];
+
+
+const hotspotStudioScreenshots = [
+  {
+    title: 'Interactive image editor',
+    description: 'Hotspot Studio gives teams a focused workspace for turning static visuals into interactive image experiences with clickable regions and structured behavior.',
+    src: '/images/products/hotshot_studio/hotshot_screen_1.png',
+    alt: 'Hotspot Studio editor interface showing an interactive image project workspace.',
+  },
+  {
+    title: 'Hotspot configuration workflow',
+    description: 'Editors can place hotspots, refine interaction details, preview behavior, and keep project structure organized without leaving the canvas.',
+    src: '/images/products/hotshot_studio/hotshot_screen_2.png',
+    alt: 'Hotspot Studio configuration screen for editing interactive hotspot behavior.',
+  },
+  {
+    title: 'Preview and export-ready output',
+    description: 'Hotspot Studio supports a clean handoff from visual editing to reusable project data that can be embedded in production experiences.',
+    src: '/images/products/hotshot_studio/hotshot_screen_3.png',
+    alt: 'Hotspot Studio preview and export interface for an interactive image project.',
+  },
+];
+
+const pulsarScreenshots = [
+  {
+    title: 'Pulsar live engagement dashboard',
+    description: 'Pulsar gives hosts a focused command center for running live audience moments, monitoring activity, and keeping participation moving.',
+    src: '/images/products/pulsar/pulsar-live-dashboard.png',
+    alt: 'Pulsar live audience engagement dashboard interface.',
+  },
+  {
+    title: 'Audience participation flow',
+    description: 'Live prompts, reactions, and engagement tools help turn passive viewers into active participants during the experience.',
+    src: '/images/products/pulsar/pulsar-audience-engagement.png',
+    alt: 'Pulsar audience engagement interface with live participation tools.',
+  },
+  {
+    title: 'Host controls and session management',
+    description: 'Hosts can guide the room, control timing, and manage the engagement flow from one clear production-ready interface.',
+    src: '/images/products/pulsar/pulsar-host-controls.png',
+    alt: 'Pulsar host controls for managing a live audience engagement session.',
+  },
+];
+const showcaseProducts = products;
+
+const productFilters = ['All', 'AI', 'Automation', 'Business', 'Interactive', 'Developer Tools'];
+
+const productStack = [
+  { name: 'React', icon: '/images/technologies/react.svg' },
+  { name: 'React Native', icon: '/images/technologies/react-native.svg' },
+  { name: 'TypeScript', icon: '/images/technologies/typescript.svg' },
+  { name: 'Next.js', icon: '/images/technologies/nextjs.svg' },
+  { name: 'Node.js', icon: '/images/technologies/nodejs.svg' },
+  { name: 'Supabase', icon: '/images/technologies/supabase.svg' },
+  { name: 'PostgreSQL', icon: '/images/technologies/postgresql.svg' },
+  { name: 'Cloudflare', icon: '/images/technologies/cloudflare.svg' },
+  { name: 'OpenAI', icon: '/images/technologies/openai.svg' },
+  { name: 'LiveKit', icon: '/images/technologies/livekit.svg' },
+];
+
+const footerNav = [
+  { label: 'Home', href: '/' },
+  { label: 'Products', href: '/products' },
+  { label: 'Services', href: '/services' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const footerProducts = [
+  { label: 'MoveScan', href: '/products/movescan' },
+  { label: 'Hotspot Studio', href: '/products/hotspot-studio' },
+  { label: 'BatchFlow', href: '/products/batchflow' },
+  { label: 'SwiftSale', href: '/products/swiftsale' },
+  { label: 'Sizzle', href: '/products/sizzle' },
+  { label: 'Pulsar', href: '/products/pulsar' },
+  { label: 'SaaSquatch', href: '/products/saasquatch', status: 'IN DEVELOPMENT' },
+];
+
+function Icon({ type }) {
+  if (type === 'message') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4.5 6.5h15v10h-9L6 20v-3.5H4.5v-10Z" />
+      </svg>
+    );
+  }
+
+  if (type === 'ai') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3v4" />
+        <path d="M12 17v4" />
+        <path d="M3 12h4" />
+        <path d="M17 12h4" />
+        <path d="m6.5 6.5 2.8 2.8" />
+        <path d="m14.7 14.7 2.8 2.8" />
+        <path d="m17.5 6.5-2.8 2.8" />
+        <path d="m9.3 14.7-2.8 2.8" />
+        <circle cx="12" cy="12" r="3.8" />
+      </svg>
+    );
+  }
+
+  if (type === 'interactive') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 5h16v10H4V5Z" />
+        <path d="m8 19 4-4 4 4" />
+        <circle cx="9" cy="10" r="1.4" />
+        <circle cx="15" cy="10" r="1.4" />
+      </svg>
+    );
+  }
+
+  if (type === 'stack') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m12 3 8 4-8 4-8-4 8-4Z" />
+        <path d="m4 12 8 4 8-4" />
+        <path d="m4 17 8 4 8-4" />
+      </svg>
+    );
+  }
+
+  if (type === 'rocket') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M13 5c2.7-2.5 5.6-2 6-1.6.4.4.9 3.3-1.6 6l-5.8 5.8-4.4-4.4L13 5Z" />
+        <path d="m8 16-3 3" />
+        <path d="m14.5 7.5 2 2" />
+      </svg>
+    );
+  }
+
+  if (type === 'flow') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 7h5v5H5V7Z" />
+        <path d="M14 12h5v5h-5v-5Z" />
+        <path d="M10 9.5h2.5a4 4 0 0 1 4 4" />
+      </svg>
+    );
+  }
+
+  if (type === 'compass') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" />
+        <path d="m15 9-2 5-4 1 2-5 4-1Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="m13 6 6 6-6 6" />
+    </svg>
+  );
+}
+
+function Logo() {
+  return (
+    <a className="logo" href="/" aria-label="AI Guy Labs home">
+      <img src="/images/aiguy_logo.PNG" alt="AI Guy Labs" />
+    </a>
+  );
+}
+
+function Header({ homeOverlay = false } = {}) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle('menu-open', open);
+    return () => document.body.classList.remove('menu-open');
+  }, [open]);
+
+  const closeMenu = () => setOpen(false);
+
+  return (
+    <header className={homeOverlay ? 'site-header site-header--home-overlay' : 'site-header'}>
+      <div className="container header-inner">
+        <Logo />
+        <nav className="desktop-nav" aria-label="Primary navigation">
+          {navItems.map((item) => (
+            <a key={item.href} href={item.href}>{item.label}</a>
+          ))}
+        </nav>
+        <a className="button button-small button-primary header-cta" href="/contact">Work With Me</a>
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-controls="mobile-navigation"
+          aria-expanded={open}
+          onClick={() => setOpen((value) => !value)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      </div>
+      <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation" hidden={!open}>
+        {navItems.map((item) => (
+          <a key={item.href} href={item.href} onClick={closeMenu}>{item.label}</a>
+        ))}
+        <a className="button button-primary" href="/contact" onClick={closeMenu}>Work With Me</a>
+      </nav>
+    </header>
+  );
+}
+
+function ProductStatusBadge({ product, className = '' }) {
+  if (product?.status !== 'IN DEVELOPMENT') return null;
+
+  return <span className={className ? 'status-badge status-badge--development ' + className : 'status-badge status-badge--development'}>IN DEVELOPMENT</span>;
+}
+
+function ProductShowcase({ titleId }) {
+  return (
+    <div className="portfolio-showcase">
+      <div className="portfolio-heading">
+        <p className="eyebrow">Products built by AI Guy Labs</p>
+        <h2 id={titleId}>A growing ecosystem of software products.</h2>
+      </div>
+      <div className="product-showcase">
+        {showcaseProducts.map((product) => (
+          <a
+            className={"product-logo-card product-logo-card--" + product.glow}
+            key={product.name}
+            href={product.website}
+            aria-label={"Learn more about " + product.name}
+          >
+            <div className="product-logo-frame">
+              <img src={product.logo} alt={product.name + " logo"} />
+            </div>
+            <div className="product-card-copy">
+              <div className="product-title-row"><h2>{product.name}</h2><ProductStatusBadge product={product} /></div>
+              <p>{product.description}</p>
+              <span className="product-card-link">Explore Product <Icon /></span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TechnologyStrip() {
+  return (
+    <section id="technology" className="technology-strip" aria-labelledby="technology-title">
+      <div className="container technology-inner">
+        <h2 id="technology-title">Trusted by modern technologies</h2>
+        <div className="tech-list">
+          {technologies.map((tech) => (
+            <div className="tech-item" key={tech.name}>
+              <span className="tech-mark">{tech.mark}</span>
+              <span>{tech.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServiceCard({ service, featured = false }) {
+  const referencedProducts = (service.productSlugs || [])
+    .map((slug) => products.find((product) => product.slug === slug))
+    .filter(Boolean);
+
+  return (
+    <article id={service.slug} className={featured ? 'surface-card service-card service-card-featured' : 'surface-card service-card'}>
+      <div className="line-icon"><Icon type={service.icon} /></div>
+      <h3>{service.title}</h3>
+      <p>{service.description}</p>
+      {referencedProducts.length > 0 ? (
+        <div className="service-product-row" aria-label={service.title + ' related AI Guy Labs products'}>
+          {referencedProducts.map((product) => <ProductReference product={product} key={product.slug} />)}
+        </div>
+      ) : null}
+      <a className="text-link" href={featured ? '/services#' + service.slug : '#contact'}>Learn More <Icon /></a>
+    </article>
+  );
+}
+
+function ProductReference({ product }) {
+  return (
+    <a className="product-reference" href={product.website} style={{ '--accent': product.accent }} aria-label={"View " + product.name}>
+      <img src={product.logo} alt="" aria-hidden="true" loading="lazy" />
+      <span>{product.name}</span>
+    </a>
+  );
+}
+
+function ServicesSection() {
+  return (
+    <section id="services" className="section-shell services-section" aria-labelledby="services-title">
+      <div className="container services-grid">
+        <div className="section-intro sticky-intro">
+          <p className="eyebrow">Services</p>
+          <h2 id="services-title">Software built to solve real business problems.</h2>
+          <p>AI Guy Labs helps businesses build modern software, automate operations, integrate AI, and transform ideas into production-ready applications.</p>
+          <a className="button button-secondary services-page-link" href="/services">View Services <Icon /></a>
+        </div>
+        <div className="service-cards">
+          {services.map((service) => <ServiceCard service={service} featured key={service.title} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProjectsSection() {
+  return (
+    <section id="projects" className="section-shell projects-section" aria-labelledby="projects-title" tabIndex="-1">
+      <div className="container">
+        <div className="section-heading-row">
+          <div>
+            <p className="eyebrow">Featured Projects</p>
+            <h2 id="projects-title">Products I've Built</h2>
+          </div>
+          <a className="button button-secondary" href="/products">View All Products <Icon /></a>
+        </div>
+        <div className="project-grid">
+          {products.map((project) => (
+            <article className={"surface-card project-card project-card--" + project.glow} key={project.name}>
+              <div className="project-logo">
+                <img src={project.logo} alt={project.name + " logo"} />
+              </div>
+              <h3>{project.name}</h3>
+              <p>{project.description}</p>
+              <a className="text-link" href={project.website}>Learn More <Icon /></a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AboutSection() {
+  const proofPoints = [
+    '7 software products built',
+    'Multiple industries served',
+    'Product strategy, design, and development',
+    'From idea to working software',
+  ];
+
+  return (
+    <section id="about" className="section-shell about-section" aria-labelledby="about-title">
+      <div className="container about-panel">
+        <div className="about-content">
+          <div className="about-copy">
+            <p className="eyebrow">About Me</p>
+            <h2 id="about-title">I build software from real-world problems.</h2>
+            <p>I'm Michael St. Pierre, founder of AI Guy Labs and a product builder focused on creating practical software for real businesses. I've built products across moving estimates, live selling, batch production, interactive cooking, audience engagement, visual experiences, and SaaS discovery.</p>
+            <p>My approach is simple: identify a frustrating workflow, understand how people actually use it, and build software that makes the process faster, clearer, and easier to manage.</p>
+            <p>AI Guy Labs is the home of products including MoveScan, SwiftSale, BatchFlow, Sizzle, Pulsar, Hotspot Studio, and SaaSquatch.</p>
+          </div>
+          <div className="about-proof" aria-label="AI Guy Labs proof points">
+            {proofPoints.map((point) => <div className="proof-card" key={point}>{point}</div>)}
+          </div>
+          <a className="button button-primary about-cta" href="/products">Explore the Products <Icon /></a>
+        </div>
+        <figure className="about-team-card">
+          <img src="/images/aiguy_team.png" alt="AI Guy Labs development team." width="1536" height="1024" loading="lazy" />
+        </figure>
+      </div>
+    </section>
+  );
+}
+
+function CTASection() {
+  return (
+    <section id="contact" className="section-shell cta-section" aria-labelledby="cta-title">
+      <div className="container">
+        <div className="cta-panel">
+          <p className="eyebrow">Ready to build something great?</p>
+          <h2 id="cta-title">Let's bring your idea to life.</h2>
+          <p>I'm always open to discussing new projects, partnerships, and opportunities to help your business grow.</p>
+          <a className="button button-primary" href="/contact">Work With Me <Icon /></a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="container footer-grid">
+        <div className="footer-brand">
+          <a className="footer-brand-name" href="/">AI Guy Labs</a>
+          <p>Software. AI-powered. Built for results.</p>
+        </div>
+        <nav aria-label="Footer navigation">
+          <h2>Navigation</h2>
+          <ul>
+            {footerNav.map((item) => <li key={item.href}><a href={item.href}>{item.label}</a></li>)}
+          </ul>
+        </nav>
+        <nav aria-label="Footer product navigation">
+          <h2>Products</h2>
+          <ul>
+            {footerProducts.map((item) => <li key={item.href}><a href={item.href}>{item.label}{item.status ? <span className="status-badge status-badge--development footer-product-badge">{item.status}</span> : null}</a></li>)}
+          </ul>
+        </nav>
+      </div>
+      <div className="container footer-bottom">
+        <p>&copy; 2026 AI Guy Labs. All rights reserved.</p>
+        <div>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+function ServicesHero() {
+  return (
+    <section className="services-hero section-shell services-hero-premium" aria-labelledby="services-hero-title">
+      <div className="container services-hero-inner">
+        <p className="eyebrow">SERVICES</p>
+        <h1 id="services-hero-title">We build software that moves businesses forward.</h1>
+        <p>From the first idea to a production-ready product, AI Guy Labs designs and builds focused software, AI systems, and digital experiences with a clear purpose.</p>
+      </div>
+    </section>
+  );
+}
+
+function ServiceVisual({ index }) {
+  return (
+    <div className="service-editorial-visual" aria-hidden="true">
+      <div className="service-visual-frame">
+        <span className="service-visual-number">{String(index + 1).padStart(2, '0')}</span>
+        <span className="service-visual-line service-visual-line--one" />
+        <span className="service-visual-line service-visual-line--two" />
+        <span className="service-visual-node service-visual-node--one" />
+        <span className="service-visual-node service-visual-node--two" />
+      </div>
+    </div>
+  );
+}
+
+function ServiceEditorialPanel({ service, index }) {
+  const reverse = index % 2 === 1;
+  return (
+    <article id={service.slug} className={reverse ? 'service-editorial service-editorial--reverse' : 'service-editorial'}>
+      <div className="service-editorial-copy">
+        <p className="service-number">{String(index + 1).padStart(2, '0')}</p>
+        <h2>{service.title}</h2>
+        <p>{service.description}</p>
+        <ul className="service-capabilities">
+          {service.capabilities.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+        <a className="editorial-link" href="/contact">Discuss This Service <Icon /></a>
+      </div>
+      <ServiceVisual index={index} />
+    </article>
+  );
+}
+
+function ServicesListSection() {
+  return (
+    <section id="service-list" className="section-shell services-editorial-section" aria-labelledby="service-list-title">
+      <div className="container">
+        <h2 id="service-list-title" className="sr-only">AI Guy Labs services</h2>
+        <div className="services-editorial-list">
+          {premiumServices.map((service, index) => <ServiceEditorialPanel service={service} index={index} key={service.slug} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServicesProcess() {
+  return (
+    <section className="section-shell services-process-premium" aria-labelledby="process-title">
+      <div className="container">
+        <div className="services-process-heading">
+          <p className="eyebrow">HOW WE BUILD</p>
+          <h2 id="process-title">Clear decisions. Focused execution. No unnecessary complexity.</h2>
+        </div>
+        <div className="services-process-line" aria-label="AI Guy Labs build process">
+          {premiumProcess.map((step, index) => (
+            <div className="services-process-step" key={step}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <p>{step}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServicesClosingCTA() {
+  return (
+    <section className="section-shell services-closing" aria-labelledby="services-closing-title">
+      <div className="container services-closing-inner">
+        <p className="eyebrow">Work With AI Guy Labs</p>
+        <h2 id="services-closing-title">Have a problem software could solve?</h2>
+        <p>Tell us what is slowing your business down. We'll help determine what should be built.</p>
+        <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+      </div>
+    </section>
+  );
+}
+
+function ServicesPage() {
+  return (
+    <main className="services-page-premium">
+      <ServicesHero />
+      <ServicesListSection />
+      <ServicesProcess />
+      <ServicesClosingCTA />
+    </main>
+  );
+}
+function ProductsHero() {
+  return (
+    <section className="products-hero section-shell products-hero-premium" aria-labelledby="products-hero-title">
+      <div className="container products-hero-inner">
+        <p className="eyebrow">PRODUCTS BUILT BY AI GUY LABS</p>
+        <h1 id="products-hero-title">Software designed to solve real problems.</h1>
+        <p>Focused products for operators, teams, creators, and companies that need software with a clear job to do.</p>
+      </div>
+    </section>
+  );
+}
+function ProductsEcosystem() {
+  return (
+    <section id="ecosystem" className="section-shell products-ecosystem" aria-labelledby="ecosystem-title">
+      <div className="container">
+        <div className="section-heading-row products-section-heading">
+          <div>
+            <p className="eyebrow">Software Ecosystem</p>
+            <h2 id="ecosystem-title">A connected catalog of focused products.</h2>
+          </div>
+          <p>Each product solves a practical business problem while sharing the same standards for usability, performance, and durable product design.</p>
+        </div>
+        <div className="ecosystem-grid">
+          {products.map((product) => (
+            <a className="ecosystem-card" href={'#' + product.slug} key={product.slug} style={{ '--accent': product.accent }}>
+              <div className="ecosystem-icon"><img src={product.logo} alt={product.name + ' icon'} /></div>
+              <div>
+                <h3>{product.name}</h3>
+                <p>{product.tagline}</p>
+              </div>
+              <span>Learn More <Icon /></span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductSpotlight({ product }) {
+  return (
+    <section className="section-shell product-spotlight-section" aria-labelledby="spotlight-title">
+      <div className="container product-spotlight" style={{ '--accent': product.accent }}>
+        <div className="spotlight-artwork" aria-hidden="true">
+          <div className="spotlight-icon-orbit">
+            <img src={product.logo} alt="" />
+          </div>
+        </div>
+        <div className="spotlight-copy">
+          <p className="eyebrow">Product Spotlight</p>
+          <h2 id="spotlight-title">{product.name}</h2>
+          <p>{product.longDescription}</p>
+          <div className="feature-list">
+            {product.features.map((feature) => <span key={feature}>{feature}</span>)}
+          </div>
+          <div className="badge-row" aria-label={product.name + ' technologies'}>
+            {product.technologies.map((tech) => <span key={tech}>{tech}</span>)}
+          </div>
+          <div className="spotlight-actions">
+            <a className="button button-primary" href={product.website}>View Product <Icon /></a>
+            <a className="button button-secondary" href={product.demoUrl}>Watch Demo</a>
+            <a className="text-link" href={'#' + product.slug}>Learn More <Icon /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductsCatalog() {
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState('All');
+  const normalizedQuery = query.trim().toLowerCase();
+  const visibleProducts = products.filter((product) => {
+    const matchesFilter = filter === 'All' || product.filters.includes(filter);
+    const searchable = [product.name, product.description, product.tagline, product.longDescription, ...product.keywords, ...product.technologies].join(' ').toLowerCase();
+    return matchesFilter && (!normalizedQuery || searchable.includes(normalizedQuery));
+  });
+
+  return (
+    <section id="catalog" className="section-shell products-catalog" aria-labelledby="catalog-title">
+      <div className="container">
+        <div className="section-heading-row products-section-heading">
+          <div>
+            <p className="eyebrow">All Products</p>
+            <h2 id="catalog-title">Complete software catalog</h2>
+          </div>
+          <p>Search and filter the current AI Guy Labs ecosystem. New products can be added through the shared product configuration.</p>
+        </div>
+        <div className="catalog-controls" role="search">
+          <label className="sr-only" htmlFor="product-search">Search products</label>
+          <input id="product-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by product, description, keyword, or technology" />
+          <div className="filter-tabs" aria-label="Product filters">
+            {productFilters.map((item) => (
+              <button className={filter === item ? 'active' : ''} type="button" key={item} onClick={() => setFilter(item)}>{item}</button>
+            ))}
+          </div>
+        </div>
+        <div className="catalog-grid" aria-live="polite">
+          {visibleProducts.map((product) => (
+            <article id={product.slug} className="catalog-card" key={product.slug} style={{ '--accent': product.accent }}>
+              <div className="catalog-card-top">
+                <img src={product.logo} alt={product.name + ' icon'} />
+                <span className={'status-pill status-pill--' + product.status.toLowerCase().replace(/\s+/g, '-')}>{product.status}</span>
+              </div>
+              <h3>{product.name}</h3>
+              <p>{product.description}</p>
+              <div className="catalog-tech-list">
+                {product.technologies.map((tech) => <span key={tech}>{tech}</span>)}
+              </div>
+              <a className="text-link" href={product.website}>Learn More <Icon /></a>
+            </article>
+          ))}
+        </div>
+        {visibleProducts.length === 0 ? <p className="empty-results">No products match that search yet.</p> : null}
+      </div>
+    </section>
+  );
+}
+
+function ProductsTechnologyStack() {
+  return (
+    <section className="section-shell product-stack-section" aria-labelledby="stack-title">
+      <div className="container">
+        <div className="section-intro centered-intro">
+          <p className="eyebrow">Technology Stack</p>
+          <h2 id="stack-title">Modern tools behind the ecosystem.</h2>
+          <p>AI Guy Labs products are built with reliable, scalable technologies chosen for practical product execution.</p>
+        </div>
+        <div className="stack-grid">
+          {productStack.map((tech) => (
+            <div className="stack-card" key={tech.name}>
+              <img src={tech.icon} alt="" className="technology-icon" aria-hidden="true" />
+              <span>{tech.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductsCTA() {
+  return (
+    <section className="section-shell products-final-cta" aria-labelledby="products-cta-title">
+      <div className="container">
+        <div className="cta-panel">
+          <p className="eyebrow">Work With AI Guy Labs</p>
+          <h2 id="products-cta-title">Have an idea? Let's build it together.</h2>
+          <p>Whether you're looking for custom software, AI solutions, automation, or interactive experiences, AI Guy Labs can help bring your vision to life.</p>
+          <div className="hero-actions cta-actions">
+            <a className="button button-primary" href="/contact">Start a Project <Icon /></a>
+            <a className="button button-secondary" href="/contact">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductEditorialPanel({ product, index }) {
+  const reverse = index % 2 === 1;
+  return (
+    <article id={product.slug} className={reverse ? 'product-editorial product-editorial--reverse' : 'product-editorial'} style={{ '--accent': product.accent }}>
+      <div className="product-editorial-copy">
+        {product.status === 'IN DEVELOPMENT' ? <ProductStatusBadge product={product} className="product-editorial-status" /> : <p className="eyebrow">{product.status}</p>}
+        <h2>{product.name}</h2>
+        <p className="product-statement">{product.tagline}</p>
+        <p>{product.longDescription}</p>
+        <a className="editorial-link" href={product.website}>Explore Product <Icon /></a>
+      </div>
+      <div className="product-editorial-icon" aria-hidden="true">
+        <img src={product.logo} alt="" />
+      </div>
+    </article>
+  );
+}
+
+function ProductsEditorialShowcase() {
+  return (
+    <section id="products-portfolio" className="section-shell products-editorial-section" aria-labelledby="products-portfolio-title">
+      <div className="container">
+        <h2 id="products-portfolio-title" className="sr-only">AI Guy Labs product portfolio</h2>
+        <div className="products-editorial-list">
+          {products.map((product, index) => <ProductEditorialPanel product={product} index={index} key={product.slug} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductsPage() {
+  return (
+    <main className="products-page-premium">
+      <ProductsHero />
+      <ProductsEditorialShowcase />
+    </main>
+  );
+}
+function AboutPage() {
+  const principles = ['Build for real workflows', 'Keep the experience clear', 'Measure results, not features'];
+  const aboutProducts = products;
+
+  return (
+    <main className="about-page-premium">
+      <section className="section-shell about-page-hero" aria-labelledby="about-page-title">
+        <div className="container about-page-hero-inner">
+          <div className="about-page-copy">
+            <p className="eyebrow">ABOUT AI GUY</p>
+            <h1 id="about-page-title">Built by someone who understands real business problems.</h1>
+            <p>AI Guy Labs is led by Michael St. Pierre, a founder and product builder focused on creating practical software that improves how businesses operate, sell, communicate, and grow.</p>
+          </div>
+          <figure className="about-page-visual">
+            <img src="/images/aiguy_mark.jpeg" alt="Michael St. Pierre, founder of AI Guy Labs." width="1024" height="1536" />
+          </figure>
+        </div>
+      </section>
+
+      <section className="section-shell about-story-section" aria-labelledby="about-story-title">
+        <div className="container about-editorial-block">
+          <p className="eyebrow">Story</p>
+          <h2 id="about-story-title">From operating businesses to building software.</h2>
+          <p>Before building software products, Michael spent years operating real businesses and managing the day-to-day problems that come with sales, employees, inventory, customers, fulfillment, and growth. AI Guy Labs was created to turn those firsthand operational challenges into focused software products.</p>
+        </div>
+      </section>
+
+      <section className="section-shell about-perspective-section" aria-labelledby="about-perspective-title">
+        <div className="container about-perspective-grid">
+          <div>
+            <p className="eyebrow">Founder Perspective</p>
+            <h2 id="about-perspective-title">Software should solve a clear problem.</h2>
+            <p>The goal is not to add technology for the sake of technology. Every product should reduce friction, save time, improve visibility, or help a business perform better.</p>
+          </div>
+          <div className="about-principles" aria-label="AI Guy Labs principles">
+            {principles.map((principle, index) => (
+              <div className="about-principle" key={principle}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <p>{principle}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell about-products-section" aria-labelledby="about-products-title">
+        <div className="container about-products-inner">
+          <div>
+            <p className="eyebrow">Products Built by AI Guy Labs</p>
+            <h2 id="about-products-title">A focused product ecosystem built from real operational needs.</h2>
+          </div>
+          <div className="about-product-list" aria-label="AI Guy Labs products">
+            {aboutProducts.map((product) => (
+              <a className="about-product-icon-link" href={product.website} key={product.slug} style={{ '--accent': product.accent }}>
+                <span className="about-product-icon-frame" aria-hidden="true">
+                  <img src={product.logo} alt="" />
+                </span>
+                <span className="about-product-icon-name">{product.name}</span>
+                <ProductStatusBadge product={product} className="about-product-status" />
+              </a>
+            ))}
+          </div>
+          <a className="button button-primary" href="/products">Explore the Products <Icon /></a>
+        </div>
+      </section>
+
+      <section className="section-shell about-closing-section" aria-labelledby="about-closing-title">
+        <div className="container about-closing-inner">
+          <h2 id="about-closing-title">Have a problem worth solving?</h2>
+          <p>Let's talk about what is slowing your business down and whether software can fix it.</p>
+          <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+        </div>
+      </section>
+    </main>
+  );
+}
+function ContactPage() {
+  return (
+    <main className="contact-page">
+      <section className="section-shell contact-hero" aria-labelledby="contact-title">
+        <div className="container contact-layout">
+          <div className="contact-intro">
+            <p className="eyebrow">Contact AI Guy Labs</p>
+            <h1 id="contact-title">LET'S BUILD SOMETHING THAT PERFORMS.</h1>
+            <p className="contact-lede">Tell us what you're trying to solve. We'll help turn it into software that works.</p>
+            <div className="contact-details" aria-label="Contact details">
+              <a href="mailto:hello@aiguylabs.com">hello@aiguylabs.com</a>
+              <span>Custom builds, AI automation, product development.</span>
+            </div>
+            <div className="contact-expectations">
+              <h2>What to expect</h2>
+              <p>A focused conversation about the problem, the users, the workflow, and what a successful launch needs to accomplish.</p>
+            </div>
+          </div>
+          <form className="contact-form" onSubmit={(event) => event.preventDefault()}>
+            <p className="contact-form-note">Custom software. AI automation. Product development.</p>
+            <label>
+              <span>Name</span>
+              <input name="name" type="text" autoComplete="name" />
+            </label>
+            <label>
+              <span>Email</span>
+              <input name="email" type="email" autoComplete="email" />
+            </label>
+            <label>
+              <span>Company</span>
+              <input name="company" type="text" autoComplete="organization" />
+            </label>
+            <label>
+              <span>What do you want to build?</span>
+              <input name="project" type="text" />
+            </label>
+            <label>
+              <span>Estimated project budget</span>
+              <select name="budget" defaultValue="">
+                <option value="" disabled>Select a range</option>
+                <option>$5k - $15k</option>
+                <option>$15k - $50k</option>
+                <option>$50k+</option>
+                <option>Not sure yet</option>
+              </select>
+            </label>
+            <label>
+              <span>Message</span>
+              <textarea name="message" rows="5" />
+            </label>
+            <button className="button button-primary contact-submit" type="submit">Start the Conversation <Icon /></button>
+          </form>
+        </div>
+      </section>
+    </main>
+  );
+}
+function HotspotBootstrap() {
+  useEffect(() => {
+    const editMode = new URLSearchParams(window.location.search).get('hotspots') === 'edit';
+    let attempts = 0;
+    const timer = window.setInterval(() => {
+      attempts += 1;
+      const integration = window.AIGuyLabsHotspotIntegration;
+      if (integration) {
+        if (editMode && typeof integration.activateDeveloperMode === 'function') integration.activateDeveloperMode();
+        else if (!editMode && typeof integration.mount === 'function') integration.mount();
+        window.clearInterval(timer);
+      } else if (attempts > 50) {
+        window.clearInterval(timer);
+      }
+    }, 100);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return null;
+}
+function SoftwareEcosystemSection() {
+  return (
+    <section id="software" className="section-shell software-ecosystem-section" aria-labelledby="software-ecosystem-title">
+      <div className="container">
+        <ProductShowcase titleId="software-ecosystem-title" />
+      </div>
+    </section>
+  );
+}
+
+function HomePage() {
+  return (
+    <main className="home-image-page">
+      <section id="home" className="home-image-stage" aria-label="AI Guy Labs homepage">
+        <picture>
+          <source media="(max-width: 767px)" srcSet="/images/aiguy_mobile.png" />
+          <source media="(min-width: 768px)" srcSet="/images/aiguy_desktop.png" />
+          <img id="ai-guy-labs-home-image" className="home-image" src="/images/aiguy_desktop.png" alt="AI Guy Labs homepage design." width="1536" height="1024" fetchPriority="high" />
+        </picture>
+        <div
+          id="ai-guy-labs-hero-hotspots"
+          className="home-hotspot-mount"
+          data-hotspot-image-selector="#ai-guy-labs-home-image"
+          data-hotspot-image-alt="AI Guy Labs homepage design."
+          data-hotspot-desktop-image-url="/images/aiguy_desktop.png"
+          data-hotspot-mobile-image-url="/images/aiguy_mobile.png"
+          data-hotspot-desktop-project-url="/hotspots/aiguy-home-desktop.json"
+          data-hotspot-mobile-project-url="/hotspots/aiguy-home-mobile.json"
+          data-hotspot-breakpoint="768"
+        />
+      </section>
+      <SoftwareEcosystemSection />
+    </main>
+  );
+}
+function MoveScanProductPage({ product }) {
+  const [activeImage, setActiveImage] = useState(null);
+  const featured = movescanScreenshots[0];
+  const supporting = movescanScreenshots.slice(1);
+
+  return (
+    <main className="product-detail-page movescan-detail-page">
+      <section className="section-shell product-detail-hero" aria-labelledby="movescan-product-title">
+        <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
+          <div className="product-detail-copy">
+            <p className="eyebrow">AI GUY LABS PRODUCT</p>
+            <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
+            <h1 id="movescan-product-title">MoveScan</h1>
+            <p className="product-detail-subheading">AI-powered moving estimates</p>
+            <p>MoveScan turns customer video walkthroughs into organized room inventories and estimate-ready workflows for moving companies.</p>
+            <div className="product-detail-actions">
+              <a className="button button-primary" href="/contact">Start a MoveScan Project <Icon /></a>
+              <a className="button button-secondary" href="/products">Back to Products</a>
+            </div>
+          </div>
+          <button className="product-screenshot-button product-screenshot-button--featured" type="button" onClick={() => setActiveImage(featured)}>
+            <img src={featured.src} alt={featured.alt} />
+          </button>
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-story" aria-labelledby="movescan-story-title">
+        <div className="container product-detail-story-inner">
+          <div>
+            <p className="eyebrow">Workflow</p>
+            <h2 id="movescan-story-title">Built for the estimate process customers actually complete.</h2>
+          </div>
+          <p>Customers get guided capture and review. Staff get cleaner inventory data and a focused estimate review surface before quote preparation.</p>
+        </div>
+      </section>
+
+      <section className="section-shell product-screenshot-section" aria-label="MoveScan product screenshots">
+        <div className="container product-screenshot-list">
+          {supporting.map((screenshot, index) => (
+            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
+              <div className="product-screenshot-copy">
+                <p className="eyebrow">{String(index + 2).padStart(2, '0')}</p>
+                <h2>{screenshot.title}</h2>
+                <p>{screenshot.description}</p>
+              </div>
+              <button className="product-screenshot-button" type="button" onClick={() => setActiveImage(screenshot)}>
+                <img src={screenshot.src} alt={screenshot.alt} />
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-closing" aria-labelledby="movescan-closing-title">
+        <div className="container product-detail-closing-inner">
+          <h2 id="movescan-closing-title">Ready to make estimates easier to complete?</h2>
+          <p>Use MoveScan as the starting point for a moving workflow that captures better data and helps staff move faster.</p>
+          <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+        </div>
+      </section>
+
+      {activeImage ? (
+        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.title} onClick={() => setActiveImage(null)}>
+          <button className="product-lightbox-close" type="button" onClick={() => setActiveImage(null)}>Close</button>
+          <img src={activeImage.src} alt={activeImage.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+    </main>
+  );
+}
+function BatchFlowProductPage({ product }) {
+  const [activeImage, setActiveImage] = useState(null);
+  const featured = batchflowScreenshots[0];
+  const supporting = batchflowScreenshots.slice(1);
+
+  return (
+    <main className="product-detail-page batchflow-detail-page">
+      <section className="section-shell product-detail-hero" aria-labelledby="batchflow-product-title">
+        <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
+          <div className="product-detail-copy">
+            <p className="eyebrow">AI GUY LABS PRODUCT</p>
+            <img src={product.logo} alt="BatchFlow product icon." className="product-detail-logo" />
+            <h1 id="batchflow-product-title">BatchFlow</h1>
+            <p className="product-detail-subheading">Production workflow automation</p>
+            <p>BatchFlow helps production teams plan batches, guide operators through station work, and keep daily workflow moving with fewer handoffs and less confusion.</p>
+            <div className="product-detail-actions">
+              <a className="button button-primary" href="/contact">Start a BatchFlow Project <Icon /></a>
+              <a className="button button-secondary" href="/products">Back to Products</a>
+            </div>
+          </div>
+          <button className="product-screenshot-button product-screenshot-button--featured" type="button" onClick={() => setActiveImage(featured)}>
+            <img src={featured.src} alt={featured.alt} />
+          </button>
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-story" aria-labelledby="batchflow-story-title">
+        <div className="container product-detail-story-inner">
+          <div>
+            <p className="eyebrow">Workflow</p>
+            <h2 id="batchflow-story-title">Built for repeatable production without operational drag.</h2>
+          </div>
+          <p>BatchFlow connects planning, prep, station execution, and manager review into one focused production workflow for teams that need consistency every day.</p>
+        </div>
+      </section>
+
+      <section className="section-shell product-screenshot-section" aria-label="BatchFlow product screenshots">
+        <div className="container product-screenshot-list">
+          {supporting.map((screenshot, index) => (
+            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
+              <div className="product-screenshot-copy">
+                <p className="eyebrow">{String(index + 2).padStart(2, '0')}</p>
+                <h2>{screenshot.title}</h2>
+                <p>{screenshot.description}</p>
+              </div>
+              <button className="product-screenshot-button" type="button" onClick={() => setActiveImage(screenshot)}>
+                <img src={screenshot.src} alt={screenshot.alt} />
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-closing" aria-labelledby="batchflow-closing-title">
+        <div className="container product-detail-closing-inner">
+          <h2 id="batchflow-closing-title">Need production work to move with less friction?</h2>
+          <p>Use BatchFlow as the model for workflow software that gives operators clarity and managers better control.</p>
+          <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+        </div>
+      </section>
+
+      {activeImage ? (
+        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.title} onClick={() => setActiveImage(null)}>
+          <button className="product-lightbox-close" type="button" onClick={() => setActiveImage(null)}>Close</button>
+          <img src={activeImage.src} alt={activeImage.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+    </main>
+  );
+}
+function SizzleProductPage({ product }) {
+  const [activeImage, setActiveImage] = useState(null);
+  const featured = sizzleScreenshots[0];
+  const supporting = sizzleScreenshots.slice(1);
+
+  return (
+    <main className="product-detail-page sizzle-detail-page">
+      <section className="section-shell product-detail-hero" aria-labelledby="sizzle-product-title">
+        <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
+          <div className="product-detail-copy">
+            <p className="eyebrow">AI GUY LABS PRODUCT</p>
+            <img src={product.logo} alt="Sizzle product icon." className="product-detail-logo" />
+            <h1 id="sizzle-product-title">Sizzle</h1>
+            <p className="product-detail-subheading">Interactive live cooking platform</p>
+            <p>Sizzle brings hosts and viewers into the same live cooking experience with synchronized steps, timers, chat, reactions, and cook-along participation.</p>
+            <div className="product-detail-actions">
+              <a className="button button-primary" href="/contact">Start a Sizzle Project <Icon /></a>
+              <a className="button button-secondary" href="/products">Back to Products</a>
+            </div>
+          </div>
+          <button className="product-screenshot-button product-screenshot-button--featured" type="button" onClick={() => setActiveImage(featured)}>
+            <img src={featured.src} alt={featured.alt} />
+          </button>
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-story" aria-labelledby="sizzle-story-title">
+        <div className="container product-detail-story-inner">
+          <div>
+            <p className="eyebrow">Live Experience</p>
+            <h2 id="sizzle-story-title">Built for participation, not passive viewing.</h2>
+          </div>
+          <p>Sizzle turns live cooking into a guided shared room where hosts can teach in real time and viewers can keep pace from their own kitchens.</p>
+        </div>
+      </section>
+
+      <section className="section-shell product-screenshot-section" aria-label="Sizzle product screenshots">
+        <div className="container product-screenshot-list">
+          {supporting.map((screenshot, index) => (
+            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
+              <div className="product-screenshot-copy">
+                <p className="eyebrow">{String(index + 2).padStart(2, '0')}</p>
+                <h2>{screenshot.title}</h2>
+                <p>{screenshot.description}</p>
+              </div>
+              <button className="product-screenshot-button" type="button" onClick={() => setActiveImage(screenshot)}>
+                <img src={screenshot.src} alt={screenshot.alt} />
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-closing" aria-labelledby="sizzle-closing-title">
+        <div className="container product-detail-closing-inner">
+          <h2 id="sizzle-closing-title">Want a live experience people can actually follow?</h2>
+          <p>Use Sizzle as the model for interactive media software where timing, participation, and content all work together.</p>
+          <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+        </div>
+      </section>
+
+      {activeImage ? (
+        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.title} onClick={() => setActiveImage(null)}>
+          <button className="product-lightbox-close" type="button" onClick={() => setActiveImage(null)}>Close</button>
+          <img src={activeImage.src} alt={activeImage.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+    </main>
+  );
+}
+function SwiftSaleProductPage({ product }) {
+  const [activeImage, setActiveImage] = useState(null);
+  const featured = swiftsaleScreenshots[0];
+  const supporting = swiftsaleScreenshots.slice(1);
+
+  return (
+    <main className="product-detail-page swiftsale-detail-page">
+      <section className="section-shell product-detail-hero" aria-labelledby="swiftsale-product-title">
+        <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
+          <div className="product-detail-copy">
+            <p className="eyebrow">AI GUY LABS PRODUCT</p>
+            <img src={product.logo} alt="SwiftSale product icon." className="product-detail-logo" />
+            <h1 id="swiftsale-product-title">SwiftSale</h1>
+            <p className="product-detail-subheading">Live selling workflow automation</p>
+            <p>SwiftSale helps live sellers organize claims, assign bins, streamline pickup, and keep fulfillment moving while the sale is still live.</p>
+            <div className="product-detail-actions">
+              <a className="button button-primary" href="/contact">Start a SwiftSale Project <Icon /></a>
+              <a className="button button-secondary" href="/products">Back to Products</a>
+            </div>
+          </div>
+          <button className="product-screenshot-button product-screenshot-button--featured" type="button" onClick={() => setActiveImage(featured)}>
+            <img src={featured.src} alt={featured.alt} />
+          </button>
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-story" aria-labelledby="swiftsale-story-title">
+        <div className="container product-detail-story-inner">
+          <div>
+            <p className="eyebrow">Live Selling</p>
+            <h2 id="swiftsale-story-title">Built for sellers who move fast in front of a live audience.</h2>
+          </div>
+          <p>SwiftSale turns the live selling process into a cleaner workflow where product claims, bins, buyer activity, and fulfillment details stay connected.</p>
+        </div>
+      </section>
+
+      <section className="section-shell product-screenshot-section" aria-label="SwiftSale product screenshots">
+        <div className="container product-screenshot-list">
+          {supporting.map((screenshot, index) => (
+            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
+              <div className="product-screenshot-copy">
+                <p className="eyebrow">{String(index + 2).padStart(2, '0')}</p>
+                <h2>{screenshot.title}</h2>
+                <p>{screenshot.description}</p>
+              </div>
+              <button className="product-screenshot-button" type="button" onClick={() => setActiveImage(screenshot)}>
+                <img src={screenshot.src} alt={screenshot.alt} />
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-closing" aria-labelledby="swiftsale-closing-title">
+        <div className="container product-detail-closing-inner">
+          <h2 id="swiftsale-closing-title">Ready to make live selling easier to run?</h2>
+          <p>Use SwiftSale as the model for operational software that keeps sales, customers, and fulfillment in sync.</p>
+          <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+        </div>
+      </section>
+
+      {activeImage ? (
+        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.title} onClick={() => setActiveImage(null)}>
+          <button className="product-lightbox-close" type="button" onClick={() => setActiveImage(null)}>Close</button>
+          <img src={activeImage.src} alt={activeImage.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+    </main>
+  );
+}
+function HotspotStudioProductPage({ product }) {
+  const [activeImage, setActiveImage] = useState(null);
+  const featured = hotspotStudioScreenshots[0];
+  const supporting = hotspotStudioScreenshots.slice(1);
+
+  return (
+    <main className="product-detail-page hotspot-studio-detail-page">
+      <section className="section-shell product-detail-hero" aria-labelledby="hotspot-studio-product-title">
+        <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
+          <div className="product-detail-copy">
+            <p className="eyebrow">AI GUY LABS PRODUCT</p>
+            <img src={product.logo} alt="Hotspot Studio product icon." className="product-detail-logo" />
+            <h1 id="hotspot-studio-product-title">Hotspot Studio</h1>
+            <p className="product-detail-subheading">Turn any image into an interactive experience</p>
+            <p>Hotspot Studio lets teams build interactive image maps, define clickable areas, preview experiences, and export clean project data for production use.</p>
+            <div className="product-detail-actions">
+              <a className="button button-primary" href="/contact">Start a Hotspot Studio Project <Icon /></a>
+              <a className="button button-secondary" href="/products">Back to Products</a>
+            </div>
+          </div>
+          <button className="product-screenshot-button product-screenshot-button--featured" type="button" onClick={() => setActiveImage(featured)}>
+            <img src={featured.src} alt={featured.alt} />
+          </button>
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-story" aria-labelledby="hotspot-studio-story-title">
+        <div className="container product-detail-story-inner">
+          <div>
+            <p className="eyebrow">Interactive Media</p>
+            <h2 id="hotspot-studio-story-title">Built for visual experiences that need structure.</h2>
+          </div>
+          <p>Hotspot Studio turns image-based ideas into practical interactive systems by combining visual editing, preview, and reusable structured output.</p>
+        </div>
+      </section>
+
+      <section className="section-shell product-screenshot-section" aria-label="Hotspot Studio product screenshots">
+        <div className="container product-screenshot-list">
+          {supporting.map((screenshot, index) => (
+            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
+              <div className="product-screenshot-copy">
+                <p className="eyebrow">{String(index + 2).padStart(2, '0')}</p>
+                <h2>{screenshot.title}</h2>
+                <p>{screenshot.description}</p>
+              </div>
+              <button className="product-screenshot-button" type="button" onClick={() => setActiveImage(screenshot)}>
+                <img src={screenshot.src} alt={screenshot.alt} />
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-closing" aria-labelledby="hotspot-studio-closing-title">
+        <div className="container product-detail-closing-inner">
+          <h2 id="hotspot-studio-closing-title">Need visuals people can interact with?</h2>
+          <p>Use Hotspot Studio as the model for turning product images, diagrams, maps, and experiences into interactive web content.</p>
+          <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+        </div>
+      </section>
+
+      {activeImage ? (
+        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.title} onClick={() => setActiveImage(null)}>
+          <button className="product-lightbox-close" type="button" onClick={() => setActiveImage(null)}>Close</button>
+          <img src={activeImage.src} alt={activeImage.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+    </main>
+  );
+}
+function PulsarProductPage({ product }) {
+  const [activeImage, setActiveImage] = useState(null);
+  const featured = pulsarScreenshots[0];
+  const supporting = pulsarScreenshots.slice(1);
+
+  return (
+    <main className="product-detail-page pulsar-detail-page">
+      <section className="section-shell product-detail-hero" aria-labelledby="pulsar-product-title">
+        <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
+          <div className="product-detail-copy">
+            <p className="eyebrow">AI GUY LABS PRODUCT</p>
+            <img src={product.logo} alt="Pulsar product icon." className="product-detail-logo" />
+            <h1 id="pulsar-product-title">Pulsar</h1>
+            <p className="product-detail-subheading">Live audience engagement platform</p>
+            <p>Pulsar helps brands, creators, and hosts turn live audiences into active participants with real-time prompts, reactions, games, and synchronized engagement flows.</p>
+            <div className="product-detail-actions">
+              <a className="button button-primary" href="/contact">Start a Pulsar Project <Icon /></a>
+              <a className="button button-secondary" href="/products">Back to Products</a>
+            </div>
+          </div>
+          <button className="product-screenshot-button product-screenshot-button--featured" type="button" onClick={() => setActiveImage(featured)}>
+            <img src={featured.src} alt={featured.alt} />
+          </button>
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-story" aria-labelledby="pulsar-story-title">
+        <div className="container product-detail-story-inner">
+          <div>
+            <p className="eyebrow">Live Engagement</p>
+            <h2 id="pulsar-story-title">Built for audiences that need to participate, not just watch.</h2>
+          </div>
+          <p>Pulsar gives live teams a structured way to launch audience moments, keep sessions synchronized, and make engagement feel intentional from host control to viewer response.</p>
+        </div>
+      </section>
+
+      <section className="section-shell product-screenshot-section" aria-label="Pulsar product screenshots">
+        <div className="container product-screenshot-list">
+          {supporting.map((screenshot, index) => (
+            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
+              <div className="product-screenshot-copy">
+                <p className="eyebrow">{String(index + 2).padStart(2, '0')}</p>
+                <h2>{screenshot.title}</h2>
+                <p>{screenshot.description}</p>
+              </div>
+              <button className="product-screenshot-button" type="button" onClick={() => setActiveImage(screenshot)}>
+                <img src={screenshot.src} alt={screenshot.alt} />
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-closing" aria-labelledby="pulsar-closing-title">
+        <div className="container product-detail-closing-inner">
+          <h2 id="pulsar-closing-title">Need a live audience to respond in real time?</h2>
+          <p>Use Pulsar as the foundation for interactive events, brand activations, live shows, classrooms, and synchronized audience experiences.</p>
+          <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+        </div>
+      </section>
+
+      {activeImage ? (
+        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.title} onClick={() => setActiveImage(null)}>
+          <button className="product-lightbox-close" type="button" onClick={() => setActiveImage(null)}>Close</button>
+          <img src={activeImage.src} alt={activeImage.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+    </main>
+  );
+}
+function ProductPlaceholder({ product }) {
+  if (product?.slug === 'movescan') return <MoveScanProductPage product={product} />;
+  if (product?.slug === 'batchflow') return <BatchFlowProductPage product={product} />;
+  if (product?.slug === 'sizzle') return <SizzleProductPage product={product} />;
+  if (product?.slug === 'swiftsale') return <SwiftSaleProductPage product={product} />;
+  if (product?.slug === 'hotspot-studio') return <HotspotStudioProductPage product={product} />;
+  if (product?.slug === 'pulsar') return <PulsarProductPage product={product} />;
+
+  if (!product) {
+    return (
+      <main className="product-placeholder-page">
+        <section className="section-shell product-placeholder-hero" aria-labelledby="product-not-found-title">
+          <div className="container product-placeholder-inner">
+            <p className="eyebrow">AI GUY LABS PRODUCT</p>
+            <h1 id="product-not-found-title">Product not found.</h1>
+            <p>The product page you requested is not available.</p>
+            <a className="button button-primary" href="/products">Back to Products <Icon /></a>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  return (
+    <main className="product-placeholder-page">
+      <section className="section-shell product-placeholder-hero" aria-labelledby="product-placeholder-title">
+        <div className="container product-placeholder-inner" style={{ '--accent': product.accent }}>
+          <div className="product-placeholder-copy">
+            <p className="eyebrow">AI GUY LABS PRODUCT</p>
+            <h1 id="product-placeholder-title">{product.name}</h1>
+            <p className="product-placeholder-subheading">{product.tagline}</p>
+            <ProductStatusBadge product={product} className="product-placeholder-status" />
+            {product.slug === 'saasquatch' ? (
+              <div className="product-development-message">
+                <h2>Currently in Development</h2>
+                <p>SaaSquatch is the newest AI Guy Labs product. We're actively designing and building the platform. More information, previews, and early access details will be available as development progresses.</p>
+              </div>
+            ) : (
+              <p className="product-placeholder-message">The full {product.name} product page is coming soon.</p>
+            )}
+            <a className="button button-primary" href="/products">Back to Products <Icon /></a>
+          </div>
+          <div className="product-placeholder-icon" aria-hidden="true">
+            <img src={product.logo} alt="" />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+function App() {
+  const path = window.location.pathname.replace(/\/$/, '') || '/';
+  const isHomePage = path === '/';
+  const isProductsPage = path === '/products';
+  const productSlug = path.startsWith('/products/') ? path.slice('/products/'.length) : '';
+  const productDetail = productSlug ? products.find((product) => product.slug === productSlug) : null;
+  const isProductDetailPage = Boolean(productSlug);
+  const isServicesPage = path === '/services';
+  const isAboutPage = path === '/about';
+  const isContactPage = path === '/contact';
+
+  return (
+    <>
+      {isHomePage ? <HotspotBootstrap /> : null}
+      <Header homeOverlay={isHomePage} />
+      {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : <HomePage />}
+      <Footer />
+      <div id="ai-guy-labs-modal" className="aigl-modal" hidden>
+        <div className="aigl-modal__backdrop" data-modal-close="true" />
+        <div className="aigl-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="aigl-modal-title">
+          <h2 id="aigl-modal-title">AI Guy Labs</h2>
+          <p id="aigl-modal-body" />
+          <button type="button" data-modal-close="true">Close</button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
+
+
+
+
