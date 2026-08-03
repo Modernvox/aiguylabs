@@ -2880,3 +2880,54 @@ p {
   display: block;
 }
 
+
+/* MoveScan top product showcase */
+.movescan-showcase-hero {
+  padding-top: clamp(94px, 10vw, 136px);
+  padding-bottom: clamp(26px, 5vw, 58px);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(45, 125, 255, 0.18), transparent 36%),
+    #000;
+}
+
+.movescan-showcase-inner {
+  display: grid;
+  place-items: center;
+}
+
+.movescan-featured-shot {
+  max-width: 1320px;
+  margin-inline: auto;
+}
+
+.product-detail-hero--after-showcase {
+  padding-top: clamp(34px, 5vw, 70px);
+}
+
+.product-detail-hero-inner--copy-only {
+  display: block;
+  max-width: 820px;
+}
+
+.product-detail-hero-inner--copy-only .product-detail-copy {
+  max-width: 720px;
+}
+
+@media (max-width: 767px) {
+  .movescan-showcase-hero {
+    padding-top: 92px;
+    padding-bottom: 28px;
+  }
+
+  .movescan-featured-shot {
+    max-width: min(100%, 430px);
+  }
+
+  .movescan-featured-shot img {
+    max-height: none;
+  }
+
+  .product-detail-hero--after-showcase {
+    padding-top: 26px;
+  }
+}

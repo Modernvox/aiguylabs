@@ -1357,8 +1357,20 @@ function MoveScanProductPage({ product }) {
 
   return (
     <main className="product-detail-page movescan-detail-page">
-      <section className="section-shell product-detail-hero" aria-labelledby="movescan-product-title">
-        <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
+      <section className="section-shell movescan-showcase-hero" aria-label="MoveScan product preview">
+        <div className="container movescan-showcase-inner">
+          <button className="product-screenshot-button product-screenshot-button--featured movescan-featured-shot" type="button" onClick={() => setActiveImage(getResponsiveMoveScanImage(featured))}>
+            <picture>
+              <source media="(max-width: 767px)" srcSet={featured.mobileSrc} />
+              <source media="(min-width: 768px)" srcSet={featured.desktopSrc} />
+              <img src={featured.desktopSrc} alt={featured.alt} sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1440px) calc(100vw - 72px), 1320px" fetchPriority="high" />
+            </picture>
+          </button>
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="movescan-product-title">
+        <div className="container product-detail-hero-inner product-detail-hero-inner--copy-only" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
             <p className="eyebrow">AI GUY LABS PRODUCT</p>
             <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
@@ -1370,13 +1382,6 @@ function MoveScanProductPage({ product }) {
               <a className="button button-secondary" href="/products">Back to Products</a>
             </div>
           </div>
-          <button className="product-screenshot-button product-screenshot-button--featured movescan-featured-shot" type="button" onClick={() => setActiveImage(getResponsiveMoveScanImage(featured))}>
-            <picture>
-              <source media="(max-width: 767px)" srcSet={featured.mobileSrc} />
-              <source media="(min-width: 768px)" srcSet={featured.desktopSrc} />
-              <img src={featured.desktopSrc} alt={featured.alt} sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1399px) 54vw, 760px" fetchPriority="high" />
-            </picture>
-          </button>
         </div>
       </section>
 
@@ -1395,7 +1400,7 @@ function MoveScanProductPage({ product }) {
           {supporting.map((screenshot, index) => (
             <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
               <div className="product-screenshot-copy">
-                <p className="eyebrow">{String(index + 2).padStart(2, '0')}</p>
+                <p className="eyebrow">{String(index + 1).padStart(2, '0')}</p>
                 <h2>{screenshot.title}</h2>
                 <p>{screenshot.description}</p>
               </div>
