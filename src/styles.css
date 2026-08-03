@@ -2598,3 +2598,285 @@ p {
     padding: 10px 12px;
   }
 }
+
+/* Lead capture and admin dashboard */
+.button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+  transform: none;
+}
+
+.field-error {
+  color: #ffb4b4;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.form-error {
+  margin: 0;
+  border: 1px solid rgba(255, 120, 120, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 80, 80, 0.08);
+  color: #ffd4d4;
+  padding: 12px 14px;
+  font-weight: 750;
+}
+
+.form-success {
+  align-self: start;
+  border-top: 1px solid rgba(135, 176, 255, 0.18);
+  border-bottom: 1px solid rgba(135, 176, 255, 0.1);
+  background: linear-gradient(90deg, rgba(84, 164, 255, 0.1), rgba(255, 255, 255, 0.02));
+  padding: 22px 0 24px;
+}
+
+.form-success h2 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: clamp(1.7rem, 2.4vw, 2.5rem);
+  line-height: 1.05;
+}
+
+.form-success p {
+  margin: 0;
+  color: #cdd8e8;
+}
+
+.contact-form input[aria-invalid="true"],
+.contact-form textarea[aria-invalid="true"] {
+  border-color: rgba(255, 150, 150, 0.52);
+}
+
+.admin-page {
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+}
+
+.admin-hero {
+  padding-top: clamp(126px, 12vw, 170px);
+  padding-bottom: clamp(60px, 8vw, 100px);
+  background: radial-gradient(circle at 82% 18%, rgba(45, 125, 255, 0.16), transparent 28%), #000;
+}
+
+.admin-lockup {
+  max-width: 760px;
+}
+
+.admin-lockup h1,
+.admin-heading h1 {
+  max-width: 880px;
+  margin-bottom: 18px;
+  font-size: clamp(3.2rem, 7vw, 6.5rem);
+}
+
+.admin-lockup p,
+.admin-heading p {
+  max-width: 640px;
+  color: #cdd8e8;
+}
+
+.admin-auth-form {
+  display: grid;
+  gap: 16px;
+  max-width: 460px;
+  margin-top: 30px;
+}
+
+.admin-auth-form label,
+.admin-field {
+  display: grid;
+  gap: 8px;
+  color: #fff;
+  font-weight: 800;
+}
+
+.admin-auth-form input,
+.admin-field select,
+.admin-field textarea {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid rgba(160, 176, 205, 0.24);
+  border-radius: 8px;
+  background: #05070c;
+  color: #fff;
+  padding: 0 14px;
+  font: inherit;
+}
+
+.admin-auth-form input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus {
+  outline: none;
+  border-color: rgba(82, 183, 255, 0.78);
+  box-shadow: 0 0 0 3px rgba(82, 183, 255, 0.12);
+}
+
+.admin-field textarea {
+  min-height: 150px;
+  padding-top: 12px;
+  resize: vertical;
+}
+
+.admin-layout {
+  display: grid;
+  gap: 34px;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.admin-message {
+  margin: 16px 0 0;
+  color: #9bdcff;
+  font-weight: 800;
+}
+
+.leads-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.leads-table-wrap,
+.lead-detail-panel {
+  border-top: 1px solid rgba(135, 176, 255, 0.18);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
+}
+
+.leads-table-wrap {
+  overflow: auto;
+}
+
+.leads-table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+}
+
+.leads-table th {
+  color: #8ed7ff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-align: left;
+  text-transform: uppercase;
+  padding: 14px 12px;
+}
+
+.leads-table td {
+  border-top: 1px solid rgba(135, 176, 255, 0.12);
+  color: #dce7f6;
+  padding: 14px 12px;
+  vertical-align: top;
+}
+
+.leads-table tbody tr {
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.leads-table tbody tr:hover,
+.leads-table tbody tr.is-selected {
+  background: rgba(84, 164, 255, 0.08);
+}
+
+.lead-status-pill {
+  display: inline-flex;
+  border: 1px solid rgba(142, 215, 255, 0.28);
+  border-radius: 999px;
+  color: #a9dfff;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.lead-detail-panel {
+  padding: 22px 0 0;
+}
+
+.lead-detail-heading h2 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 3vw, 3.25rem);
+}
+
+.lead-detail-heading p {
+  margin: 0;
+  color: #cdd8e8;
+}
+
+.lead-detail-list {
+  display: grid;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.lead-detail-list div {
+  border-top: 1px solid rgba(135, 176, 255, 0.12);
+  padding-top: 12px;
+}
+
+.lead-detail-list dt {
+  color: #8ed7ff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.lead-detail-list dd {
+  margin: 4px 0 0;
+  color: #f7fbff;
+}
+
+.lead-message-block {
+  border-top: 1px solid rgba(135, 176, 255, 0.12);
+  padding-top: 18px;
+  margin-bottom: 18px;
+}
+
+.lead-message-block h3 {
+  font-size: 1.05rem;
+  letter-spacing: 0;
+}
+
+.lead-message-block p {
+  white-space: pre-wrap;
+  color: #cdd8e8;
+}
+
+@media (max-width: 980px) {
+  .leads-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .leads-table-wrap {
+    margin-inline: -14px;
+  }
+
+  .lead-detail-panel {
+    padding-top: 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-actions .button {
+    width: 100%;
+  }
+
+  .admin-lockup h1,
+  .admin-heading h1 {
+    font-size: clamp(2.65rem, 15vw, 4.5rem);
+  }
+}
+
+.product-screenshot-button picture {
+  display: block;
+}
+

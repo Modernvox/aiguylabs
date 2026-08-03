@@ -256,6 +256,15 @@ const products = [
 
 const movescanScreenshots = [
   {
+    title: 'MoveScan homepage',
+    description: 'The dedicated MoveScan homepage experience presents the product in the format that fits the visitor\'s device.',
+    src: '/images/products/movescan/movescan-desktop.png',
+    desktopSrc: '/images/products/movescan/movescan-desktop.png',
+    mobileSrc: '/images/products/movescan/movescan-homepage.png',
+    alt: 'MoveScan desktop homepage marketing mockup.',
+    mobileAlt: 'MoveScan mobile homepage marketing mockup showing the full phone screen.',
+  },
+  {
     title: 'Guided customer walkthrough',
     description: 'MoveScan guides customers room by room so moving companies receive structured footage instead of scattered messages.',
     src: '/images/products/movescan/movescan-walkthrough.png',
@@ -1155,6 +1164,54 @@ function AboutPage() {
   );
 }
 function ContactPage() {
+  const [submitState, setSubmitState] = useState({ status: 'idle', errors: {}, message: '' });
+
+  function validateContactForm(values) {
+    const errors = {};
+    if (!values.name.trim()) errors.name = 'Name is required.';
+    if (!values.email.trim()) errors.email = 'Email is required.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) errors.email = 'Enter a valid email address.';
+    if (!values.project_type.trim()) errors.project_type = 'Tell us what you want to build.';
+    if (!values.message.trim()) errors.message = 'Message is required.';
+    return errors;
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const payload = {
+      name: String(formData.get('name') || ''),
+      email: String(formData.get('email') || ''),
+      company: String(formData.get('company') || ''),
+      project_type: String(formData.get('project_type') || ''),
+      budget_range: String(formData.get('budget_range') || ''),
+      message: String(formData.get('message') || ''),
+    };
+    const errors = validateContactForm(payload);
+    if (Object.keys(errors).length) {
+      setSubmitState({ status: 'error', errors, message: 'Please complete the required fields.' });
+      return;
+    }
+
+    setSubmitState({ status: 'submitting', errors: {}, message: '' });
+    try {
+      const response = await fetch('/api/contact-requests', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to save your request.');
+      form.reset();
+      setSubmitState({ status: 'success', errors: {}, message: '' });
+    } catch (error) {
+      setSubmitState({ status: 'error', errors: {}, message: error.message || 'Unable to save your request.' });
+    }
+  }
+
+  const isSubmitting = submitState.status === 'submitting';
+
   return (
     <main className="contact-page">
       <section className="section-shell contact-hero" aria-labelledby="contact-title">
@@ -1172,45 +1229,61 @@ function ContactPage() {
               <p>A focused conversation about the problem, the users, the workflow, and what a successful launch needs to accomplish.</p>
             </div>
           </div>
-          <form className="contact-form" onSubmit={(event) => event.preventDefault()}>
-            <p className="contact-form-note">Custom software. AI automation. Product development.</p>
-            <label>
-              <span>Name</span>
-              <input name="name" type="text" autoComplete="name" />
-            </label>
-            <label>
-              <span>Email</span>
-              <input name="email" type="email" autoComplete="email" />
-            </label>
-            <label>
-              <span>Company</span>
-              <input name="company" type="text" autoComplete="organization" />
-            </label>
-            <label>
-              <span>What do you want to build?</span>
-              <input name="project" type="text" />
-            </label>
-            <label>
-              <span>Estimated project budget</span>
-              <select name="budget" defaultValue="">
-                <option value="" disabled>Select a range</option>
-                <option>$5k - $15k</option>
-                <option>$15k - $50k</option>
-                <option>$50k+</option>
-                <option>Not sure yet</option>
-              </select>
-            </label>
-            <label>
-              <span>Message</span>
-              <textarea name="message" rows="5" />
-            </label>
-            <button className="button button-primary contact-submit" type="submit">Start the Conversation <Icon /></button>
-          </form>
+          {submitState.status === 'success' ? (
+            <div className="contact-form form-success" role="status" aria-live="polite">
+              <p className="contact-form-note">Custom software. AI automation. Product development.</p>
+              <h2>Thanks for reaching out.</h2>
+              <p>We've received your project request and will review it shortly.</p>
+            </div>
+          ) : (
+            <form className="contact-form" onSubmit={handleSubmit} noValidate>
+              <p className="contact-form-note">Custom software. AI automation. Product development.</p>
+              {submitState.message ? <p className="form-error">{submitState.message}</p> : null}
+              <label>
+                <span>Name</span>
+                <input name="name" type="text" autoComplete="name" aria-invalid={Boolean(submitState.errors.name)} />
+                {submitState.errors.name ? <span className="field-error">{submitState.errors.name}</span> : null}
+              </label>
+              <label>
+                <span>Email</span>
+                <input name="email" type="email" autoComplete="email" aria-invalid={Boolean(submitState.errors.email)} />
+                {submitState.errors.email ? <span className="field-error">{submitState.errors.email}</span> : null}
+              </label>
+              <label>
+                <span>Company</span>
+                <input name="company" type="text" autoComplete="organization" />
+              </label>
+              <label>
+                <span>What do you want to build?</span>
+                <input name="project_type" type="text" aria-invalid={Boolean(submitState.errors.project_type)} />
+                {submitState.errors.project_type ? <span className="field-error">{submitState.errors.project_type}</span> : null}
+              </label>
+              <label>
+                <span>Estimated project budget</span>
+                <select name="budget_range" defaultValue="">
+                  <option value="" disabled>Select a range</option>
+                  <option>$5k - $15k</option>
+                  <option>$15k - $50k</option>
+                  <option>$50k+</option>
+                  <option>Not sure yet</option>
+                </select>
+              </label>
+              <label>
+                <span>Message</span>
+                <textarea name="message" rows="5" aria-invalid={Boolean(submitState.errors.message)} />
+                {submitState.errors.message ? <span className="field-error">{submitState.errors.message}</span> : null}
+              </label>
+              <button className="button button-primary contact-submit" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving Request...' : 'Start the Conversation'} <Icon />
+              </button>
+            </form>
+          )}
         </div>
       </section>
     </main>
   );
 }
+
 function HotspotBootstrap() {
   useEffect(() => {
     const editMode = new URLSearchParams(window.location.search).get('hotspots') === 'edit';
@@ -1272,6 +1345,16 @@ function MoveScanProductPage({ product }) {
   const featured = movescanScreenshots[0];
   const supporting = movescanScreenshots.slice(1);
 
+  function getResponsiveMoveScanImage(screenshot) {
+    if (!screenshot.mobileSrc || typeof window === 'undefined') return screenshot;
+    const useMobile = window.matchMedia('(max-width: 767px)').matches;
+    return {
+      ...screenshot,
+      src: useMobile ? screenshot.mobileSrc : screenshot.desktopSrc,
+      alt: useMobile ? screenshot.mobileAlt : screenshot.alt,
+    };
+  }
+
   return (
     <main className="product-detail-page movescan-detail-page">
       <section className="section-shell product-detail-hero" aria-labelledby="movescan-product-title">
@@ -1287,8 +1370,12 @@ function MoveScanProductPage({ product }) {
               <a className="button button-secondary" href="/products">Back to Products</a>
             </div>
           </div>
-          <button className="product-screenshot-button product-screenshot-button--featured" type="button" onClick={() => setActiveImage(featured)}>
-            <img src={featured.src} alt={featured.alt} />
+          <button className="product-screenshot-button product-screenshot-button--featured movescan-featured-shot" type="button" onClick={() => setActiveImage(getResponsiveMoveScanImage(featured))}>
+            <picture>
+              <source media="(max-width: 767px)" srcSet={featured.mobileSrc} />
+              <source media="(min-width: 768px)" srcSet={featured.desktopSrc} />
+              <img src={featured.desktopSrc} alt={featured.alt} sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1399px) 54vw, 760px" fetchPriority="high" />
+            </picture>
           </button>
         </div>
       </section>
@@ -1746,6 +1833,187 @@ function ProductPlaceholder({ product }) {
     </main>
   );
 }
+const leadStatuses = ['New', 'Contacted', 'Discovery Scheduled', 'Proposal Sent', 'Won', 'Lost', 'Closed'];
+
+function formatLeadDate(value) {
+  if (!value) return '?';
+  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(value));
+}
+
+function AdminLeadsPage() {
+  const [token, setToken] = useState(() => window.sessionStorage.getItem('aigl_admin_token') || '');
+  const [draftToken, setDraftToken] = useState(token);
+  const [leads, setLeads] = useState([]);
+  const [selectedId, setSelectedId] = useState('');
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [notesDraft, setNotesDraft] = useState('');
+  const [statusDraft, setStatusDraft] = useState('New');
+  const [adminState, setAdminState] = useState({ status: token ? 'loading' : 'locked', message: '' });
+
+  async function adminFetch(url, options = {}) {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'content-type': 'application/json',
+        authorization: 'Bearer ' + token,
+        ...(options.headers || {}),
+      },
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.ok === false) throw new Error(data.error || 'Request failed.');
+    return data;
+  }
+
+  async function loadLeads() {
+    if (!token) return;
+    setAdminState({ status: 'loading', message: '' });
+    try {
+      const data = await adminFetch('/api/admin/leads');
+      setLeads(data.leads || []);
+      const nextSelected = selectedId || data.leads?.[0]?.id || '';
+      setSelectedId(nextSelected);
+      setAdminState({ status: 'ready', message: '' });
+    } catch (error) {
+      setAdminState({ status: 'error', message: error.message || 'Unable to load leads.' });
+    }
+  }
+
+  async function loadLead(id) {
+    if (!id || !token) return;
+    try {
+      const data = await adminFetch('/api/admin/leads/' + encodeURIComponent(id));
+      setSelectedLead(data.lead);
+      setStatusDraft(data.lead.status);
+      setNotesDraft(data.lead.notes || '');
+    } catch (error) {
+      setAdminState({ status: 'error', message: error.message || 'Unable to load lead.' });
+    }
+  }
+
+  useEffect(() => { loadLeads(); }, [token]);
+  useEffect(() => { loadLead(selectedId); }, [selectedId, token]);
+
+  function unlock(event) {
+    event.preventDefault();
+    const next = draftToken.trim();
+    if (!next) return;
+    window.sessionStorage.setItem('aigl_admin_token', next);
+    setToken(next);
+  }
+
+  async function saveLead() {
+    if (!selectedLead) return;
+    setAdminState({ status: 'saving', message: '' });
+    try {
+      const data = await adminFetch('/api/admin/leads/' + encodeURIComponent(selectedLead.id), {
+        method: 'PATCH',
+        body: JSON.stringify({ status: statusDraft, notes: notesDraft }),
+      });
+      setSelectedLead(data.lead);
+      setLeads((current) => current.map((lead) => lead.id === data.lead.id ? data.lead : lead));
+      setAdminState({ status: 'ready', message: 'Lead updated.' });
+    } catch (error) {
+      setAdminState({ status: 'error', message: error.message || 'Unable to update lead.' });
+    }
+  }
+
+  if (!token) {
+    return (
+      <main className="admin-page">
+        <section className="section-shell admin-hero" aria-labelledby="admin-title">
+          <div className="container admin-lockup">
+            <p className="eyebrow">Private</p>
+            <h1 id="admin-title">AI Guy Labs Leads</h1>
+            <p>Enter the admin access key to manage project inquiries.</p>
+            <form className="admin-auth-form" onSubmit={unlock}>
+              <label>
+                <span>Admin access key</span>
+                <input type="password" value={draftToken} onChange={(event) => setDraftToken(event.target.value)} autoComplete="current-password" />
+              </label>
+              <button className="button button-primary" type="submit">Open Leads <Icon /></button>
+            </form>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  return (
+    <main className="admin-page">
+      <section className="section-shell admin-hero" aria-labelledby="admin-leads-title">
+        <div className="container admin-layout">
+          <div className="admin-heading">
+            <p className="eyebrow">Private Dashboard</p>
+            <h1 id="admin-leads-title">Lead Capture</h1>
+            <p>Database-backed project inquiries submitted through the AI Guy Labs contact form.</p>
+            <div className="admin-actions">
+              <button className="button button-secondary button-small" type="button" onClick={loadLeads}>Refresh</button>
+              <button className="button button-secondary button-small" type="button" onClick={() => { window.sessionStorage.removeItem('aigl_admin_token'); setToken(''); setLeads([]); setSelectedLead(null); }}>Lock</button>
+            </div>
+            {adminState.message ? <p className={adminState.status === 'error' ? 'form-error' : 'admin-message'}>{adminState.message}</p> : null}
+          </div>
+
+          <div className="leads-grid">
+            <div className="leads-table-wrap">
+              <table className="leads-table">
+                <thead>
+                  <tr><th>Date</th><th>Name</th><th>Company</th><th>Email</th><th>Budget</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  {leads.map((lead) => (
+                    <tr className={lead.id === selectedId ? 'is-selected' : ''} key={lead.id} onClick={() => setSelectedId(lead.id)}>
+                      <td>{formatLeadDate(lead.createdAt)}</td>
+                      <td>{lead.name}</td>
+                      <td>{lead.company || '?'}</td>
+                      <td>{lead.email}</td>
+                      <td>{lead.budgetRange || '?'}</td>
+                      <td><span className="lead-status-pill">{lead.status}</span></td>
+                    </tr>
+                  ))}
+                  {!leads.length ? <tr><td colSpan="6">{adminState.status === 'loading' ? 'Loading leads...' : 'No leads captured yet.'}</td></tr> : null}
+                </tbody>
+              </table>
+            </div>
+
+            <aside className="lead-detail-panel">
+              {selectedLead ? (
+                <>
+                  <div className="lead-detail-heading">
+                    <p className="eyebrow">Lead Detail</p>
+                    <h2>{selectedLead.name}</h2>
+                    <p>{selectedLead.company || 'Independent project'} / {selectedLead.email}</p>
+                  </div>
+                  <dl className="lead-detail-list">
+                    <div><dt>Submission time</dt><dd>{formatLeadDate(selectedLead.createdAt)}</dd></div>
+                    <div><dt>Project</dt><dd>{selectedLead.projectType}</dd></div>
+                    <div><dt>Budget</dt><dd>{selectedLead.budgetRange || 'Not provided'}</dd></div>
+                    <div><dt>Contact</dt><dd><a href={'mailto:' + selectedLead.email}>{selectedLead.email}</a></dd></div>
+                  </dl>
+                  <div className="lead-message-block">
+                    <h3>Full project description</h3>
+                    <p>{selectedLead.message}</p>
+                  </div>
+                  <label className="admin-field">
+                    <span>Status</span>
+                    <select value={statusDraft} onChange={(event) => setStatusDraft(event.target.value)}>
+                      {leadStatuses.map((status) => <option key={status}>{status}</option>)}
+                    </select>
+                  </label>
+                  <label className="admin-field">
+                    <span>Internal notes</span>
+                    <textarea value={notesDraft} onChange={(event) => setNotesDraft(event.target.value)} rows="7" />
+                  </label>
+                  <button className="button button-primary" type="button" onClick={saveLead} disabled={adminState.status === 'saving'}>{adminState.status === 'saving' ? 'Saving...' : 'Save Lead'} <Icon /></button>
+                </>
+              ) : <p>Select a lead to review details.</p>}
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 function LegalPage({ type }) {
   const isPrivacy = type === 'privacy';
   return (
@@ -1776,12 +2044,13 @@ function App() {
   const isContactPage = path === '/contact';
   const isPrivacyPage = path === '/privacy';
   const isTermsPage = path === '/terms';
+  const isAdminLeadsPage = path === '/admin/leads';
 
   return (
     <>
       {isHomePage ? <HotspotBootstrap /> : null}
       <Header homeOverlay={isHomePage} />
-      {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
+      {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
       <Footer />
       <div id="ai-guy-labs-modal" className="aigl-modal" hidden>
         <div className="aigl-modal__backdrop" data-modal-close="true" />
@@ -1796,6 +2065,7 @@ function App() {
 }
 
 createRoot(document.getElementById('root')).render(<App />);
+
 
 
 
