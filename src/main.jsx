@@ -136,6 +136,7 @@ const products = [
     demoUrl: '/contact',
     documentationUrl: '/contact',
     features: ['AI-assisted inventory capture', 'Estimate-ready workflows', 'Field-friendly product experience'],
+    developmentValue: '$185,000',
   },
   {
     name: 'Hotspot Studio',
@@ -154,6 +155,7 @@ const products = [
     demoUrl: '/contact',
     documentationUrl: '/contact',
     features: ['Visual hotspot editing', 'Import and export workflows', 'Embeddable runtime integration'],
+    developmentValue: '$75,000',
   },
   {
     name: 'BatchFlow',
@@ -172,6 +174,7 @@ const products = [
     demoUrl: '/contact',
     documentationUrl: '/contact',
     features: ['Batch process tracking', 'Production visibility', 'Workflow automation'],
+    developmentValue: '$115,000',
   },
   {
     name: 'SwiftSale',
@@ -190,6 +193,7 @@ const products = [
     demoUrl: '/contact',
     documentationUrl: '/contact',
     features: ['Real-time bin assignment', 'Order organization', 'Fulfillment workflow automation'],
+    developmentValue: '$225,000',
   },
   {
     name: 'Sizzle',
@@ -208,6 +212,7 @@ const products = [
     demoUrl: '/contact',
     documentationUrl: '/contact',
     features: ['Synchronized live sessions', 'Participant interaction', 'Host-led experience flow'],
+    developmentValue: '$150,000',
   },
   {
     name: 'Pulsar',
@@ -226,6 +231,7 @@ const products = [
     demoUrl: '/contact',
     documentationUrl: '/contact',
     features: ['Real-time audience participation', 'Polls, games, and reactions', 'Host and viewer synchronization'],
+    developmentValue: '$165,000',
   },
   {
     name: 'SaaSquatch',
@@ -244,6 +250,7 @@ const products = [
     demoUrl: '/contact',
     documentationUrl: '/contact',
     features: ['Curated SaaS discovery', 'Evaluation-first marketplace', 'Purchase-ready software catalog'],
+    developmentValue: '$55,000',
   },
 ];
 
@@ -543,6 +550,26 @@ function Header({ homeOverlay = false } = {}) {
   );
 }
 
+function ProductValuation({ product, compact = false }) {
+  if (!product?.developmentValue) return null;
+
+  if (compact) {
+    return (
+      <div className="product-valuation product-valuation--compact">
+        <span>Development Value:</span>
+        <strong>{product.developmentValue}</strong>
+      </div>
+    );
+  }
+
+  return (
+    <div className="product-valuation">
+      <p className="product-valuation-label">Estimated Development Value</p>
+      <p className="product-valuation-value">{product.developmentValue}</p>
+      <p className="product-valuation-note">Estimated cost to recreate the current software, source code, product design, architecture, and implemented functionality.</p>
+    </div>
+  );
+}
 function ProductStatusBadge({ product, className = '' }) {
   if (product?.status !== 'IN DEVELOPMENT') return null;
 
@@ -743,8 +770,8 @@ function Footer() {
       <div className="container footer-bottom">
         <p>&copy; 2026 AI Guy Labs. All rights reserved.</p>
         <div>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
         </div>
       </div>
     </footer>
@@ -1020,6 +1047,7 @@ function ProductEditorialPanel({ product, index }) {
         <h2>{product.name}</h2>
         <p className="product-statement">{product.tagline}</p>
         <p>{product.longDescription}</p>
+        <ProductValuation product={product} compact />
         <a className="editorial-link" href={product.website}>Explore Product <Icon /></a>
       </div>
       <div className="product-editorial-icon" aria-hidden="true">
@@ -1296,6 +1324,7 @@ function MoveScanProductPage({ product }) {
         <div className="container product-detail-closing-inner">
           <h2 id="movescan-closing-title">Ready to make estimates easier to complete?</h2>
           <p>Use MoveScan as the starting point for a moving workflow that captures better data and helps staff move faster.</p>
+          <ProductValuation product={product} />
           <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
         </div>
       </section>
@@ -1366,6 +1395,7 @@ function BatchFlowProductPage({ product }) {
         <div className="container product-detail-closing-inner">
           <h2 id="batchflow-closing-title">Need production work to move with less friction?</h2>
           <p>Use BatchFlow as the model for workflow software that gives operators clarity and managers better control.</p>
+          <ProductValuation product={product} />
           <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
         </div>
       </section>
@@ -1436,6 +1466,7 @@ function SizzleProductPage({ product }) {
         <div className="container product-detail-closing-inner">
           <h2 id="sizzle-closing-title">Want a live experience people can actually follow?</h2>
           <p>Use Sizzle as the model for interactive media software where timing, participation, and content all work together.</p>
+          <ProductValuation product={product} />
           <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
         </div>
       </section>
@@ -1506,6 +1537,7 @@ function SwiftSaleProductPage({ product }) {
         <div className="container product-detail-closing-inner">
           <h2 id="swiftsale-closing-title">Ready to make live selling easier to run?</h2>
           <p>Use SwiftSale as the model for operational software that keeps sales, customers, and fulfillment in sync.</p>
+          <ProductValuation product={product} />
           <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
         </div>
       </section>
@@ -1576,6 +1608,7 @@ function HotspotStudioProductPage({ product }) {
         <div className="container product-detail-closing-inner">
           <h2 id="hotspot-studio-closing-title">Need visuals people can interact with?</h2>
           <p>Use Hotspot Studio as the model for turning product images, diagrams, maps, and experiences into interactive web content.</p>
+          <ProductValuation product={product} />
           <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
         </div>
       </section>
@@ -1646,6 +1679,7 @@ function PulsarProductPage({ product }) {
         <div className="container product-detail-closing-inner">
           <h2 id="pulsar-closing-title">Need a live audience to respond in real time?</h2>
           <p>Use Pulsar as the foundation for interactive events, brand activations, live shows, classrooms, and synchronized audience experiences.</p>
+          <ProductValuation product={product} />
           <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
         </div>
       </section>
@@ -1692,10 +1726,13 @@ function ProductPlaceholder({ product }) {
             <p className="product-placeholder-subheading">{product.tagline}</p>
             <ProductStatusBadge product={product} className="product-placeholder-status" />
             {product.slug === 'saasquatch' ? (
-              <div className="product-development-message">
-                <h2>Currently in Development</h2>
-                <p>SaaSquatch is the newest AI Guy Labs product. We're actively designing and building the platform. More information, previews, and early access details will be available as development progresses.</p>
-              </div>
+              <>
+                <div className="product-development-message">
+                  <h2>Currently in Development</h2>
+                  <p>SaaSquatch is the newest AI Guy Labs product. We're actively designing and building the platform. More information, previews, and early access details will be available as development progresses.</p>
+                </div>
+                <ProductValuation product={product} />
+              </>
             ) : (
               <p className="product-placeholder-message">The full {product.name} product page is coming soon.</p>
             )}
@@ -1703,6 +1740,24 @@ function ProductPlaceholder({ product }) {
           </div>
           <div className="product-placeholder-icon" aria-hidden="true">
             <img src={product.logo} alt="" />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+function LegalPage({ type }) {
+  const isPrivacy = type === 'privacy';
+  return (
+    <main className="legal-page">
+      <section className="section-shell product-placeholder-hero" aria-labelledby="legal-page-title">
+        <div className="container product-placeholder-inner legal-page-inner">
+          <div className="product-placeholder-copy">
+            <p className="eyebrow">AI GUY LABS</p>
+            <h1 id="legal-page-title">{isPrivacy ? 'Privacy' : 'Terms'}</h1>
+            <p className="product-placeholder-subheading">{isPrivacy ? 'Privacy details are being prepared.' : 'Terms of use are being prepared.'}</p>
+            <p className="product-placeholder-message">This page is part of the AI Guy Labs public site and will be expanded with formal {isPrivacy ? 'privacy' : 'terms'} language before launch.</p>
+            <a className="button button-primary" href="/contact">Contact AI Guy Labs <Icon /></a>
           </div>
         </div>
       </section>
@@ -1719,12 +1774,14 @@ function App() {
   const isServicesPage = path === '/services';
   const isAboutPage = path === '/about';
   const isContactPage = path === '/contact';
+  const isPrivacyPage = path === '/privacy';
+  const isTermsPage = path === '/terms';
 
   return (
     <>
       {isHomePage ? <HotspotBootstrap /> : null}
       <Header homeOverlay={isHomePage} />
-      {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : <HomePage />}
+      {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
       <Footer />
       <div id="ai-guy-labs-modal" className="aigl-modal" hidden>
         <div className="aigl-modal__backdrop" data-modal-close="true" />
