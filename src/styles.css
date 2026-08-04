@@ -3081,3 +3081,46 @@ img {
     padding-bottom: 28px;
   }
 }
+
+/* Shared header logo standardization */
+.site-header .header-inner {
+  grid-template-columns: 170px minmax(0, 1fr) auto;
+}
+
+.site-header .logo {
+  display: inline-flex;
+  width: 164px;
+  max-width: 164px;
+}
+
+.site-header .logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (min-width: 981px) {
+  .site-header .logo {
+    width: 152px;
+    max-width: 152px;
+  }
+}
+
+@media (max-width: 860px) {
+  .site-header .header-inner {
+    display: flex;
+    grid-template-columns: none;
+  }
+
+  .site-header .logo {
+    width: auto;
+    max-width: 220px;
+  }
+
+  .site-header .logo img {
+    width: auto;
+    height: 44px;
+    max-width: 220px;
+  }
+}

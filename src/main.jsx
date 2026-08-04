@@ -516,7 +516,7 @@ function Logo() {
   );
 }
 
-function Header({ homeOverlay = false } = {}) {
+function Header() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -527,7 +527,7 @@ function Header({ homeOverlay = false } = {}) {
   const closeMenu = () => setOpen(false);
 
   return (
-    <header className={homeOverlay ? 'site-header site-header--home-overlay' : 'site-header'}>
+    <header className="site-header">
       <div className="container header-inner">
         <Logo />
         <nav className="desktop-nav" aria-label="Primary navigation">
@@ -2054,7 +2054,7 @@ function App() {
   return (
     <>
       {isHomePage ? <HotspotBootstrap /> : null}
-      <Header homeOverlay={isHomePage} />
+      <Header />
       {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
       <Footer />
       <div id="ai-guy-labs-modal" className="aigl-modal" hidden>
