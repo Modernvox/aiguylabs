@@ -373,10 +373,13 @@ const hotspotStudioScreenshots = [
 
 const pulsarScreenshots = [
   {
-    title: 'Pulsar live engagement dashboard',
-    description: 'Pulsar gives hosts a focused command center for running live audience moments, monitoring activity, and keeping participation moving.',
-    src: '/images/products/pulsar/pulsar-live-dashboard.png',
-    alt: 'Pulsar live audience engagement dashboard interface.',
+    title: 'Pulsar product mockup',
+    description: 'The dedicated Pulsar product preview presents the live engagement platform in the format that fits the visitor\'s device.',
+    src: '/images/products/pulsar/pulsar-desktop.png',
+    desktopSrc: '/images/products/pulsar/pulsar-desktop.png',
+    mobileSrc: '/images/products/pulsar/pulsar-mobile.png',
+    alt: 'Pulsar desktop product marketing mockup.',
+    mobileAlt: 'Pulsar mobile product marketing mockup.',
   },
   {
     title: 'Audience participation flow',
@@ -389,6 +392,12 @@ const pulsarScreenshots = [
     description: 'Hosts can guide the room, control timing, and manage the engagement flow from one clear production-ready interface.',
     src: '/images/products/pulsar/pulsar-host-controls.png',
     alt: 'Pulsar host controls for managing a live audience engagement session.',
+  },
+  {
+    title: 'Pulsar live engagement dashboard',
+    description: 'Pulsar gives hosts a focused command center for running live audience moments, monitoring activity, and keeping participation moving.',
+    src: '/images/products/pulsar/pulsar-live-dashboard.png',
+    alt: 'Pulsar live audience engagement dashboard interface.',
   },
 ];
 const showcaseProducts = products;
@@ -1719,10 +1728,32 @@ function PulsarProductPage({ product }) {
   const featured = pulsarScreenshots[0];
   const supporting = pulsarScreenshots.slice(1);
 
+  function getResponsivePulsarImage(screenshot) {
+    if (!screenshot.mobileSrc || typeof window === 'undefined') return screenshot;
+    const useMobile = window.matchMedia('(max-width: 767px)').matches;
+    return {
+      ...screenshot,
+      src: useMobile ? screenshot.mobileSrc : screenshot.desktopSrc,
+      alt: useMobile ? screenshot.mobileAlt : screenshot.alt,
+    };
+  }
+
   return (
     <main className="product-detail-page pulsar-detail-page">
-      <section className="section-shell product-detail-hero" aria-labelledby="pulsar-product-title">
-        <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
+      <section className="section-shell product-showcase-hero" aria-label="Pulsar product preview">
+        <div className="container product-showcase-inner">
+          <button className="product-screenshot-button product-screenshot-button--featured product-featured-shot" type="button" onClick={() => setActiveImage(getResponsivePulsarImage(featured))}>
+            <picture>
+              <source media="(max-width: 767px)" srcSet={featured.mobileSrc} />
+              <source media="(min-width: 768px)" srcSet={featured.desktopSrc} />
+              <img src={featured.desktopSrc} alt={featured.alt} sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1440px) calc(100vw - 72px), 1320px" fetchPriority="high" />
+            </picture>
+          </button>
+        </div>
+      </section>
+
+      <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="pulsar-product-title">
+        <div className="container product-detail-hero-inner product-detail-hero-inner--copy-only" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
             <p className="eyebrow">AI GUY LABS PRODUCT</p>
             <img src={product.logo} alt="Pulsar product icon." className="product-detail-logo" />
@@ -1734,9 +1765,6 @@ function PulsarProductPage({ product }) {
               <a className="button button-secondary" href="/products">Back to Products</a>
             </div>
           </div>
-          <button className="product-screenshot-button product-screenshot-button--featured" type="button" onClick={() => setActiveImage(featured)}>
-            <img src={featured.src} alt={featured.alt} />
-          </button>
         </div>
       </section>
 
@@ -1755,7 +1783,7 @@ function PulsarProductPage({ product }) {
           {supporting.map((screenshot, index) => (
             <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
               <div className="product-screenshot-copy">
-                <p className="eyebrow">{String(index + 2).padStart(2, '0')}</p>
+                <p className="eyebrow">{String(index + 1).padStart(2, '0')}</p>
                 <h2>{screenshot.title}</h2>
                 <p>{screenshot.description}</p>
               </div>
@@ -2070,8 +2098,4 @@ function App() {
 }
 
 createRoot(document.getElementById('root')).render(<App />);
-
-
-
-
 
