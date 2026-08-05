@@ -69,7 +69,7 @@ input:focus-visible {
 .eyebrow {
   margin: 0 0 16px;
   color: var(--blue-bright);
-  font-size: 0.74rem;
+  font-size: 0.64rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   line-height: 1.4;
@@ -2554,7 +2554,7 @@ p {
   border: 1px solid rgba(135, 176, 255, 0.16);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.025);
-  padding: 8px 12px;
+  padding: 7px 10px;
   color: #aebbd0;
   font-size: 0.82rem;
   font-weight: 800;
@@ -2931,16 +2931,16 @@ p {
 }
 
 .movescan-demo-chrome {
-  position: fixed;
+  position: relative;
   z-index: 10;
-  top: calc(14px + env(safe-area-inset-top));
-  left: calc(14px + env(safe-area-inset-left));
-  right: calc(14px + env(safe-area-inset-right));
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  pointer-events: none;
+  gap: 10px;
+  padding: calc(8px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) 8px calc(10px + env(safe-area-inset-left));
+  background: #000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .movescan-demo-back,
@@ -2956,8 +2956,8 @@ p {
 }
 
 .movescan-demo-back {
-  padding: 10px 14px;
-  font-size: 0.84rem;
+  padding: 8px 11px;
+  font-size: 0.76rem;
   font-weight: 800;
   line-height: 1;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
@@ -2970,9 +2970,9 @@ p {
 }
 
 .movescan-demo-label {
-  padding: 8px 12px;
+  padding: 7px 10px;
   color: #b9d8ff;
-  font-size: 0.74rem;
+  font-size: 0.64rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   line-height: 1;
