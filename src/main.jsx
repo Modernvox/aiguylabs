@@ -1387,6 +1387,7 @@ function MoveScanProductPage({ product }) {
             <p className="product-detail-subheading">AI-powered moving estimates</p>
             <p>MoveScan turns customer video walkthroughs into organized room inventories and estimate-ready workflows for moving companies.</p>
             <div className="product-detail-actions">
+              <a className="button button-primary" href="/products/movescan/demo">Check It Out <Icon /></a>
               <a className="button button-primary" href="/contact">Start a MoveScan Project <Icon /></a>
               <a className="button button-secondary" href="/products">Back to Products</a>
             </div>
@@ -1439,7 +1440,25 @@ function MoveScanProductPage({ product }) {
     </main>
   );
 }
-function BatchFlowProductPage({ product }) {
+function MoveScanDemoPage() {
+  return (
+    <main className="movescan-demo-page" aria-label="Live MoveScan Demo">
+      <div className="movescan-demo-chrome">
+        <a className="movescan-demo-back" href="/products/movescan">Back to AI Guy Labs</a>
+        <span className="movescan-demo-label">Live MoveScan Demo</span>
+      </div>
+      <iframe
+        className="movescan-demo-frame"
+        src="https://movescan.aiguylabs.com/quote/boxed-up-moving"
+        title="MoveScan live instant quote demo"
+        width="100%"
+        height="100%"
+        loading="eager"
+        allow="clipboard-write; payment"
+      />
+    </main>
+  );
+}function BatchFlowProductPage({ product }) {
   const [activeImage, setActiveImage] = useState(null);
   const featured = batchflowScreenshots[0];
   const supporting = batchflowScreenshots.slice(1);
@@ -2067,6 +2086,7 @@ function LegalPage({ type }) {
 }
 function App() {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
+  const isMoveScanDemoPage = path === '/products/movescan/demo';
   const isHomePage = path === '/';
   const isProductsPage = path === '/products';
   const productSlug = path.startsWith('/products/') ? path.slice('/products/'.length) : '';
@@ -2081,10 +2101,16 @@ function App() {
 
   return (
     <>
-      {isHomePage ? <HotspotBootstrap /> : null}
-      <Header />
-      {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
-      <Footer />
+      {isMoveScanDemoPage ? (
+        <MoveScanDemoPage />
+      ) : (
+        <>
+          {isHomePage ? <HotspotBootstrap /> : null}
+          <Header />
+          {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
+          <Footer />
+        </>
+      )}
       <div id="ai-guy-labs-modal" className="aigl-modal" hidden>
         <div className="aigl-modal__backdrop" data-modal-close="true" />
         <div className="aigl-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="aigl-modal-title">
