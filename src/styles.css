@@ -1285,6 +1285,7 @@ p {
 /* Recovered public page layouts and About ecosystem icons */
 .home-image-page,
 .products-page-premium,
+.apparel-page,
 .services-page-premium,
 .about-page-premium,
 .contact-page,
@@ -1292,6 +1293,30 @@ p {
   min-height: 100vh;
   background: #000;
   color: #fff;
+}
+
+.apparel-page-hero {
+  min-height: 58vh;
+  display: grid;
+  align-items: center;
+  padding-top: clamp(128px, 14vw, 184px);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(45, 125, 255, 0.16), transparent 30%),
+    linear-gradient(180deg, #000 0%, #030509 100%);
+}
+
+.apparel-page-inner {
+  max-width: 760px;
+}
+
+.apparel-page-inner h1 {
+  margin-bottom: 20px;
+}
+
+.apparel-page-inner p:not(.eyebrow) {
+  max-width: 560px;
+  color: #cdd8e8;
+  font-size: clamp(1rem, 1.4vw, 1.16rem);
 }
 
 .home-image-stage {
@@ -3089,6 +3114,7 @@ p {
 .home-image-page,
 .product-detail-page,
 .products-page-premium,
+.apparel-page,
 .services-page-premium,
 .about-page-premium,
 .contact-page,

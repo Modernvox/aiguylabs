@@ -5,6 +5,7 @@ import './styles.css';
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Products', href: '/products' },
+  { label: 'Apparel', href: '/apparel' },
   { label: 'Services', href: '/services' },
   { label: 'About Me', href: '/about' },
   { label: 'Contact', href: '/contact' },
@@ -1101,6 +1102,20 @@ function ProductsPage() {
     </main>
   );
 }
+
+function ApparelPage() {
+  return (
+    <main className="apparel-page">
+      <section className="section-shell apparel-page-hero" aria-labelledby="apparel-page-title">
+        <div className="container apparel-page-inner">
+          <p className="eyebrow">Apparel</p>
+          <h1 id="apparel-page-title">AI Guy Apparel</h1>
+          <p>Clothing and accessories from AI Guy Labs™ are coming soon.</p>
+        </div>
+      </section>
+    </main>
+  );
+}
 function AboutPage() {
   const principles = ['Build for real workflows', 'Keep the experience clear', 'Measure results, not features'];
   const aboutProducts = products;
@@ -2102,6 +2117,7 @@ function App() {
   const productSlug = path.startsWith('/products/') ? path.slice('/products/'.length) : '';
   const productDetail = productSlug ? products.find((product) => product.slug === productSlug) : null;
   const isProductDetailPage = Boolean(productSlug);
+  const isApparelPage = path === '/apparel';
   const isServicesPage = path === '/services';
   const isAboutPage = path === '/about';
   const isContactPage = path === '/contact';
@@ -2117,7 +2133,7 @@ function App() {
         <>
           {isHomePage ? <HotspotBootstrap /> : null}
           <Header />
-          {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
+          {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isApparelPage ? <ApparelPage /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
           <TechnologyStrip />
           <Footer />
         </>
