@@ -10,13 +10,17 @@ const navItems = [
   { label: 'Contact', href: '/contact' },
 ];
 
-const technologies = [
-  { name: 'React Native', mark: 'RN' },
-  { name: 'TypeScript', mark: 'TS' },
-  { name: 'Supabase', mark: 'SB' },
-  { name: 'LiveKit', mark: 'LK' },
-  { name: 'Node.js', mark: 'N' },
-  { name: 'Cloudflare', mark: 'CF' },
+const builtWithTechnologies = [
+  { name: 'React', icon: '/images/technologies/react.svg' },
+  { name: 'TypeScript', icon: '/images/technologies/typescript.svg' },
+  { name: 'JavaScript', icon: '/images/technologies/javascript.svg' },
+  { name: 'Node.js', icon: '/images/technologies/nodejs.svg' },
+  { name: 'Next.js', icon: '/images/technologies/nextjs.svg' },
+  { name: 'Vite', icon: '/images/technologies/vite.svg' },
+  { name: 'Supabase', icon: '/images/technologies/supabase.svg' },
+  { name: 'PostgreSQL', icon: '/images/technologies/postgresql.svg' },
+  { name: 'Cloudflare', icon: '/images/technologies/cloudflare.svg' },
+  { name: 'GitHub', icon: '/images/technologies/github.svg' },
 ];
 
 const services = [
@@ -628,15 +632,14 @@ function ProductShowcase({ titleId }) {
 
 function TechnologyStrip() {
   return (
-    <section id="technology" className="technology-strip" aria-labelledby="technology-title">
+    <section className="technology-strip" aria-labelledby="technology-title">
       <div className="container technology-inner">
-        <h2 id="technology-title">Trusted by modern technologies</h2>
-        <div className="tech-list">
-          {technologies.map((tech) => (
-            <div className="tech-item" key={tech.name}>
-              <span className="tech-mark">{tech.mark}</span>
-              <span>{tech.name}</span>
-            </div>
+        <h2 id="technology-title">Built With</h2>
+        <div className="tech-list" aria-label="AI Guy Labs™ development technologies">
+          {builtWithTechnologies.map((tech) => (
+            <span className="tech-item" key={tech.name} title={tech.name} role="img" aria-label={tech.name}>
+              <img src={tech.icon} alt="" loading="lazy" />
+            </span>
           ))}
         </div>
       </div>
@@ -2114,6 +2117,7 @@ function App() {
           {isHomePage ? <HotspotBootstrap /> : null}
           <Header />
           {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
+          <TechnologyStrip />
           <Footer />
         </>
       )}
