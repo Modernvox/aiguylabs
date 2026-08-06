@@ -1295,28 +1295,21 @@ p {
   color: #fff;
 }
 
-.apparel-page-hero {
-  min-height: 58vh;
-  display: grid;
-  align-items: center;
-  padding-top: clamp(128px, 14vw, 184px);
-  background:
-    radial-gradient(circle at 78% 18%, rgba(45, 125, 255, 0.16), transparent 30%),
-    linear-gradient(180deg, #000 0%, #030509 100%);
+.apparel-hero {
+  width: 100%;
+  overflow: hidden;
+  background: #000;
 }
 
-.apparel-page-inner {
-  max-width: 760px;
+.apparel-hero picture,
+.apparel-hero-image {
+  display: block;
+  width: 100%;
 }
 
-.apparel-page-inner h1 {
-  margin-bottom: 20px;
-}
-
-.apparel-page-inner p:not(.eyebrow) {
-  max-width: 560px;
-  color: #cdd8e8;
-  font-size: clamp(1rem, 1.4vw, 1.16rem);
+.apparel-hero-image {
+  height: auto;
+  object-fit: contain;
 }
 
 .home-image-stage {

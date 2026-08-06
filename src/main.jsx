@@ -1106,12 +1106,12 @@ function ProductsPage() {
 function ApparelPage() {
   return (
     <main className="apparel-page">
-      <section className="section-shell apparel-page-hero" aria-labelledby="apparel-page-title">
-        <div className="container apparel-page-inner">
-          <p className="eyebrow">Apparel</p>
-          <h1 id="apparel-page-title">AI Guy Apparel</h1>
-          <p>Clothing and accessories from AI Guy Labs™ are coming soon.</p>
-        </div>
+      <section className="apparel-hero" aria-label="AI Guy Apparel">
+        <picture>
+          <source media="(max-width: 767px)" srcSet="/images/apparelmobile.png" />
+          <source media="(min-width: 768px)" srcSet="/images/appareldesktop.png" />
+          <img className="apparel-hero-image" src="/images/appareldesktop.png" alt="AI Guy Apparel" width="1536" height="1024" fetchPriority="high" />
+        </picture>
       </section>
     </main>
   );
