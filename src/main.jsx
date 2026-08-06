@@ -434,6 +434,8 @@ const footerProducts = [
   { label: 'SaaSquatch', href: '/products/saasquatch', status: 'IN DEVELOPMENT' },
 ];
 
+const MOVESCAN_LOGIN_URL = 'https://movescan.aiguylabs.com/login';
+
 function Icon({ type }) {
   if (type === 'message') {
     return (
@@ -1389,6 +1391,7 @@ function MoveScanProductPage({ product }) {
             <div className="product-detail-actions">
               <a className="button button-primary" href="/products/movescan/demo">Check It Out <Icon /></a>
               <a className="button button-primary" href="/contact">Start a MoveScan Project <Icon /></a>
+              <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Open MoveScan <Icon /></a>
               <a className="button button-secondary" href="/products">Back to Products</a>
             </div>
           </div>
@@ -1445,7 +1448,10 @@ function MoveScanDemoPage() {
     <main className="movescan-demo-page" aria-label="Live MoveScan Demo">
       <div className="movescan-demo-chrome">
         <a className="movescan-demo-back" href="/products/movescan">Back to AI Guy Labs</a>
-        <span className="movescan-demo-label">Live MoveScan Demo</span>
+        <div className="movescan-demo-actions">
+          <a className="movescan-demo-open" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Open MoveScan</a>
+          <span className="movescan-demo-label">Live MoveScan Demo</span>
+        </div>
       </div>
       <iframe
         className="movescan-demo-frame"

@@ -2943,7 +2943,16 @@ p {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.movescan-demo-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
 .movescan-demo-back,
+.movescan-demo-open,
 .movescan-demo-label {
   pointer-events: auto;
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -2955,7 +2964,8 @@ p {
   -webkit-backdrop-filter: blur(16px);
 }
 
-.movescan-demo-back {
+.movescan-demo-back,
+.movescan-demo-open {
   padding: 8px 11px;
   font-size: 0.76rem;
   font-weight: 800;
@@ -2963,7 +2973,12 @@ p {
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
 }
 
-.movescan-demo-back:hover {
+.movescan-demo-open {
+  color: #eff6ff;
+}
+
+.movescan-demo-back:hover,
+.movescan-demo-open:hover {
   transform: translateY(-1px);
   border-color: rgba(84, 164, 255, 0.58);
   background: rgba(3, 8, 18, 0.86);
@@ -2993,13 +3008,18 @@ p {
     align-items: flex-start;
   }
 
-  .movescan-demo-back {
+  .movescan-demo-actions {
+    gap: 6px;
+  }
+
+  .movescan-demo-back,
+  .movescan-demo-open {
     padding: 9px 12px;
     font-size: 0.78rem;
   }
 
   .movescan-demo-label {
-    max-width: 42vw;
+    max-width: 38vw;
     padding: 8px 10px;
     font-size: 0.66rem;
     text-align: right;
