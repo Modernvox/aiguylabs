@@ -2134,7 +2134,7 @@ function App() {
           {isHomePage ? <HotspotBootstrap /> : null}
           <Header />
           {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isApparelPage ? <ApparelPage /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
-          <TechnologyStrip />
+          {isApparelPage ? null : <TechnologyStrip />}
           <Footer />
         </>
       )}
