@@ -1,7 +1,7 @@
 {
   "schemaVersion": 3,
   "projectId": "aigl-hero-desktop",
-  "name": "AI Guy Labs Desktop Hero",
+  "name": "AI Guy Labs™ Desktop Hero",
   "image": null,
   "hotspots": [
     {
@@ -14,7 +14,7 @@
       "height": 6.3,
       "visible": true,
       "locked": false,
-      "tooltip": "Contact AI Guy Labs",
+      "tooltip": "Contact AI Guy Labs™",
       "cursor": "pointer",
       "animation": "pulse",
       "action": {

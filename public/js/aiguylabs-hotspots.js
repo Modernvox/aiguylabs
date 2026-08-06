@@ -28,10 +28,10 @@
       scrollToSection('software');
     },
     'contact': function () {
-      openModal('Contact AI Guy Labs', 'Project inquiries will connect to the production contact flow when that section is added.');
+      openModal('Contact AI Guy Labs™', 'Project inquiries will connect to the production contact flow when that section is added.');
     },
     'open-contact': function () {
-      openModal('Contact AI Guy Labs', 'Project inquiries will connect to the production contact flow when that section is added.');
+      openModal('Contact AI Guy Labs™', 'Project inquiries will connect to the production contact flow when that section is added.');
     }
   };
 
