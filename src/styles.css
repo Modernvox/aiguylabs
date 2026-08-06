@@ -1318,6 +1318,36 @@ p {
   pointer-events: none;
 }
 
+.home-brand-correction {
+  position: absolute;
+  top: 3.1%;
+  left: 21.5%;
+  z-index: 1;
+  min-width: 172px;
+  margin: 0;
+  padding: 11px 10px 8px;
+  background: #000;
+  color: #1f7cff;
+  font-size: clamp(0.62rem, 0.86vw, 0.86rem);
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .home-brand-correction {
+    top: 2.45%;
+    left: 43.8%;
+    min-width: 150px;
+    padding: 9px 8px 7px;
+    font-size: clamp(0.58rem, 2.1vw, 0.78rem);
+  }
+}
+
 .software-ecosystem-section {
   margin-top: -1px;
   padding-top: clamp(46px, 6vw, 74px);

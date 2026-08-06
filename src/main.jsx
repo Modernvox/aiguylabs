@@ -1338,6 +1338,7 @@ function HomePage() {
           <source media="(min-width: 768px)" srcSet="/images/aiguy_desktop.png" />
           <img id="ai-guy-labs-home-image" className="home-image" src="/images/aiguy_desktop.png" alt="AI Guy Labs™ homepage design." width="1536" height="1024" fetchPriority="high" />
         </picture>
+        <p className="home-brand-correction">AI GUY LABS™</p>
         <div
           id="ai-guy-labs-hero-hotspots"
           className="home-hotspot-mount"
