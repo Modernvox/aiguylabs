@@ -3300,3 +3300,181 @@ img {
 
 
 
+
+/* Final mobile containment pass for narrow viewports. */
+@media (max-width: 560px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  *,
+  *::before,
+  *::after {
+    min-width: 0;
+  }
+
+  .container,
+  .section-container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .site-header:not(.site-header--home-overlay) .header-inner,
+  .site-header .header-inner {
+    width: 100%;
+    min-width: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 12px;
+  }
+
+  .site-header:not(.site-header--home-overlay) .logo,
+  .site-header .logo {
+    flex: 1 1 auto;
+    width: auto;
+    max-width: calc(100% - 58px);
+    min-width: 0;
+  }
+
+  .site-header:not(.site-header--home-overlay) .logo img,
+  .site-header .logo img {
+    width: auto;
+    max-width: 100%;
+    height: 40px;
+  }
+
+  .menu-toggle {
+    flex: 0 0 44px;
+  }
+
+  .button {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .contact-hero {
+    padding-top: 104px;
+    padding-bottom: 56px;
+  }
+
+  .contact-layout,
+  .contact-form,
+  .contact-form label {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .contact-layout {
+    gap: 32px;
+  }
+
+  .contact-intro,
+  .contact-details,
+  .contact-expectations,
+  .contact-form,
+  .contact-form label {
+    min-width: 0;
+  }
+
+  .contact-intro h1 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-lede {
+    max-width: 100%;
+    margin-bottom: 22px;
+  }
+
+  .contact-details {
+    gap: 12px;
+    margin-top: 0;
+  }
+
+  .contact-details a,
+  .contact-details span,
+  .contact-expectations p {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-expectations {
+    margin-top: 26px;
+  }
+
+  .contact-form {
+    gap: 16px;
+  }
+
+  .contact-form label {
+    gap: 8px;
+  }
+
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form select {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .contact-form textarea {
+    min-height: 148px;
+  }
+
+  .contact-submit {
+    justify-self: stretch;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 18px;
+  }
+
+  .contact-submit svg {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+  }
+
+  .technology-inner,
+  .tech-list {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px 18px;
+  }
+
+  .product-editorial,
+  .product-editorial--reverse,
+  .product-detail-hero-inner,
+  .product-detail-story-inner,
+  .product-screenshot-panel,
+  .product-screenshot-panel--reverse {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-editorial-icon img,
+  .product-placeholder-icon img,
+  .product-screenshot-button img,
+  .product-preview img,
+  .product-featured-shot img,
+  .movescan-featured-shot img {
+    max-width: 100%;
+    height: auto;
+  }
+}
