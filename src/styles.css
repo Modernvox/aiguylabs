@@ -1887,7 +1887,8 @@ p {
   color: #dce7f6;
 }
 
-.contact-details a {
+.contact-details a,
+.contact-email {
   color: #8ed7ff;
   font-weight: 800;
 }
@@ -1900,6 +1901,15 @@ p {
 .contact-form {
   display: grid;
   gap: 18px;
+}
+
+.contact-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .contact-form-note {

@@ -1207,6 +1207,7 @@ function ContactPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    if (submitState.status === 'submitting') return;
     const form = event.currentTarget;
     const formData = new FormData(form);
     const payload = {
@@ -1216,6 +1217,7 @@ function ContactPage() {
       project_type: String(formData.get('project_type') || ''),
       budget_range: String(formData.get('budget_range') || ''),
       message: String(formData.get('message') || ''),
+      website: String(formData.get('website') || ''),
     };
     const errors = validateContactForm(payload);
     if (Object.keys(errors).length) {
@@ -1231,11 +1233,18 @@ function ContactPage() {
         body: JSON.stringify(payload),
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to save your request.');
+      if (!response.ok || data.ok === false) {
+        if (response.status === 400 && data.errors) {
+          setSubmitState({ status: 'error', errors: data.errors, message: 'Please complete the required fields.' });
+          return;
+        }
+        setSubmitState({ status: 'error', errors: {}, message: 'Unable to send your message right now. Please try again shortly.' });
+        return;
+      }
       form.reset();
       setSubmitState({ status: 'success', errors: {}, message: '' });
-    } catch (error) {
-      setSubmitState({ status: 'error', errors: {}, message: error.message || 'Unable to save your request.' });
+    } catch {
+      setSubmitState({ status: 'error', errors: {}, message: 'Unable to send your message right now. Please try again shortly.' });
     }
   }
 
@@ -1250,7 +1259,7 @@ function ContactPage() {
             <h1 id="contact-title">LET'S BUILD SOMETHING THAT PERFORMS.</h1>
             <p className="contact-lede">Tell us what you're trying to solve. We'll help turn it into software that works.</p>
             <div className="contact-details" aria-label="Contact details">
-              <a href="mailto:hello@aiguylabs.com">hello@aiguylabs.com</a>
+              <span className="contact-email">contact@aiguylabs.com</span>
               <span>Custom builds, AI automation, product development.</span>
             </div>
             <div className="contact-expectations">
@@ -1261,12 +1270,13 @@ function ContactPage() {
           {submitState.status === 'success' ? (
             <div className="contact-form form-success" role="status" aria-live="polite">
               <p className="contact-form-note">Custom software. AI automation. Product development.</p>
-              <h2>Thanks for reaching out.</h2>
-              <p>We've received your project request and will review it shortly.</p>
+              <h2>Message sent.</h2>
+              <p>We'll get back to you soon.</p>
             </div>
           ) : (
             <form className="contact-form" onSubmit={handleSubmit} noValidate>
               <p className="contact-form-note">Custom software. AI automation. Product development.</p>
+              <input className="contact-honeypot" name="website" type="text" tabIndex="-1" autoComplete="off" aria-hidden="true" />
               {submitState.message ? <p className="form-error">{submitState.message}</p> : null}
               <label>
                 <span>Name</span>
@@ -1303,7 +1313,7 @@ function ContactPage() {
                 {submitState.errors.message ? <span className="field-error">{submitState.errors.message}</span> : null}
               </label>
               <button className="button button-primary contact-submit" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Saving Request...' : 'Start the Conversation'} <Icon />
+                {isSubmitting ? 'Sending...' : 'Start the Conversation'} <Icon />
               </button>
             </form>
           )}
