@@ -3,7 +3,7 @@ name = "aiguylabs"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-08-03"
 
-[env.production.vars]
+[vars]
 TURNSTILE_SITE_KEY = "0x4AAAAAAEGfe-t_wmxWPW0p"
 
 [[d1_databases]]
@@ -14,12 +14,3 @@ database_id = "8334017d-655f-42f9-b1e4-ce2f4397d39a"
 [[send_email]]
 name = "EMAIL"
 destination_address = "contact@aiguylabs.com"
-[[env.production.d1_databases]]
-binding = "DB"
-database_name = "aiguylabs-contact-requests"
-database_id = "8334017d-655f-42f9-b1e4-ce2f4397d39a"
-
-[[env.production.send_email]]
-name = "EMAIL"
-destination_address = "contact@aiguylabs.com"
-
