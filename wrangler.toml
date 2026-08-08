@@ -14,3 +14,12 @@ database_id = "8334017d-655f-42f9-b1e4-ce2f4397d39a"
 [[send_email]]
 name = "EMAIL"
 destination_address = "contact@aiguylabs.com"
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "aiguylabs-contact-requests"
+database_id = "8334017d-655f-42f9-b1e4-ce2f4397d39a"
+
+[[env.production.send_email]]
+name = "EMAIL"
+destination_address = "contact@aiguylabs.com"
+
