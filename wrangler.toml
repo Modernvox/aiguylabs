@@ -1,4 +1,4 @@
-﻿# Generated from the existing Cloudflare Pages project configuration and updated for contact email delivery.
+﻿# Generated from the existing Cloudflare Pages project configuration and updated for contact lead storage.
 name = "aiguylabs"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-08-03"
@@ -10,7 +10,3 @@ TURNSTILE_SITE_KEY = "0x4AAAAAAEGfe-t_wmxWPW0p"
 binding = "DB"
 database_name = "aiguylabs-contact-requests"
 database_id = "8334017d-655f-42f9-b1e4-ce2f4397d39a"
-
-[[send_email]]
-name = "EMAIL"
-destination_address = "contact@aiguylabs.com"
