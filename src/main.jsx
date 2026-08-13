@@ -440,6 +440,8 @@ const footerProducts = [
 ];
 
 const MOVESCAN_LOGIN_URL = 'https://movescan.aiguylabs.com/login';
+const MOVESCAN_DEMO_URL = 'https://movescan.aiguylabs.com/quote/movescan-demo';
+const MOVESCAN_FREE_TRIAL_URL = '/contact';
 
 function Icon({ type }) {
   if (type === 'message') {
@@ -1384,6 +1386,28 @@ function MoveScanProductPage({ product }) {
   const [activeImage, setActiveImage] = useState(null);
   const featured = movescanScreenshots[0];
   const supporting = movescanScreenshots.slice(1);
+  const workflowSteps = [
+    {
+      title: 'Customer records the move',
+      description: 'The customer completes a guided room-by-room video walkthrough from their phone.',
+    },
+    {
+      title: 'MoveScan analyzes the inventory',
+      description: 'MoveScan identifies the items being moved and estimates total cubic feet.',
+    },
+    {
+      title: 'MoveScan builds the estimate',
+      description: 'MoveScan applies company settings for truck, crew, loading and unloading time, stairs, charges, and estimated total.',
+    },
+    {
+      title: 'Customer gets the estimate instantly',
+      description: 'The estimate is displayed immediately and a copy is sent to the customer.',
+    },
+    {
+      title: 'Moving company reviews the request',
+      description: 'Staff can review the inventory, estimate, move details, and Final Quote Requested status from MoveScan.',
+    },
+  ];
 
   function getResponsiveMoveScanImage(screenshot) {
     if (!screenshot.mobileSrc || typeof window === 'undefined') return screenshot;
@@ -1412,28 +1436,35 @@ function MoveScanProductPage({ product }) {
       <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="movescan-product-title">
         <div className="container product-detail-hero-inner product-detail-hero-inner--copy-only" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
+            <p className="eyebrow">AI Guy Labs? Product</p>
             <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
             <h1 id="movescan-product-title">MoveScan</h1>
             <p className="product-detail-subheading">AI-powered moving estimates</p>
-            <p>MoveScan turns customer video walkthroughs into organized room inventories and estimate-ready workflows for moving companies.</p>
-            <div className="product-detail-actions">
-              <a className="button button-primary" href="/products/movescan/demo">Check It Out <Icon /></a>
-              <a className="button button-primary" href="/contact">Start a MoveScan Project <Icon /></a>
-              <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Open MoveScan <Icon /></a>
-              <a className="button button-secondary" href="/products">Back to Products</a>
+            <p>Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
+            <div className="product-detail-actions movescan-hero-actions">
+              <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
+              <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
+              <a className="button button-secondary" href={MOVESCAN_DEMO_URL} target="_blank" rel="noopener noreferrer">Try the MoveScan Demo <Icon /></a>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section-shell product-detail-story" aria-labelledby="movescan-story-title">
-        <div className="container product-detail-story-inner">
-          <div>
+      <section className="section-shell product-detail-story movescan-workflow-section" aria-labelledby="movescan-workflow-title">
+        <div className="container movescan-workflow-inner">
+          <div className="movescan-section-heading">
             <p className="eyebrow">Workflow</p>
-            <h2 id="movescan-story-title">Built for the estimate process customers actually complete.</h2>
+            <h2 id="movescan-workflow-title">How MoveScan works</h2>
           </div>
-          <p>Customers get guided capture and review. Staff get cleaner inventory data and a focused estimate review surface before quote preparation.</p>
+          <div className="movescan-workflow-grid">
+            {workflowSteps.map((step, index) => (
+              <article className="movescan-workflow-card" key={step.title}>
+                <span>{index + 1}</span>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -1442,7 +1473,7 @@ function MoveScanProductPage({ product }) {
           {supporting.map((screenshot, index) => (
             <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
               <div className="product-screenshot-copy">
-                <p className="eyebrow">{String(index + 1).padStart(2, '0')}</p>
+                <p className="eyebrow">Product Experience</p>
                 <h2>{screenshot.title}</h2>
                 <p>{screenshot.description}</p>
               </div>
@@ -1454,12 +1485,31 @@ function MoveScanProductPage({ product }) {
         </div>
       </section>
 
+      <section className="section-shell movescan-integration-section" aria-labelledby="movescan-integration-title">
+        <div className="container movescan-integration-inner">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">Website Integration</p>
+            <h2 id="movescan-integration-title">Add MoveScan to your website</h2>
+            <p>Give customers a Get Instant Estimate button that launches your company-specific MoveScan experience. Your pricing, truck settings, crew rules, and estimate settings stay connected to your account.</p>
+          </div>
+          <ul className="movescan-feature-list" aria-label="MoveScan company setup includes">
+            <li>Company-specific MoveScan estimate link</li>
+            <li>Website button code</li>
+            <li>Staff/admin dashboard</li>
+            <li>Company-specific pricing and settings</li>
+          </ul>
+        </div>
+      </section>
+
       <section className="section-shell product-detail-closing" aria-labelledby="movescan-closing-title">
-        <div className="container product-detail-closing-inner">
-          <h2 id="movescan-closing-title">Ready to make estimates easier to complete?</h2>
-          <p>Use MoveScan as the starting point for a moving workflow that captures better data and helps staff move faster.</p>
-          <ProductValuation product={product} />
-          <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
+        <div className="container product-detail-closing-inner movescan-closing-inner">
+          <p className="eyebrow">Free Trial</p>
+          <h2 id="movescan-closing-title">Try MoveScan with your first estimate free.</h2>
+          <p>Request trial access and AI Guy Labs? will provision your moving-company account for the current MoveScan onboarding flow.</p>
+          <div className="product-detail-actions movescan-closing-actions">
+            <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
+            <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
+          </div>
         </div>
       </section>
 
@@ -1478,13 +1528,13 @@ function MoveScanDemoPage() {
       <div className="movescan-demo-chrome">
         <a className="movescan-demo-back" href="/products/movescan">Back to AI Guy Labs™</a>
         <div className="movescan-demo-actions">
-          <a className="movescan-demo-open" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Open MoveScan</a>
+          <a className="movescan-demo-open" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan</a>
           <span className="movescan-demo-label">Live MoveScan Demo</span>
         </div>
       </div>
       <iframe
         className="movescan-demo-frame"
-        src="https://movescan.aiguylabs.com/quote/boxed-up-moving"
+        src={MOVESCAN_DEMO_URL}
         title="MoveScan live instant quote demo"
         width="100%"
         height="100%"
