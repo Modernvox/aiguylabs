@@ -1454,20 +1454,8 @@ function MoveScanProductPage({ product }) {
 
   return (
     <main className="product-detail-page movescan-detail-page">
-      <section className="section-shell movescan-showcase-hero" aria-label="MoveScan product preview">
-        <div className="container movescan-showcase-inner">
-          <button className="product-screenshot-button product-screenshot-button--featured movescan-featured-shot" type="button" onClick={() => setActiveImage(getResponsiveMoveScanImage(featured))}>
-            <picture>
-              <source media="(max-width: 767px)" srcSet={featured.mobileSrc} />
-              <source media="(min-width: 768px)" srcSet={featured.desktopSrc} />
-              <img src={featured.desktopSrc} alt={featured.alt} sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1440px) calc(100vw - 72px), 1320px" fetchPriority="high" />
-            </picture>
-          </button>
-        </div>
-      </section>
-
       <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="movescan-product-title">
-        <div className="container product-detail-hero-inner product-detail-hero-inner--copy-only" style={{ '--accent': product.accent }}>
+        <div className="container product-detail-hero-inner movescan-hero-inner" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy movescan-hero-copy">
             <p className="eyebrow">AI Guy Labs™ Product</p>
             <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
@@ -1480,6 +1468,15 @@ function MoveScanProductPage({ product }) {
               <a className="button button-secondary" href={MOVESCAN_DEMO_URL} target="_blank" rel="noopener noreferrer">Try the MoveScan Demo <Icon /></a>
             </div>
             <p className="movescan-cta-note">Includes 5 completed estimates. No credit card required.</p>
+          </div>
+          <div className="movescan-hero-visual" aria-label="MoveScan product preview">
+            <button className="product-screenshot-button product-screenshot-button--featured movescan-featured-shot" type="button" onClick={() => setActiveImage(getResponsiveMoveScanImage(featured))}>
+              <picture>
+                <source media="(max-width: 767px)" srcSet={featured.mobileSrc} />
+                <source media="(min-width: 768px)" srcSet={featured.desktopSrc} />
+                <img src={featured.desktopSrc} alt={featured.alt} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1180px) calc(100vw - 64px), 46vw" fetchPriority="high" />
+              </picture>
+            </button>
           </div>
         </div>
       </section>

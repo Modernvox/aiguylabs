@@ -1235,13 +1235,44 @@ p {
   justify-content: center;
 }
 
+.movescan-detail-page .product-detail-hero {
+  padding-top: clamp(108px, 9vw, 148px);
+  padding-bottom: clamp(54px, 7vw, 92px);
+}
+
+.movescan-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
+  align-items: center;
+  gap: clamp(34px, 5vw, 72px);
+  max-width: 1320px;
+}
+
 .movescan-hero-copy {
-  max-width: 880px;
+  max-width: 820px;
 }
 
 .movescan-hero-copy h1 {
-  max-width: 880px;
-  font-size: clamp(3.4rem, 6.8vw, 7.1rem);
+  max-width: 900px;
+  font-size: clamp(3.35rem, 5.15vw, 5.95rem);
+  line-height: 0.95;
+}
+
+.movescan-hero-copy p:not(.eyebrow):not(.product-detail-subheading):not(.movescan-cta-note) {
+  max-width: 720px;
+}
+
+.movescan-hero-visual {
+  min-width: 0;
+}
+
+.movescan-hero-visual .movescan-featured-shot {
+  max-width: 100%;
+}
+
+.movescan-hero-visual .movescan-featured-shot img {
+  max-height: min(58vh, 560px);
+  object-fit: contain;
 }
 
 .movescan-cta-note {
@@ -2747,6 +2778,25 @@ p {
     font-size: 1.05rem;
   }
 
+  .movescan-hero-inner {
+    grid-template-columns: minmax(0, 1.35fr) minmax(380px, 0.65fr);
+    max-width: 1320px;
+  }
+
+  .movescan-hero-copy {
+    max-width: 840px;
+  }
+
+  .movescan-hero-copy h1 {
+    max-width: 860px;
+    font-size: clamp(3.65rem, 4.2vw, 4.1rem);
+    line-height: 0.95;
+  }
+
+  .movescan-hero-copy p:not(.eyebrow):not(.product-detail-subheading):not(.movescan-cta-note) {
+    max-width: 720px;
+  }
+
   .product-screenshot-button--featured {
     justify-self: stretch;
   }
@@ -3485,9 +3535,20 @@ img {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .movescan-hero-inner,
   .movescan-settings-inner,
   .movescan-split-inner {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .movescan-hero-copy,
+  .movescan-hero-copy h1,
+  .movescan-hero-copy p:not(.eyebrow):not(.product-detail-subheading):not(.movescan-cta-note) {
+    max-width: 900px;
+  }
+
+  .movescan-hero-visual {
+    max-width: 860px;
   }
 
   .movescan-split-inner--reverse > .movescan-section-heading,
@@ -3537,8 +3598,17 @@ img {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .movescan-detail-page .product-detail-hero {
+    padding-top: 104px;
+    padding-bottom: 54px;
+  }
+
   .movescan-hero-copy h1 {
     font-size: clamp(2.35rem, 11vw, 4.5rem);
+  }
+
+  .movescan-hero-visual .movescan-featured-shot img {
+    max-height: none;
   }
 
   .movescan-estimate-chain {
