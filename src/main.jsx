@@ -520,6 +520,53 @@ function Icon({ type }) {
     );
   }
 
+  if (type === 'video') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="5" y="4" width="10" height="16" rx="2" />
+        <path d="M9 17h2" />
+        <path d="m15 9 4-2v10l-4-2" />
+      </svg>
+    );
+  }
+
+  if (type === 'inventory') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 4h8l1 2h3v14H4V6h3l1-2Z" />
+        <path d="M8 11h8" />
+        <path d="M8 15h5" />
+        <path d="m6.5 11 1 1 2-2" />
+      </svg>
+    );
+  }
+
+  if (type === 'calculator') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="5" y="3" width="14" height="18" rx="2" />
+        <path d="M8 7h8" />
+        <path d="M8 11h2" />
+        <path d="M12 11h2" />
+        <path d="M16 11h.01" />
+        <path d="M8 15h2" />
+        <path d="M12 15h2" />
+        <path d="M16 15h.01" />
+      </svg>
+    );
+  }
+
+  if (type === 'estimate') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 4h14v16H5V4Z" />
+        <path d="M8 8h8" />
+        <path d="M8 12h5" />
+        <path d="m8 16 2 2 5-5" />
+      </svg>
+    );
+  }
+
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M5 12h14" />
@@ -1404,18 +1451,22 @@ function MoveScanProductPage({ product }) {
   ];
   const workflowSteps = [
     {
+      icon: 'video',
       title: 'Customer records the job',
       description: 'Send a secure invitation link or use the website button flow. The customer records the rooms or areas from their phone. No app download required.',
     },
     {
+      icon: 'inventory',
       title: 'MoveScan builds the inventory',
       description: 'MoveScan analyzes the walkthrough, organizes the rooms, identifies items, and prepares the inventory for customer confirmation.',
     },
     {
+      icon: 'calculator',
       title: 'MoveScan calculates the move',
       description: 'The system converts the job into cubic feet, truck recommendation, crew, labor time, stairs/access adjustments, packing requirements where applicable, and price.',
     },
     {
+      icon: 'estimate',
       title: 'Customer gets an instant estimate',
       description: 'The customer sees a clear estimate. Your staff can review, override, approve, and send follow-up quote communication when needed.',
     },
@@ -1503,9 +1554,9 @@ function MoveScanProductPage({ product }) {
             <h2 id="movescan-workflow-title">From customer walkthrough to estimate.</h2>
           </div>
           <div className="movescan-workflow-grid movescan-workflow-grid--four">
-            {workflowSteps.map((step, index) => (
+            {workflowSteps.map((step) => (
               <article className="movescan-workflow-card" key={step.title}>
-                <span>{index + 1}</span>
+                <span className="movescan-workflow-icon" aria-hidden="true"><Icon type={step.icon} /></span>
                 <h3>{step.title}</h3>
                 <p>{step.description}</p>
               </article>

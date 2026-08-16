@@ -1168,7 +1168,7 @@ p {
   padding: 20px;
 }
 
-.movescan-workflow-card span {
+.movescan-workflow-card .movescan-workflow-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1180,6 +1180,16 @@ p {
   color: #8ed7ff;
   font-size: 0.78rem;
   font-weight: 900;
+}
+
+.movescan-workflow-card .movescan-workflow-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .movescan-workflow-card h3 {
