@@ -1150,7 +1150,13 @@ p {
 
 .movescan-workflow-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.movescan-benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -1228,6 +1234,140 @@ p {
 .movescan-closing-actions {
   justify-content: center;
 }
+
+.movescan-hero-copy {
+  max-width: 880px;
+}
+
+.movescan-hero-copy h1 {
+  max-width: 880px;
+  font-size: clamp(3.4rem, 6.8vw, 7.1rem);
+}
+
+.movescan-cta-note {
+  margin: 14px 0 0;
+  color: #9bdcff;
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+.movescan-benefits-section,
+.movescan-operational-section,
+.movescan-services-section,
+.movescan-why-section {
+  background: #030509;
+}
+
+.movescan-settings-section,
+.movescan-staff-section {
+  background: linear-gradient(180deg, #030509 0%, #000 100%);
+}
+
+.movescan-section-stack,
+.movescan-operational-inner,
+.movescan-settings-inner,
+.movescan-split-inner {
+  border-top: 1px solid rgba(135, 176, 255, 0.16);
+  padding-top: clamp(28px, 5vw, 58px);
+}
+
+.movescan-benefit-card h3 {
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+}
+
+.movescan-estimate-chain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: clamp(22px, 4vw, 38px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.movescan-estimate-chain li {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid rgba(135, 176, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(5, 9, 17, 0.74);
+  color: #eff6ff;
+  padding: 0 16px;
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.movescan-estimate-chain li:not(:last-child)::after {
+  content: "\2192";
+  position: absolute;
+  right: -13px;
+  color: #8ed7ff;
+  font-weight: 900;
+}
+
+.movescan-settings-inner,
+.movescan-split-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  gap: clamp(28px, 6vw, 78px);
+  align-items: start;
+}
+
+.movescan-emphasis-line {
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 24px;
+  border-left: 3px solid #54a4ff;
+  background: rgba(45, 125, 255, 0.1);
+  color: #f7fbff !important;
+  padding: 14px 18px;
+  font-weight: 900;
+}
+
+.movescan-settings-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.movescan-service-list,
+.movescan-control-panel {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.movescan-service-list li,
+.movescan-control-panel span {
+  border: 1px solid rgba(135, 176, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(5, 9, 17, 0.74);
+  color: #eff6ff;
+  padding: 15px 18px;
+  font-weight: 850;
+}
+
+.movescan-control-panel {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.movescan-control-panel span {
+  min-height: 88px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.movescan-split-inner--reverse > .movescan-section-heading {
+  grid-column: 2;
+}
+
+.movescan-split-inner--reverse > .movescan-control-panel {
+  grid-column: 1;
+  grid-row: 1;
+}
+
 
 
 .product-screenshot-button {
@@ -3340,19 +3480,36 @@ img {
 
 
 @media (max-width: 1180px) {
-  .movescan-workflow-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .movescan-workflow-grid,
+  .movescan-benefit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .movescan-settings-inner,
+  .movescan-split-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .movescan-split-inner--reverse > .movescan-section-heading,
+  .movescan-split-inner--reverse > .movescan-control-panel {
+    grid-column: auto;
+    grid-row: auto;
   }
 }
 
 @media (max-width: 767px) {
   .movescan-workflow-grid,
-  .movescan-integration-inner {
+  .movescan-benefit-grid,
+  .movescan-integration-inner,
+  .movescan-settings-list,
+  .movescan-control-panel {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .movescan-workflow-card,
-  .movescan-feature-list li {
+  .movescan-feature-list li,
+  .movescan-service-list li,
+  .movescan-control-panel span {
     border-radius: 14px;
   }
 
@@ -3375,8 +3532,25 @@ img {
     line-height: 1.05;
   }
 
-  .movescan-workflow-grid {
+  .movescan-workflow-grid,
+  .movescan-benefit-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .movescan-hero-copy h1 {
+    font-size: clamp(2.35rem, 11vw, 4.5rem);
+  }
+
+  .movescan-estimate-chain {
+    display: grid;
+  }
+
+  .movescan-estimate-chain li {
+    border-radius: 14px;
+  }
+
+  .movescan-estimate-chain li:not(:last-child)::after {
+    display: none;
   }
 }
 

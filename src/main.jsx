@@ -130,9 +130,11 @@ const products = [
     logo: '/images/movescan.png',
     glow: 'blue',
     accent: '#2d7dff',
-    tagline: 'AI-powered moving estimates',
-    description: 'AI-powered moving estimate platform that transforms customer video walkthroughs into organized inventories and professional moving quotes.',
-    longDescription: 'MoveScan transforms customer video walkthroughs into organized moving inventories and professional moving quotes, helping moving companies create faster, clearer estimates from real customer-submitted footage.',
+    tagline: 'AI Instant Moving Estimates',
+    description: 'AI Instant Moving Estimate software for moving companies that turns customer walkthroughs into inventory, cubic feet, truck, crew, labor, packing, and company-priced estimates.',
+    longDescription: 'MoveScan helps moving companies turn customer walkthroughs into instant estimates using inventory detection, cubic-foot estimation, truck and crew recommendations, packing workflows, and company-controlled pricing.',
+    seoTitle: 'MoveScan | AI Instant Moving Estimates for Moving Companies',
+    seoDescription: 'MoveScan helps moving companies turn customer walkthroughs into instant estimates using inventory detection, cubic-foot estimation, truck and crew recommendations, packing workflows, and company-controlled pricing.',
     status: 'Production',
     technologies: ['React Native', 'TypeScript', 'Supabase', 'OpenAI'],
     keywords: ['AI', 'moving', 'inventory', 'estimate', 'business', 'automation'],
@@ -140,7 +142,7 @@ const products = [
     website: '/products/movescan',
     demoUrl: '/contact',
     documentationUrl: '/contact',
-    features: ['AI-assisted inventory capture', 'Estimate-ready workflows', 'Field-friendly product experience'],
+    features: ['AI Instant Moving Estimates', 'Company-controlled pricing', 'Walkthrough-to-estimate workflow'],
     developmentValue: '$185,000',
   },
   {
@@ -1386,28 +1388,59 @@ function MoveScanProductPage({ product }) {
   const [activeImage, setActiveImage] = useState(null);
   const featured = movescanScreenshots[0];
   const supporting = movescanScreenshots.slice(1);
-  const workflowSteps = [
+  const benefits = [
     {
-      title: 'Customer records the move',
-      description: 'The customer completes a guided room-by-room video walkthrough from their phone.',
+      title: 'Respond faster than the old estimate process',
+      description: 'Instead of waiting for a call, appointment, or video survey, customers can complete a guided walkthrough and receive an instant estimate.',
     },
     {
-      title: 'MoveScan analyzes the inventory',
-      description: 'MoveScan identifies the items being moved and estimates total cubic feet.',
+      title: 'Use estimator time where it matters',
+      description: 'MoveScan handles the first pass: inventory, volume, truck, crew, labor, access, and pricing. Your team can review and adjust the jobs that need attention.',
     },
     {
-      title: 'MoveScan builds the estimate',
-      description: 'MoveScan applies company settings for truck, crew, loading and unloading time, stairs, charges, and estimated total.',
-    },
-    {
-      title: 'Customer gets the estimate instantly',
-      description: 'The estimate is displayed immediately and a copy is sent to the customer.',
-    },
-    {
-      title: 'Moving company reviews the request',
-      description: 'Staff can review the inventory, estimate, move details, and Final Quote Requested status from MoveScan.',
+      title: 'Estimate with your company\'s rules',
+      description: 'Set your labor rates, productivity assumptions, stair adjustments, truck charges, packing prices, and material preferences. MoveScan applies your operating model to each estimate.',
     },
   ];
+  const workflowSteps = [
+    {
+      title: 'Customer records the job',
+      description: 'Send a secure invitation link or use the website button flow. The customer records the rooms or areas from their phone. No app download required.',
+    },
+    {
+      title: 'MoveScan builds the inventory',
+      description: 'MoveScan analyzes the walkthrough, organizes the rooms, identifies items, and prepares the inventory for customer confirmation.',
+    },
+    {
+      title: 'MoveScan calculates the move',
+      description: 'The system converts the job into cubic feet, truck recommendation, crew, labor time, stairs/access adjustments, packing requirements where applicable, and price.',
+    },
+    {
+      title: 'Customer gets an instant estimate',
+      description: 'The customer sees a clear estimate. Your staff can review, override, approve, and send follow-up quote communication when needed.',
+    },
+  ];
+  const estimateProgression = ['Customer walkthrough', 'Inventory', 'Cubic feet', 'Truck', 'Crew', 'Labor', 'Packing', 'Company pricing', 'Instant estimate'];
+  const companySettings = ['Mover productivity', 'Labor rates', 'Minimums', 'Truck charges', 'Stair handling', 'Travel pricing', 'Packing labor', 'Box and material pricing', 'Packing preferences'];
+  const supportedServices = ['Full moving estimates', 'Load Only', 'Unload Only', 'Load & Unload', 'Storage-related walkthroughs', 'Packing Only', 'Moving + Packing'];
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    const previousDescription = metaDescription?.getAttribute('content') || '';
+
+    document.title = product.seoTitle;
+    if (metaDescription) {
+      metaDescription.setAttribute('content', product.seoDescription);
+    }
+
+    return () => {
+      document.title = previousTitle;
+      if (metaDescription) {
+        metaDescription.setAttribute('content', previousDescription);
+      }
+    };
+  }, [product.seoDescription, product.seoTitle]);
 
   function getResponsiveMoveScanImage(screenshot) {
     if (!screenshot.mobileSrc || typeof window === 'undefined') return screenshot;
@@ -1435,17 +1468,35 @@ function MoveScanProductPage({ product }) {
 
       <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="movescan-product-title">
         <div className="container product-detail-hero-inner product-detail-hero-inner--copy-only" style={{ '--accent': product.accent }}>
-          <div className="product-detail-copy">
-            <p className="eyebrow">AI Guy Labs? Product</p>
+          <div className="product-detail-copy movescan-hero-copy">
+            <p className="eyebrow">AI Guy Labs™ Product</p>
             <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
-            <h1 id="movescan-product-title">MoveScan</h1>
-            <p className="product-detail-subheading">AI-powered moving estimates</p>
-            <p>Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
+            <p className="product-detail-subheading">MoveScan | AI Instant Moving Estimates</p>
+            <h1 id="movescan-product-title">Give customers an instant moving estimate without sending an estimator first.</h1>
+            <p>MoveScan guides the customer through a mobile room-by-room walkthrough, identifies the moving inventory, estimates volume, truck, crew, labor, stairs, packing when needed, and prices the job using your company’s own settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
-              <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
+              <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start your free trial <Icon /></a>
               <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
               <a className="button button-secondary" href={MOVESCAN_DEMO_URL} target="_blank" rel="noopener noreferrer">Try the MoveScan Demo <Icon /></a>
             </div>
+            <p className="movescan-cta-note">Includes 5 completed estimates. No credit card required.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell movescan-benefits-section" aria-labelledby="movescan-benefits-title">
+        <div className="container movescan-section-stack">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">Benefits</p>
+            <h2 id="movescan-benefits-title">Quote more leads while they’re still ready to book.</h2>
+          </div>
+          <div className="movescan-benefit-grid">
+            {benefits.map((benefit) => (
+              <article className="movescan-workflow-card movescan-benefit-card" key={benefit.title}>
+                <h3>{benefit.title}</h3>
+                <p>{benefit.description}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -1453,10 +1504,10 @@ function MoveScanProductPage({ product }) {
       <section className="section-shell product-detail-story movescan-workflow-section" aria-labelledby="movescan-workflow-title">
         <div className="container movescan-workflow-inner">
           <div className="movescan-section-heading">
-            <p className="eyebrow">Workflow</p>
-            <h2 id="movescan-workflow-title">How MoveScan works</h2>
+            <p className="eyebrow">How It Works</p>
+            <h2 id="movescan-workflow-title">From customer walkthrough to estimate.</h2>
           </div>
-          <div className="movescan-workflow-grid">
+          <div className="movescan-workflow-grid movescan-workflow-grid--four">
             {workflowSteps.map((step, index) => (
               <article className="movescan-workflow-card" key={step.title}>
                 <span>{index + 1}</span>
@@ -1468,12 +1519,81 @@ function MoveScanProductPage({ product }) {
         </div>
       </section>
 
+      <section className="section-shell movescan-operational-section" aria-labelledby="movescan-operational-title">
+        <div className="container movescan-operational-inner">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">Operational Estimate</p>
+            <h2 id="movescan-operational-title">Not just an inventory scanner.</h2>
+            <p>A list of furniture is not enough to quote a move. MoveScan turns the walkthrough into the operational information a mover actually needs: estimated volume, recommended truck, crew size, loading and unloading time, stair adjustments, heavy and specialty handling, packing labor and materials where applicable, and the customer-facing price.</p>
+          </div>
+          <ol className="movescan-estimate-chain" aria-label="MoveScan estimate progression">
+            {estimateProgression.map((item) => <li key={item}>{item}</li>)}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section-shell movescan-settings-section" aria-labelledby="movescan-settings-title">
+        <div className="container movescan-settings-inner">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">Company Settings</p>
+            <h2 id="movescan-settings-title">Estimate the way your company actually operates.</h2>
+            <p>No two moving companies run the same crew, trucks, pricing, or packing process. MoveScan lets you configure the assumptions that matter: mover productivity, labor rates, minimums, truck charges, stair handling, travel pricing, packing labor, box and material pricing, and company packing preferences.</p>
+            <p className="movescan-emphasis-line">The estimate is automated, but the operating model is yours.</p>
+          </div>
+          <ul className="movescan-feature-list movescan-settings-list" aria-label="Configurable MoveScan settings">
+            {companySettings.map((setting) => <li key={setting}>{setting}</li>)}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section-shell movescan-services-section" aria-labelledby="movescan-services-title">
+        <div className="container movescan-split-inner">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">Supported Services</p>
+            <h2 id="movescan-services-title">Built for the jobs movers quote every day.</h2>
+            <p>MoveScan supports full moving estimates, Load Only, Unload Only, Load & Unload, storage-related walkthroughs, Packing Only, and Moving + Packing workflows.</p>
+            <p>Customers see the right questions for the service they selected, and your team gets the operational detail needed to review the job.</p>
+          </div>
+          <ul className="movescan-service-list" aria-label="Supported MoveScan services">
+            {supportedServices.map((service) => <li key={service}>{service}</li>)}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section-shell movescan-staff-section" aria-labelledby="movescan-staff-title">
+        <div className="container movescan-split-inner movescan-split-inner--reverse">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">Staff Control</p>
+            <h2 id="movescan-staff-title">Automation without losing control.</h2>
+            <p>MoveScan can produce instant customer estimates, but it does not remove your team from the process. Staff can review inventory, access details, truck and crew recommendations, labor, packing outputs, pricing, and warnings.</p>
+            <p>When needed, your team can override the estimate, approve it, and send customer-safe follow-up communication.</p>
+          </div>
+          <div className="movescan-control-panel" aria-label="MoveScan staff review controls">
+            <span>Review</span>
+            <span>Override</span>
+            <span>Approve</span>
+            <span>Follow up</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell movescan-why-section" aria-labelledby="movescan-why-title">
+        <div className="container movescan-section-stack">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">Why MoveScan</p>
+            <h2 id="movescan-why-title">Your website works after hours. Your estimator probably does not.</h2>
+            <p>A lead that waits can turn into a lost booking. MoveScan gives serious prospects a way to keep moving while their interest is high: record the walkthrough, get an estimate, and give your team a structured job to review instead of a vague quote request.</p>
+            <p>It helps your company quote more jobs without making every lead depend on a live salesperson or scheduled in-home visit.</p>
+          </div>
+        </div>
+      </section>
+
       <section className="section-shell product-screenshot-section" aria-label="MoveScan product screenshots">
         <div className="container product-screenshot-list">
-          {supporting.map((screenshot, index) => (
-            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
+          {supporting.map((screenshot) => (
+            <article className="product-screenshot-panel" key={screenshot.src}>
               <div className="product-screenshot-copy">
-                <p className="eyebrow">Product Experience</p>
+                <p className="eyebrow">Product Proof</p>
                 <h2>{screenshot.title}</h2>
                 <p>{screenshot.description}</p>
               </div>
@@ -1485,31 +1605,16 @@ function MoveScanProductPage({ product }) {
         </div>
       </section>
 
-      <section className="section-shell movescan-integration-section" aria-labelledby="movescan-integration-title">
-        <div className="container movescan-integration-inner">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Website Integration</p>
-            <h2 id="movescan-integration-title">Add MoveScan to your website</h2>
-            <p>Give customers a Get Instant Estimate button that launches your company-specific MoveScan experience. Your pricing, truck settings, crew rules, and estimate settings stay connected to your account.</p>
-          </div>
-          <ul className="movescan-feature-list" aria-label="MoveScan company setup includes">
-            <li>Company-specific MoveScan estimate link</li>
-            <li>Website button code</li>
-            <li>Staff/admin dashboard</li>
-            <li>Company-specific pricing and settings</li>
-          </ul>
-        </div>
-      </section>
-
       <section className="section-shell product-detail-closing" aria-labelledby="movescan-closing-title">
         <div className="container product-detail-closing-inner movescan-closing-inner">
           <p className="eyebrow">Free Trial</p>
-          <h2 id="movescan-closing-title">Try MoveScan with your first estimate free.</h2>
-          <p>Request trial access and AI Guy Labs? will provision your moving-company account for the current MoveScan onboarding flow.</p>
+          <h2 id="movescan-closing-title">Start quoting with MoveScan.</h2>
+          <p>Create your company account and run your first customer walkthroughs with 5 free completed estimates.</p>
           <div className="product-detail-actions movescan-closing-actions">
-            <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
+            <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start your free trial <Icon /></a>
             <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
           </div>
+          <p className="movescan-cta-note">No credit card required.</p>
         </div>
       </section>
 
