@@ -536,7 +536,7 @@ function Icon({ type }) {
 function Logo() {
   return (
     <a className="logo" href="/" aria-label="AI Guy Labs™ home">
-      <img src="/images/aiguy_logo.PNG" alt="AI Guy Labs™" />
+      <img src="/images/aiguy_print.png" alt="AI Guy Labs™" />
     </a>
   );
 }
