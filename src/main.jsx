@@ -443,7 +443,7 @@ const footerProducts = [
 
 const MOVESCAN_LOGIN_URL = 'https://movescan.aiguylabs.com/login';
 const MOVESCAN_DEMO_URL = 'https://movescan.aiguylabs.com/quote/movescan-demo';
-const MOVESCAN_FREE_TRIAL_URL = '/contact';
+const MOVESCAN_FREE_TRIAL_URL = 'https://www.movescan.app';
 
 function Icon({ type }) {
   if (type === 'message') {
