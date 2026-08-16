@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Calculator, FileCheck2, ScanLine, Video } from 'lucide-react';
 import './styles.css';
 
 const navItems = [
@@ -516,53 +517,6 @@ function Icon({ type }) {
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="12" r="8" />
         <path d="m15 9-2 5-4 1 2-5 4-1Z" />
-      </svg>
-    );
-  }
-
-  if (type === 'video') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <rect x="5" y="4" width="10" height="16" rx="2" />
-        <path d="M9 17h2" />
-        <path d="m15 9 4-2v10l-4-2" />
-      </svg>
-    );
-  }
-
-  if (type === 'inventory') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M8 4h8l1 2h3v14H4V6h3l1-2Z" />
-        <path d="M8 11h8" />
-        <path d="M8 15h5" />
-        <path d="m6.5 11 1 1 2-2" />
-      </svg>
-    );
-  }
-
-  if (type === 'calculator') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <rect x="5" y="3" width="14" height="18" rx="2" />
-        <path d="M8 7h8" />
-        <path d="M8 11h2" />
-        <path d="M12 11h2" />
-        <path d="M16 11h.01" />
-        <path d="M8 15h2" />
-        <path d="M12 15h2" />
-        <path d="M16 15h.01" />
-      </svg>
-    );
-  }
-
-  if (type === 'estimate') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 4h14v16H5V4Z" />
-        <path d="M8 8h8" />
-        <path d="M8 12h5" />
-        <path d="m8 16 2 2 5-5" />
       </svg>
     );
   }
@@ -1431,6 +1385,13 @@ function HomePage() {
     </main>
   );
 }
+const moveScanWorkflowIcons = {
+  video: Video,
+  scan: ScanLine,
+  calculator: Calculator,
+  estimate: FileCheck2,
+};
+
 function MoveScanProductPage({ product }) {
   const [activeImage, setActiveImage] = useState(null);
   const featured = movescanScreenshots[0];
@@ -1456,7 +1417,7 @@ function MoveScanProductPage({ product }) {
       description: 'Send a secure invitation link or use the website button flow. The customer records the rooms or areas from their phone. No app download required.',
     },
     {
-      icon: 'inventory',
+      icon: 'scan',
       title: 'MoveScan builds the inventory',
       description: 'MoveScan analyzes the walkthrough, organizes the rooms, identifies items, and prepares the inventory for customer confirmation.',
     },
@@ -1554,13 +1515,17 @@ function MoveScanProductPage({ product }) {
             <h2 id="movescan-workflow-title">From customer walkthrough to estimate.</h2>
           </div>
           <div className="movescan-workflow-grid movescan-workflow-grid--four">
-            {workflowSteps.map((step) => (
-              <article className="movescan-workflow-card" key={step.title}>
-                <span className="movescan-workflow-icon" aria-hidden="true"><Icon type={step.icon} /></span>
-                <h3>{step.title}</h3>
-                <p>{step.description}</p>
-              </article>
-            ))}
+            {workflowSteps.map((step) => {
+              const WorkflowIcon = moveScanWorkflowIcons[step.icon];
+
+              return (
+                <article className="movescan-workflow-card" key={step.title}>
+                  <span className="movescan-workflow-icon" aria-hidden="true">{WorkflowIcon ? <WorkflowIcon strokeWidth={2} /> : null}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.description}</p>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
