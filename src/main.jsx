@@ -425,6 +425,10 @@ const productStack = [
   { name: 'LiveKit', icon: '/images/technologies/livekit.svg' },
 ];
 
+function getProductRoute(product) {
+  return product?.slug ? '/products/' + product.slug : '/products';
+}
+
 const footerNav = [
   { label: 'Home', href: '/' },
   { label: 'Products', href: '/products' },
@@ -618,7 +622,7 @@ function ProductShowcase({ titleId }) {
           <a
             className={"product-logo-card product-logo-card--" + product.glow}
             key={product.name}
-            href={product.website}
+            href={getProductRoute(product)}
             aria-label={"Learn more about " + product.name}
           >
             <div className="product-logo-frame">
@@ -675,7 +679,7 @@ function ServiceCard({ service, featured = false }) {
 
 function ProductReference({ product }) {
   return (
-    <a className="product-reference" href={product.website} style={{ '--accent': product.accent }} aria-label={"View " + product.name}>
+    <a className="product-reference" href={getProductRoute(product)} style={{ '--accent': product.accent }} aria-label={"View " + product.name}>
       <img src={product.logo} alt="" aria-hidden="true" loading="lazy" />
       <span>{product.name}</span>
     </a>
@@ -719,7 +723,7 @@ function ProjectsSection() {
               </div>
               <h3>{project.name}</h3>
               <p>{project.description}</p>
-              <a className="text-link" href={project.website}>Learn More <Icon /></a>
+              <a className="text-link" href={getProductRoute(project)}>Learn More <Icon /></a>
             </article>
           ))}
         </div>
@@ -931,7 +935,7 @@ function ProductsEcosystem() {
         </div>
         <div className="ecosystem-grid">
           {products.map((product) => (
-            <a className="ecosystem-card" href={'#' + product.slug} key={product.slug} style={{ '--accent': product.accent }}>
+            <a className="ecosystem-card" href={getProductRoute(product)} key={product.slug} style={{ '--accent': product.accent }}>
               <div className="ecosystem-icon"><img src={product.logo} alt={product.name + ' icon'} /></div>
               <div>
                 <h3>{product.name}</h3>
@@ -966,9 +970,9 @@ function ProductSpotlight({ product }) {
             {product.technologies.map((tech) => <span key={tech}>{tech}</span>)}
           </div>
           <div className="spotlight-actions">
-            <a className="button button-primary" href={product.website}>View Product <Icon /></a>
+            <a className="button button-primary" href={getProductRoute(product)}>View Product <Icon /></a>
             <a className="button button-secondary" href={product.demoUrl}>Watch Demo</a>
-            <a className="text-link" href={'#' + product.slug}>Learn More <Icon /></a>
+            <a className="text-link" href={getProductRoute(product)}>Learn More <Icon /></a>
           </div>
         </div>
       </div>
@@ -1017,7 +1021,7 @@ function ProductsCatalog() {
               <div className="catalog-tech-list">
                 {product.technologies.map((tech) => <span key={tech}>{tech}</span>)}
               </div>
-              <a className="text-link" href={product.website}>Learn More <Icon /></a>
+              <a className="text-link" href={getProductRoute(product)}>Learn More <Icon /></a>
             </article>
           ))}
         </div>
@@ -1077,7 +1081,7 @@ function ProductEditorialPanel({ product, index }) {
         <p className="product-statement">{product.tagline}</p>
         <p>{product.longDescription}</p>
         <ProductValuation product={product} compact />
-        <a className="editorial-link" href={product.website}>Explore Product <Icon /></a>
+        <a className="editorial-link" href={getProductRoute(product)}>Explore Product <Icon /></a>
       </div>
       <div className="product-editorial-icon" aria-hidden="true">
         <img src={product.logo} alt="" />
@@ -1174,7 +1178,7 @@ function AboutPage() {
           </div>
           <div className="about-product-list" aria-label="AI Guy Labs™ products">
             {aboutProducts.map((product) => (
-              <a className="about-product-icon-link" href={product.website} key={product.slug} style={{ '--accent': product.accent }}>
+              <a className="about-product-icon-link" href={getProductRoute(product)} key={product.slug} style={{ '--accent': product.accent }}>
                 <span className="about-product-icon-frame" aria-hidden="true">
                   <img src={product.logo} alt="" />
                 </span>
