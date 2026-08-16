@@ -1464,8 +1464,6 @@ function MoveScanProductPage({ product }) {
             <p>MoveScan guides the customer through a mobile room-by-room walkthrough, identifies the moving inventory, estimates volume, truck, crew, labor, stairs, packing when needed, and prices the job using your company’s own settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
               <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start your free trial <Icon /></a>
-              <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
-              <a className="button button-secondary" href={MOVESCAN_DEMO_URL} target="_blank" rel="noopener noreferrer">Try the MoveScan Demo <Icon /></a>
             </div>
             <p className="movescan-cta-note">Includes 5 completed estimates. No credit card required.</p>
           </div>
