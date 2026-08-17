@@ -1013,6 +1013,20 @@ p {
     font-weight: 750;
   }
   .mobile-nav a:not(.button):hover { background: rgba(45, 125, 255, 0.12); }
+
+  .site-header {
+    z-index: 10000;
+  }
+
+  .menu-toggle {
+    position: relative;
+    z-index: 2;
+  }
+
+  .mobile-nav {
+    position: relative;
+    z-index: 3;
+  }
   
 
 .hero-section { padding-top: 126px; padding-bottom: 88px; min-height: auto; }
