@@ -193,7 +193,7 @@ const products = [
     tagline: 'Live selling workflow automation',
     description: 'SwiftSale helps live sellers organize orders, assign bins in real time, speed fulfillment, and streamline the entire live selling process from auction to pickup.',
     longDescription: 'SwiftSale helps live sellers organize orders, assign bins in real time, speed fulfillment, and streamline the entire live selling process from auction to pickup.',
-    status: 'Coming Soon',
+    status: 'Production',
     technologies: ['React', 'Node.js', 'PostgreSQL', 'Cloudflare'],
     keywords: ['live selling', 'auction', 'orders', 'bins', 'fulfillment', 'workflow automation'],
     filters: ['Automation', 'Business'],
