@@ -1474,10 +1474,12 @@ function MoveScanProductPage({ product }) {
         <div className="container product-detail-hero-inner movescan-hero-inner" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy movescan-hero-copy">
             <p className="eyebrow">AI Guy Labs™ Product</p>
-            <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
-            <p className="product-detail-subheading">MoveScan | AI Instant Moving Estimates</p>
+            <div className="movescan-product-lockup">
+              <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
+              <p className="product-detail-subheading">MoveScan | AI Instant Moving Estimates</p>
+            </div>
             <h1 id="movescan-product-title">Give customers an instant moving estimate without sending an estimator first.</h1>
-            <p>MoveScan guides the customer through a mobile room-by-room walkthrough, identifies the moving inventory, estimates volume, truck, crew, labor, stairs, packing when needed, and prices the job using your company’s own settings.</p>
+            <p>MoveScan guides customers through a quick room-by-room walkthrough, identifies inventory, and prices the move using your company's own settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
               <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start your free trial <Icon /></a>
             </div>
