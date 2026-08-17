@@ -4245,3 +4245,53 @@ img {
     line-height: 1.35;
   }
 }
+
+
+/* Authoritative shared mobile header behavior. */
+@media (max-width: 860px) {
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2147482000;
+    overflow: visible;
+    pointer-events: auto;
+  }
+
+  .site-header .header-inner {
+    position: relative;
+    z-index: 2;
+  }
+
+  .site-header .desktop-nav,
+  .site-header .header-cta {
+    display: none;
+  }
+
+  .site-header .menu-toggle {
+    position: relative;
+    z-index: 3;
+    display: inline-grid;
+    place-content: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    pointer-events: auto;
+  }
+
+  .site-header .menu-toggle span {
+    display: block;
+  }
+
+  .site-header .mobile-nav {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    pointer-events: auto;
+  }
+
+  .site-header .mobile-nav[hidden] {
+    display: none;
+  }
+}
