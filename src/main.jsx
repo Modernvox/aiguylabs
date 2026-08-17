@@ -1475,7 +1475,6 @@ function MoveScanProductPage({ product }) {
           <div className="product-detail-copy movescan-hero-copy">
             <p className="eyebrow">AI Guy Labs™ Product</p>
             <div className="movescan-product-lockup">
-              <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
               <p className="product-detail-subheading">MoveScan | AI Instant Moving Estimates</p>
             </div>
             <h1 id="movescan-product-title">Give customers an instant moving estimate without sending an estimator first.</h1>

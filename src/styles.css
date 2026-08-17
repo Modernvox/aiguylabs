@@ -4188,19 +4188,11 @@ img {
     order: 2;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 0;
     width: 100%;
     min-width: 0;
     margin-bottom: 8px;
   }
-
-  .movescan-product-lockup .product-detail-logo {
-    flex: 0 0 auto;
-    width: clamp(52px, 16vw, 70px);
-    height: clamp(52px, 16vw, 70px);
-    margin-bottom: 0;
-  }
-
   .movescan-product-lockup .product-detail-subheading {
     flex: 1 1 auto;
     min-width: 0;
