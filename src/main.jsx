@@ -1077,14 +1077,14 @@ function ProductEditorialPanel({ product, index }) {
     <article id={product.slug} className={reverse ? 'product-editorial product-editorial--reverse' : 'product-editorial'} style={{ '--accent': product.accent }}>
       <div className="product-editorial-copy">
         {product.status === 'IN DEVELOPMENT' ? <ProductStatusBadge product={product} className="product-editorial-status" /> : <p className="eyebrow">{product.status}</p>}
-        <h2>{product.name}</h2>
+        <div className="product-title-lockup">
+          <img src={product.logo} alt="" aria-hidden="true" />
+          <h2>{product.name}</h2>
+        </div>
         <p className="product-statement">{product.tagline}</p>
         <p>{product.longDescription}</p>
         <ProductValuation product={product} compact />
         <a className="editorial-link" href={getProductRoute(product)}>Explore Product <Icon /></a>
-      </div>
-      <div className="product-editorial-icon" aria-hidden="true">
-        <img src={product.logo} alt="" />
       </div>
     </article>
   );
