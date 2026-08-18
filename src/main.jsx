@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Calculator, FileCheck2, ScanLine, Video } from 'lucide-react';
 import './styles.css';
 
 const navItems = [
@@ -28,7 +27,7 @@ const builtWithTechnologies = [
 const services = [
   {
     title: 'Custom Software Development',
-    description: 'Design and build custom web and mobile applications tailored to your business, workflow, and customers. AI Guy Labs™ turns specific operational problems into focused software that people can actually use.',
+    description: 'Design and build custom web and mobile applications tailored to your business, workflow, and customers. AI Guy Labsï¿½ turns specific operational problems into focused software that people can actually use.',
     icon: 'stack',
     slug: 'custom-software-development',
     productSlugs: ['saasquatch', 'sizzle'],
@@ -42,14 +41,14 @@ const services = [
   },
   {
     title: 'Product Development',
-    description: 'From concept and validation to launch and long-term improvement, build scalable software products with a focus on usability and performance. This work is shaped by shipping real AI Guy Labs™ products, not theory.',
+    description: 'From concept and validation to launch and long-term improvement, build scalable software products with a focus on usability and performance. This work is shaped by shipping real AI Guy Labsï¿½ products, not theory.',
     icon: 'rocket',
     slug: 'product-development',
     productSlugs: ['hotspot-studio', 'movescan'],
   },
   {
     title: 'Business Automation',
-    description: 'Replace manual workflows with software that saves time, reduces errors, and improves operational efficiency. AI Guy Labs™ builds automation around how the business actually operates.',
+    description: 'Replace manual workflows with software that saves time, reduces errors, and improves operational efficiency. AI Guy Labsï¿½ builds automation around how the business actually operates.',
     icon: 'flow',
     slug: 'business-automation',
     productSlugs: ['batchflow'],
@@ -63,7 +62,7 @@ const services = [
   },
   {
     title: 'Technical Consulting',
-    description: 'Architecture planning, technical strategy, product planning, and guidance for companies building modern software. Consulting is grounded in product decisions from AI, automation, SaaS, and interactive platforms already built inside AI Guy Labs™.',
+    description: 'Architecture planning, technical strategy, product planning, and guidance for companies building modern software. Consulting is grounded in product decisions from AI, automation, SaaS, and interactive platforms already built inside AI Guy Labsï¿½.',
     icon: 'compass',
     slug: 'technical-consulting',
     productSlugs: ['batchflow', 'saasquatch'],
@@ -131,11 +130,9 @@ const products = [
     logo: '/images/movescan.png',
     glow: 'blue',
     accent: '#2d7dff',
-    tagline: 'AI Instant Moving Estimates',
-    description: 'AI Instant Moving Estimate software for moving companies that turns customer walkthroughs into inventory, cubic feet, truck, crew, labor, packing, and company-priced estimates.',
-    longDescription: 'MoveScan helps moving companies turn customer walkthroughs into instant estimates using inventory detection, cubic-foot estimation, truck and crew recommendations, packing workflows, and company-controlled pricing.',
-    seoTitle: 'MoveScan | AI Instant Moving Estimates for Moving Companies',
-    seoDescription: 'MoveScan helps moving companies turn customer walkthroughs into instant estimates using inventory detection, cubic-foot estimation, truck and crew recommendations, packing workflows, and company-controlled pricing.',
+    tagline: 'AI-powered moving estimates',
+    description: 'AI-powered moving estimate platform that transforms customer video walkthroughs into organized inventories and professional moving quotes.',
+    longDescription: 'MoveScan transforms customer video walkthroughs into organized moving inventories and professional moving quotes, helping moving companies create faster, clearer estimates from real customer-submitted footage.',
     status: 'Production',
     technologies: ['React Native', 'TypeScript', 'Supabase', 'OpenAI'],
     keywords: ['AI', 'moving', 'inventory', 'estimate', 'business', 'automation'],
@@ -143,7 +140,7 @@ const products = [
     website: '/products/movescan',
     demoUrl: '/contact',
     documentationUrl: '/contact',
-    features: ['AI Instant Moving Estimates', 'Company-controlled pricing', 'Walkthrough-to-estimate workflow'],
+    features: ['AI-assisted inventory capture', 'Estimate-ready workflows', 'Field-friendly product experience'],
     developmentValue: '$185,000',
   },
   {
@@ -410,6 +407,295 @@ const pulsarScreenshots = [
 ];
 const showcaseProducts = products;
 
+
+const SITE_URL = 'https://aiguylabs.com';
+const DEFAULT_SEO_IMAGE = '/images/ai_guy_brain_icon.png';
+
+const publicRouteSeo = {
+  '/': {
+    title: 'AI Guy Labsï¿½ | Custom Software, AI Automation, and Product Development',
+    description: 'AI Guy Labsï¿½ builds custom software products, AI automation, and applications that solve real business problems for operators, creators, and growing companies.',
+  },
+  '/products': {
+    title: 'Products | AI Guy Labsï¿½',
+    description: 'Explore the AI Guy Labsï¿½ software ecosystem, including MoveScan, Hotspot Studio, BatchFlow, SwiftSale, Sizzle, Pulsar, and SaaSquatch.',
+  },
+  '/apparel': {
+    title: 'AI Guy Apparel | AI Guy Labsï¿½',
+    description: 'AI Guy Apparel is premium apparel for creators, developers, innovators, and independent thinkers. WE ARE BUILDERS.',
+  },
+  '/services': {
+    title: 'Services | AI Guy Labsï¿½',
+    description: 'AI Guy Labsï¿½ designs and builds custom software, AI-powered tools, automation systems, interactive platforms, and production-ready digital products.',
+  },
+  '/about': {
+    title: 'About Michael St. Pierre | AI Guy Labsï¿½',
+    description: 'Learn about Michael St. Pierre, founder of AI Guy Labsï¿½, and the product-building approach behind the AI Guy Labsï¿½ software ecosystem.',
+  },
+  '/contact': {
+    title: 'Contact | AI Guy Labsï¿½',
+    description: 'Contact AI Guy Labsï¿½ to discuss custom software, AI automation, product development, and business workflow systems built for real outcomes.',
+  },
+};
+
+function absoluteUrl(value = '/') {
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+
+  const path = value.startsWith('/') ? value : '/' + value;
+  return SITE_URL + path;
+}
+
+function normalizeRoutePath(value) {
+  if (!value || value === '/') {
+    return '/';
+  }
+
+  return value.replace(/\/$/, '') || '/';
+}
+
+function resolveSeoMetadata(path, product) {
+  const cleanPath = normalizeRoutePath(path);
+
+  if (product) {
+    return {
+      title: product.name + ' | AI Guy Labsï¿½ Product',
+      description: product.description,
+      canonical: absoluteUrl(product.website),
+      image: absoluteUrl(product.logo || DEFAULT_SEO_IMAGE),
+      robots: 'index,follow',
+      type: 'website',
+    };
+  }
+
+  if (publicRouteSeo[cleanPath]) {
+    return {
+      ...publicRouteSeo[cleanPath],
+      canonical: absoluteUrl(cleanPath),
+      image: absoluteUrl(DEFAULT_SEO_IMAGE),
+      robots: 'index,follow',
+      type: 'website',
+    };
+  }
+
+  if (cleanPath === '/admin/leads') {
+    return {
+      title: 'Private Leads | AI Guy Labsï¿½',
+      description: 'Private AI Guy Labsï¿½ lead management area.',
+      canonical: absoluteUrl('/admin/leads'),
+      image: absoluteUrl(DEFAULT_SEO_IMAGE),
+      robots: 'noindex,nofollow',
+      type: 'website',
+    };
+  }
+
+  if (cleanPath === '/products/movescan/demo') {
+    return {
+      title: 'MoveScan Demo | AI Guy Labsï¿½',
+      description: 'MoveScan demo experience for reviewing the guided customer quote workflow.',
+      canonical: absoluteUrl('/products/movescan'),
+      image: absoluteUrl('/images/movescan.png'),
+      robots: 'noindex,follow',
+      type: 'website',
+    };
+  }
+
+  if (cleanPath === '/privacy' || cleanPath === '/terms') {
+    const label = cleanPath === '/privacy' ? 'Privacy Policy' : 'Terms of Service';
+
+    return {
+      title: label + ' | AI Guy Labsï¿½',
+      description: label + ' for AI Guy Labsï¿½.',
+      canonical: absoluteUrl(cleanPath),
+      image: absoluteUrl(DEFAULT_SEO_IMAGE),
+      robots: 'noindex,follow',
+      type: 'website',
+    };
+  }
+
+  return {
+    title: 'Page Not Found | AI Guy Labsï¿½',
+    description: 'The requested AI Guy Labsï¿½ page could not be found.',
+    canonical: absoluteUrl(cleanPath),
+    image: absoluteUrl(DEFAULT_SEO_IMAGE),
+    robots: 'noindex,follow',
+    type: 'website',
+  };
+}
+
+
+const BASE_ORGANIZATION_SCHEMA = {
+  '@type': 'Organization',
+  name: 'AI Guy Labs',
+  url: SITE_URL,
+  logo: absoluteUrl(DEFAULT_SEO_IMAGE),
+  description: 'AI Guy Labs is a software development company that creates original software products and custom software solutions.',
+};
+
+function compactSchema(value) {
+  if (Array.isArray(value)) {
+    return value.map(compactSchema).filter((item) => item !== undefined);
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value)
+        .map(([key, item]) => [key, compactSchema(item)])
+        .filter(([, item]) => item !== undefined && item !== '' && !(Array.isArray(item) && item.length === 0))
+    );
+  }
+
+  return value === null ? undefined : value;
+}
+
+function productApplicationCategory(product) {
+  const categories = [...(product?.filters?.filter(Boolean) || [])];
+
+  if (product?.keywords?.includes('developer tools') && !categories.includes('Developer Tools')) {
+    categories.push('Developer Tools');
+  }
+
+  return categories.length ? categories.join(', ') + ' Software' : 'SoftwareApplication';
+}
+
+function createSoftwareApplicationSchema(product) {
+  return compactSchema({
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: product.name,
+    description: product.longDescription || product.description,
+    url: absoluteUrl(product.website),
+    image: absoluteUrl(product.logo),
+    applicationCategory: productApplicationCategory(product),
+    publisher: BASE_ORGANIZATION_SCHEMA,
+  });
+}
+
+function createBreadcrumbSchema(product) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: absoluteUrl('/'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Products',
+        item: absoluteUrl('/products'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.name,
+        item: absoluteUrl(product.website),
+      },
+    ],
+  };
+}
+
+function resolveStructuredData(path, product) {
+  const cleanPath = normalizeRoutePath(path);
+
+  if (cleanPath === '/') {
+    return [
+      {
+        '@context': 'https://schema.org',
+        ...BASE_ORGANIZATION_SCHEMA,
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'AI Guy Labs',
+        url: SITE_URL,
+        publisher: BASE_ORGANIZATION_SCHEMA,
+      },
+    ];
+  }
+
+  if (product) {
+    return [createSoftwareApplicationSchema(product), createBreadcrumbSchema(product)];
+  }
+
+  return [];
+}
+
+function applyStructuredData(items) {
+  document.head.querySelectorAll('script[type="application/ld+json"][data-aigl-schema]').forEach((script) => script.remove());
+
+  items.forEach((item, index) => {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.dataset.aiglSchema = String(index + 1);
+    script.textContent = JSON.stringify(item);
+    document.head.appendChild(script);
+  });
+}
+
+function ensureHeadElement(selector, createElement) {
+  const existing = document.head.querySelector(selector);
+
+  if (existing) {
+    return existing;
+  }
+
+  const element = createElement();
+  document.head.appendChild(element);
+  return element;
+}
+
+function setNamedMeta(name, content) {
+  const element = ensureHeadElement('meta[name="' + name + '"]', () => {
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', name);
+    return meta;
+  });
+
+  element.setAttribute('content', content);
+}
+
+function setPropertyMeta(property, content) {
+  const element = ensureHeadElement('meta[property="' + property + '"]', () => {
+    const meta = document.createElement('meta');
+    meta.setAttribute('property', property);
+    return meta;
+  });
+
+  element.setAttribute('content', content);
+}
+
+function setCanonical(url) {
+  const element = ensureHeadElement('link[rel="canonical"]', () => {
+    const link = document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    return link;
+  });
+
+  element.setAttribute('href', url);
+}
+
+function applySeoMetadata(metadata) {
+  document.title = metadata.title;
+  setNamedMeta('description', metadata.description);
+  setNamedMeta('robots', metadata.robots);
+  setCanonical(metadata.canonical);
+  setPropertyMeta('og:site_name', 'AI Guy Labsï¿½');
+  setPropertyMeta('og:type', metadata.type);
+  setPropertyMeta('og:title', metadata.title);
+  setPropertyMeta('og:description', metadata.description);
+  setPropertyMeta('og:url', metadata.canonical);
+  setPropertyMeta('og:image', metadata.image);
+  setNamedMeta('twitter:card', 'summary_large_image');
+  setNamedMeta('twitter:title', metadata.title);
+  setNamedMeta('twitter:description', metadata.description);
+  setNamedMeta('twitter:image', metadata.image);
+}
+
 const productFilters = ['All', 'AI', 'Automation', 'Business', 'Interactive', 'Developer Tools'];
 
 const productStack = [
@@ -424,10 +710,6 @@ const productStack = [
   { name: 'OpenAI', icon: '/images/technologies/openai.svg' },
   { name: 'LiveKit', icon: '/images/technologies/livekit.svg' },
 ];
-
-function getProductRoute(product) {
-  return product?.slug ? '/products/' + product.slug : '/products';
-}
 
 const footerNav = [
   { label: 'Home', href: '/' },
@@ -449,6 +731,7 @@ const footerProducts = [
 const MOVESCAN_LOGIN_URL = 'https://movescan.aiguylabs.com/login';
 const MOVESCAN_DEMO_URL = 'https://movescan.aiguylabs.com/quote/movescan-demo';
 const MOVESCAN_FREE_TRIAL_URL = 'https://www.movescan.app';
+const MOVESCAN_DEMO_VIDEO_URL = typeof window !== 'undefined' && (window.__MOVESCAN_DEMO_VIDEO_URL__ || import.meta.env.VITE_MOVESCAN_DEMO_VIDEO_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/videos/movescan-demo.mp4' : 'https://media.aiguylabs.com/movescan-demo.mp4'));
 
 function Icon({ type }) {
   if (type === 'message') {
@@ -535,8 +818,8 @@ function Icon({ type }) {
 
 function Logo() {
   return (
-    <a className="logo" href="/" aria-label="AI Guy Labs™ home">
-      <img src="/images/aiguy_print.png" alt="AI Guy Labs™" />
+    <a className="logo" href="/" aria-label="AI Guy Labsï¿½ home">
+      <img src="/images/aiguy_logo.PNG" alt="AI Guy Labsï¿½" />
     </a>
   );
 }
@@ -614,15 +897,16 @@ function ProductShowcase({ titleId }) {
   return (
     <div className="portfolio-showcase">
       <div className="portfolio-heading">
-        <p className="eyebrow">Products built by AI Guy Labs™</p>
-        <h2 id={titleId}>A growing ecosystem of software products.</h2>
+        <p className="eyebrow">Products built by AI Guy Labsï¿½</p>
+        <h1 id={titleId}>A growing ecosystem of software products.</h1>
+        <p className="portfolio-summary">AI Guy Labsï¿½ is a software development company that creates original software products and custom software solutions for real business workflows.</p>
       </div>
       <div className="product-showcase">
         {showcaseProducts.map((product) => (
           <a
             className={"product-logo-card product-logo-card--" + product.glow}
             key={product.name}
-            href={getProductRoute(product)}
+            href={product.website}
             aria-label={"Learn more about " + product.name}
           >
             <div className="product-logo-frame">
@@ -645,7 +929,7 @@ function TechnologyStrip() {
     <section className="technology-strip" aria-labelledby="technology-title">
       <div className="container technology-inner">
         <h2 id="technology-title">Built With</h2>
-        <div className="tech-list" aria-label="AI Guy Labs™ development technologies">
+        <div className="tech-list" aria-label="AI Guy Labsï¿½ development technologies">
           {builtWithTechnologies.map((tech) => (
             <span className="tech-item" key={tech.name} title={tech.name} role="img" aria-label={tech.name}>
               <img src={tech.icon} alt="" loading="lazy" />
@@ -668,7 +952,7 @@ function ServiceCard({ service, featured = false }) {
       <h3>{service.title}</h3>
       <p>{service.description}</p>
       {referencedProducts.length > 0 ? (
-        <div className="service-product-row" aria-label={service.title + ' related AI Guy Labs™ products'}>
+        <div className="service-product-row" aria-label={service.title + ' related AI Guy Labsï¿½ products'}>
           {referencedProducts.map((product) => <ProductReference product={product} key={product.slug} />)}
         </div>
       ) : null}
@@ -679,7 +963,7 @@ function ServiceCard({ service, featured = false }) {
 
 function ProductReference({ product }) {
   return (
-    <a className="product-reference" href={getProductRoute(product)} style={{ '--accent': product.accent }} aria-label={"View " + product.name}>
+    <a className="product-reference" href={product.website} style={{ '--accent': product.accent }} aria-label={"View " + product.name}>
       <img src={product.logo} alt="" aria-hidden="true" loading="lazy" />
       <span>{product.name}</span>
     </a>
@@ -693,7 +977,7 @@ function ServicesSection() {
         <div className="section-intro sticky-intro">
           <p className="eyebrow">Services</p>
           <h2 id="services-title">Software built to solve real business problems.</h2>
-          <p>AI Guy Labs™ helps businesses build modern software, automate operations, integrate AI, and transform ideas into production-ready applications.</p>
+          <p>AI Guy Labsï¿½ helps businesses build modern software, automate operations, integrate AI, and transform ideas into production-ready applications.</p>
           <a className="button button-secondary services-page-link" href="/services">View Services <Icon /></a>
         </div>
         <div className="service-cards">
@@ -723,7 +1007,7 @@ function ProjectsSection() {
               </div>
               <h3>{project.name}</h3>
               <p>{project.description}</p>
-              <a className="text-link" href={getProductRoute(project)}>Learn More <Icon /></a>
+              <a className="text-link" href={project.website}>Learn More <Icon /></a>
             </article>
           ))}
         </div>
@@ -747,17 +1031,17 @@ function AboutSection() {
           <div className="about-copy">
             <p className="eyebrow">About Me</p>
             <h2 id="about-title">I build software from real-world problems.</h2>
-            <p>I'm Michael St. Pierre, founder of AI Guy Labs™ and a product builder focused on creating practical software for real businesses. I've built products across moving estimates, live selling, batch production, interactive cooking, audience engagement, visual experiences, and SaaS discovery.</p>
+            <p>I'm Michael St. Pierre, founder of AI Guy Labsï¿½ and a product builder focused on creating practical software for real businesses. I've built products across moving estimates, live selling, batch production, interactive cooking, audience engagement, visual experiences, and SaaS discovery.</p>
             <p>My approach is simple: identify a frustrating workflow, understand how people actually use it, and build software that makes the process faster, clearer, and easier to manage.</p>
-            <p>AI Guy Labs™ is the home of products including MoveScan, SwiftSale, BatchFlow, Sizzle, Pulsar, Hotspot Studio, and SaaSquatch.</p>
+            <p>AI Guy Labsï¿½ is the home of products including MoveScan, SwiftSale, BatchFlow, Sizzle, Pulsar, Hotspot Studio, and SaaSquatch.</p>
           </div>
-          <div className="about-proof" aria-label="AI Guy Labs™ proof points">
+          <div className="about-proof" aria-label="AI Guy Labsï¿½ proof points">
             {proofPoints.map((point) => <div className="proof-card" key={point}>{point}</div>)}
           </div>
           <a className="button button-primary about-cta" href="/products">Explore the Products <Icon /></a>
         </div>
         <figure className="about-team-card">
-          <img src="/images/aiguy_team.png" alt="AI Guy Labs™ development team." width="1536" height="1024" loading="lazy" />
+          <img src="/images/aiguy_team.png" alt="AI Guy Labsï¿½ development team." width="1536" height="1024" loading="lazy" />
         </figure>
       </div>
     </section>
@@ -784,7 +1068,7 @@ function Footer() {
     <footer className="site-footer">
       <div className="container footer-grid">
         <div className="footer-brand">
-          <a className="footer-brand-name" href="/">AI Guy Labs™</a>
+          <a className="footer-brand-name" href="/">AI Guy Labsï¿½</a>
           <p>Software. AI-powered. Built for results.</p>
         </div>
         <nav aria-label="Footer navigation">
@@ -801,7 +1085,7 @@ function Footer() {
         </nav>
       </div>
       <div className="container footer-bottom">
-        <p>&copy; 2026 AI Guy Labs™. All rights reserved.</p>
+        <p>&copy; 2026 AI Guy Labsï¿½. All rights reserved.</p>
         <div>
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
@@ -816,7 +1100,7 @@ function ServicesHero() {
       <div className="container services-hero-inner">
         <p className="eyebrow">SERVICES</p>
         <h1 id="services-hero-title">We build software that moves businesses forward.</h1>
-        <p>From the first idea to a production-ready product, AI Guy Labs™ designs and builds focused software, AI systems, and digital experiences with a clear purpose.</p>
+        <p>From the first idea to a production-ready product, AI Guy Labsï¿½ designs and builds focused software, AI systems, and digital experiences with a clear purpose.</p>
       </div>
     </section>
   );
@@ -858,7 +1142,7 @@ function ServicesListSection() {
   return (
     <section id="service-list" className="section-shell services-editorial-section" aria-labelledby="service-list-title">
       <div className="container">
-        <h2 id="service-list-title" className="sr-only">AI Guy Labs™ services</h2>
+        <h2 id="service-list-title" className="sr-only">AI Guy Labsï¿½ services</h2>
         <div className="services-editorial-list">
           {premiumServices.map((service, index) => <ServiceEditorialPanel service={service} index={index} key={service.slug} />)}
         </div>
@@ -875,7 +1159,7 @@ function ServicesProcess() {
           <p className="eyebrow">HOW WE BUILD</p>
           <h2 id="process-title">Clear decisions. Focused execution. No unnecessary complexity.</h2>
         </div>
-        <div className="services-process-line" aria-label="AI Guy Labs™ build process">
+        <div className="services-process-line" aria-label="AI Guy Labsï¿½ build process">
           {premiumProcess.map((step, index) => (
             <div className="services-process-step" key={step}>
               <span>{String(index + 1).padStart(2, '0')}</span>
@@ -892,7 +1176,7 @@ function ServicesClosingCTA() {
   return (
     <section className="section-shell services-closing" aria-labelledby="services-closing-title">
       <div className="container services-closing-inner">
-        <p className="eyebrow">Work With AI Guy Labs™</p>
+        <p className="eyebrow">Work With AI Guy Labsï¿½</p>
         <h2 id="services-closing-title">Have a problem software could solve?</h2>
         <p>Tell us what is slowing your business down. We'll help determine what should be built.</p>
         <a className="button button-primary" href="/contact">Start the Conversation <Icon /></a>
@@ -915,7 +1199,7 @@ function ProductsHero() {
   return (
     <section className="products-hero section-shell products-hero-premium" aria-labelledby="products-hero-title">
       <div className="container products-hero-inner">
-        <p className="eyebrow">Products Built by AI Guy Labs™</p>
+        <p className="eyebrow">Products Built by AI Guy Labsï¿½</p>
         <h1 id="products-hero-title">Software designed to solve real problems.</h1>
         <p>Focused products for operators, teams, creators, and companies that need software with a clear job to do.</p>
       </div>
@@ -935,7 +1219,7 @@ function ProductsEcosystem() {
         </div>
         <div className="ecosystem-grid">
           {products.map((product) => (
-            <a className="ecosystem-card" href={getProductRoute(product)} key={product.slug} style={{ '--accent': product.accent }}>
+            <a className="ecosystem-card" href={'#' + product.slug} key={product.slug} style={{ '--accent': product.accent }}>
               <div className="ecosystem-icon"><img src={product.logo} alt={product.name + ' icon'} /></div>
               <div>
                 <h3>{product.name}</h3>
@@ -970,9 +1254,9 @@ function ProductSpotlight({ product }) {
             {product.technologies.map((tech) => <span key={tech}>{tech}</span>)}
           </div>
           <div className="spotlight-actions">
-            <a className="button button-primary" href={getProductRoute(product)}>View Product <Icon /></a>
+            <a className="button button-primary" href={product.website}>View Product <Icon /></a>
             <a className="button button-secondary" href={product.demoUrl}>Watch Demo</a>
-            <a className="text-link" href={getProductRoute(product)}>Learn More <Icon /></a>
+            <a className="text-link" href={'#' + product.slug}>Learn More <Icon /></a>
           </div>
         </div>
       </div>
@@ -998,7 +1282,7 @@ function ProductsCatalog() {
             <p className="eyebrow">All Products</p>
             <h2 id="catalog-title">Complete software catalog</h2>
           </div>
-          <p>Search and filter the current AI Guy Labs™ ecosystem. New products can be added through the shared product configuration.</p>
+          <p>Search and filter the current AI Guy Labsï¿½ ecosystem. New products can be added through the shared product configuration.</p>
         </div>
         <div className="catalog-controls" role="search">
           <label className="sr-only" htmlFor="product-search">Search products</label>
@@ -1021,7 +1305,7 @@ function ProductsCatalog() {
               <div className="catalog-tech-list">
                 {product.technologies.map((tech) => <span key={tech}>{tech}</span>)}
               </div>
-              <a className="text-link" href={getProductRoute(product)}>Learn More <Icon /></a>
+              <a className="text-link" href={product.website}>Learn More <Icon /></a>
             </article>
           ))}
         </div>
@@ -1038,7 +1322,7 @@ function ProductsTechnologyStack() {
         <div className="section-intro centered-intro">
           <p className="eyebrow">Technology Stack</p>
           <h2 id="stack-title">Modern tools behind the ecosystem.</h2>
-          <p>AI Guy Labs™ products are built with reliable, scalable technologies chosen for practical product execution.</p>
+          <p>AI Guy Labsï¿½ products are built with reliable, scalable technologies chosen for practical product execution.</p>
         </div>
         <div className="stack-grid">
           {productStack.map((tech) => (
@@ -1058,9 +1342,9 @@ function ProductsCTA() {
     <section className="section-shell products-final-cta" aria-labelledby="products-cta-title">
       <div className="container">
         <div className="cta-panel">
-          <p className="eyebrow">Work With AI Guy Labs™</p>
+          <p className="eyebrow">Work With AI Guy Labsï¿½</p>
           <h2 id="products-cta-title">Have an idea? Let's build it together.</h2>
-          <p>Whether you're looking for custom software, AI solutions, automation, or interactive experiences, AI Guy Labs™ can help bring your vision to life.</p>
+          <p>Whether you're looking for custom software, AI solutions, automation, or interactive experiences, AI Guy Labsï¿½ can help bring your vision to life.</p>
           <div className="hero-actions cta-actions">
             <a className="button button-primary" href="/contact">Start a Project <Icon /></a>
             <a className="button button-secondary" href="/contact">Contact Us</a>
@@ -1084,7 +1368,7 @@ function ProductEditorialPanel({ product, index }) {
         <p className="product-statement">{product.tagline}</p>
         <p>{product.longDescription}</p>
         <ProductValuation product={product} compact />
-        <a className="editorial-link" href={getProductRoute(product)}>Explore Product <Icon /></a>
+        <a className="editorial-link" href={product.website}>Explore Product <Icon /></a>
       </div>
     </article>
   );
@@ -1094,7 +1378,7 @@ function ProductsEditorialShowcase() {
   return (
     <section id="products-portfolio" className="section-shell products-editorial-section" aria-labelledby="products-portfolio-title">
       <div className="container">
-        <h2 id="products-portfolio-title" className="sr-only">AI Guy Labs™ product portfolio</h2>
+        <h2 id="products-portfolio-title" className="sr-only">AI Guy Labsï¿½ product portfolio</h2>
         <div className="products-editorial-list">
           {products.map((product, index) => <ProductEditorialPanel product={product} index={index} key={product.slug} />)}
         </div>
@@ -1113,14 +1397,99 @@ function ProductsPage() {
 }
 
 function ApparelPage() {
+  const apparelCategories = ['Tees', 'Hoodies', 'Headwear'];
+
   return (
     <main className="apparel-page">
-      <section className="apparel-hero" aria-label="AI Guy Apparel">
-        <picture>
-          <source media="(max-width: 767px)" srcSet="/images/apparelmobile.png" />
-          <source media="(min-width: 768px)" srcSet="/images/appareldesktop.png" />
-          <img className="apparel-hero-image" src="/images/appareldesktop.png" alt="AI Guy Apparel" width="1536" height="1024" fetchPriority="high" />
-        </picture>
+      <section className="apparel-hero" aria-labelledby="apparel-hero-title">
+        <div className="container apparel-hero-inner">
+          <div className="apparel-hero-copy">
+            <img className="apparel-brand-mark" src="/images/aiguy_logo.PNG" alt="AI Guy Labsï¿½" />
+            <p className="apparel-kicker">WE ARE BUILDERS.</p>
+            <h1 id="apparel-hero-title">AI Guy Apparel</h1>
+            <p>Premium apparel for creators, developers, innovators, and independent thinkers.</p>
+            <a className="button button-primary apparel-cta" href="#apparel-collection">Shop Collection <Icon /></a>
+          </div>
+        </div>
+      </section>
+
+      <section className="apparel-proof-strip" aria-label="AI Guy Apparel details">
+        <div className="container apparel-proof-grid">
+          <div>
+            <h2>Premium Quality</h2>
+            <p>Built to be worn.</p>
+          </div>
+          <div>
+            <h2>Limited Drops</h2>
+            <p>Small runs. Distinct pieces.</p>
+          </div>
+          <div>
+            <h2>Original Designs</h2>
+            <p>Made for builders.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="apparel-collection" className="apparel-section apparel-collection" aria-labelledby="apparel-collection-title">
+        <div className="container">
+          <div className="apparel-section-heading">
+            <p className="apparel-kicker">AI GUY APPAREL</p>
+            <h2 id="apparel-collection-title">The Collection</h2>
+          </div>
+          <div className="apparel-category-grid">
+            {apparelCategories.map((category) => (
+              <article className="apparel-category-tile" key={category}>
+                <div className="apparel-category-media" aria-hidden="true">
+                  <img src="/images/ai_guy_brain_icon.png" alt="" loading="lazy" />
+                </div>
+                <h3>{category}</h3>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="apparel-section apparel-brand-section" aria-labelledby="apparel-brand-title">
+        <div className="container apparel-editorial-grid">
+          <div className="apparel-editorial-image" aria-hidden="true">
+            <img src="/images/aiguy_mark.jpeg" alt="" loading="lazy" />
+          </div>
+          <div className="apparel-editorial-copy">
+            <p className="apparel-kicker">WE ARE BUILDERS.</p>
+            <h2 id="apparel-brand-title">Built for the people who build.</h2>
+            <p>AI Guy is for developers, creators, founders, designers, makers, and independent thinkersâ€”the people creating what comes next.</p>
+            <a className="apparel-text-link" href="/about">Our Story <Icon /></a>
+          </div>
+        </div>
+      </section>
+
+      <section className="apparel-section apparel-drop" aria-labelledby="apparel-drop-title">
+        <div className="container apparel-drop-panel">
+          <div className="apparel-drop-copy">
+            <p className="apparel-kicker">AI GUY / DROP 001</p>
+            <h2 id="apparel-drop-title">The Builder Collection</h2>
+            <p>Clean essentials for the people creating what's next.</p>
+            <a className="button button-secondary apparel-cta" href="#apparel-collection">Explore the Collection <Icon /></a>
+          </div>
+          <div className="apparel-drop-image" aria-hidden="true">
+            <img src="/images/ai_guy_brain_icon.png" alt="" loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      <section className="apparel-section apparel-signup" aria-labelledby="apparel-signup-title">
+        <div className="container apparel-signup-inner">
+          <div>
+            <p className="apparel-kicker">WE ARE BUILDERS.</p>
+            <h2 id="apparel-signup-title">Get the next drop.</h2>
+            <p>New releases, limited drops, and AI Guy updates.</p>
+          </div>
+          <form className="apparel-signup-form" onSubmit={(event) => event.preventDefault()}>
+            <label className="sr-only" htmlFor="apparel-email">Email address</label>
+            <input id="apparel-email" type="email" name="email" placeholder="Email address" autoComplete="email" />
+            <button className="button button-primary" type="submit">Join the List</button>
+          </form>
+        </div>
       </section>
     </main>
   );
@@ -1136,10 +1505,10 @@ function AboutPage() {
           <div className="about-page-copy">
             <p className="eyebrow">ABOUT AI GUY</p>
             <h1 id="about-page-title">Built by someone who understands real business problems.</h1>
-            <p>AI Guy Labs™ is led by Michael St. Pierre, a founder and product builder focused on creating practical software that improves how businesses operate, sell, communicate, and grow.</p>
+            <p>AI Guy Labsï¿½ is a software development company led by Michael St. Pierre, a founder and product builder focused on creating original software products and custom software solutions that improve how businesses operate, sell, communicate, and grow.</p>
           </div>
           <figure className="about-page-visual">
-            <img src="/images/aiguy_mark.jpeg" alt="Michael St. Pierre, founder of AI Guy Labs™." width="1024" height="1536" />
+            <img src="/images/aiguy_mark.jpeg" alt="Michael St. Pierre, founder of AI Guy Labsï¿½." width="1024" height="1536" />
           </figure>
         </div>
       </section>
@@ -1148,7 +1517,7 @@ function AboutPage() {
         <div className="container about-editorial-block">
           <p className="eyebrow">Story</p>
           <h2 id="about-story-title">From operating businesses to building software.</h2>
-          <p>Before building software products, Michael spent years operating real businesses and managing the day-to-day problems that come with sales, employees, inventory, customers, fulfillment, and growth. AI Guy Labs™ was created to turn those firsthand operational challenges into focused software products.</p>
+          <p>Before building software products, Michael spent years operating real businesses and managing the day-to-day problems that come with sales, employees, inventory, customers, fulfillment, and growth. AI Guy Labsï¿½ was created to turn those firsthand operational challenges into focused software products.</p>
         </div>
       </section>
 
@@ -1159,7 +1528,7 @@ function AboutPage() {
             <h2 id="about-perspective-title">Software should solve a clear problem.</h2>
             <p>The goal is not to add technology for the sake of technology. Every product should reduce friction, save time, improve visibility, or help a business perform better.</p>
           </div>
-          <div className="about-principles" aria-label="AI Guy Labs™ principles">
+          <div className="about-principles" aria-label="AI Guy Labsï¿½ principles">
             {principles.map((principle, index) => (
               <div className="about-principle" key={principle}>
                 <span>{String(index + 1).padStart(2, '0')}</span>
@@ -1173,12 +1542,12 @@ function AboutPage() {
       <section className="section-shell about-products-section" aria-labelledby="about-products-title">
         <div className="container about-products-inner">
           <div>
-            <p className="eyebrow">Products Built by AI Guy Labs™</p>
+            <p className="eyebrow">Products Built by AI Guy Labsï¿½</p>
             <h2 id="about-products-title">A focused product ecosystem built from real operational needs.</h2>
           </div>
-          <div className="about-product-list" aria-label="AI Guy Labs™ products">
+          <div className="about-product-list" aria-label="AI Guy Labsï¿½ products">
             {aboutProducts.map((product) => (
-              <a className="about-product-icon-link" href={getProductRoute(product)} key={product.slug} style={{ '--accent': product.accent }}>
+              <a className="about-product-icon-link" href={product.website} key={product.slug} style={{ '--accent': product.accent }}>
                 <span className="about-product-icon-frame" aria-hidden="true">
                   <img src={product.logo} alt="" />
                 </span>
@@ -1264,7 +1633,7 @@ function ContactPage() {
       <section className="section-shell contact-hero" aria-labelledby="contact-title">
         <div className="container contact-layout">
           <div className="contact-intro">
-            <p className="eyebrow">Contact AI Guy Labs™</p>
+            <p className="eyebrow">Contact AI Guy Labsï¿½</p>
             <h1 id="contact-title">LET'S BUILD SOMETHING THAT PERFORMS.</h1>
             <p className="contact-lede">Tell us what you're trying to solve. We'll help turn it into software that works.</p>
             <div className="contact-details" aria-label="Contact details">
@@ -1366,18 +1735,18 @@ function SoftwareEcosystemSection() {
 function HomePage() {
   return (
     <main className="home-image-page">
-      <section id="home" className="home-image-stage" aria-label="AI Guy Labs™ homepage">
+      <section id="home" className="home-image-stage" aria-label="AI Guy Labsï¿½ homepage">
         <picture>
           <source media="(max-width: 767px)" srcSet="/images/aiguy_mobile.png" />
           <source media="(min-width: 768px)" srcSet="/images/aiguy_desktop.png" />
-          <img id="ai-guy-labs-home-image" className="home-image" src="/images/aiguy_desktop.png" alt="AI Guy Labs™ homepage design." width="1536" height="1024" fetchPriority="high" />
+          <img id="ai-guy-labs-home-image" className="home-image" src="/images/aiguy_desktop.png" alt="AI Guy Labsï¿½ homepage design." width="1536" height="1024" fetchPriority="high" />
         </picture>
-        <p className="home-brand-correction">AI GUY LABS™</p>
+        <p className="home-brand-correction">AI GUY LABSï¿½</p>
         <div
           id="ai-guy-labs-hero-hotspots"
           className="home-hotspot-mount"
           data-hotspot-image-selector="#ai-guy-labs-home-image"
-          data-hotspot-image-alt="AI Guy Labs™ homepage design."
+          data-hotspot-image-alt="AI Guy Labsï¿½ homepage design."
           data-hotspot-desktop-image-url="/images/aiguy_desktop.png"
           data-hotspot-mobile-image-url="/images/aiguy_mobile.png"
           data-hotspot-desktop-project-url="/hotspots/aiguy-home-desktop.json"
@@ -1389,74 +1758,53 @@ function HomePage() {
     </main>
   );
 }
-const moveScanWorkflowIcons = {
-  video: Video,
-  scan: ScanLine,
-  calculator: Calculator,
-  estimate: FileCheck2,
-};
-
 function MoveScanProductPage({ product }) {
   const [activeImage, setActiveImage] = useState(null);
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const demoCloseRef = useRef(null);
   const featured = movescanScreenshots[0];
   const supporting = movescanScreenshots.slice(1);
-  const benefits = [
-    {
-      title: 'Respond faster than the old estimate process',
-      description: 'Instead of waiting for a call, appointment, or video survey, customers can complete a guided walkthrough and receive an instant estimate.',
-    },
-    {
-      title: 'Use estimator time where it matters',
-      description: 'MoveScan handles the first pass: inventory, volume, truck, crew, labor, access, and pricing. Your team can review and adjust the jobs that need attention.',
-    },
-    {
-      title: 'Estimate with your company\'s rules',
-      description: 'Set your labor rates, productivity assumptions, stair adjustments, truck charges, packing prices, and material preferences. MoveScan applies your operating model to each estimate.',
-    },
-  ];
   const workflowSteps = [
     {
-      icon: 'video',
-      title: 'Customer records the job',
-      description: 'Send a secure invitation link or use the website button flow. The customer records the rooms or areas from their phone. No app download required.',
+      title: 'Customer records the move',
+      description: 'The customer completes a guided room-by-room video walkthrough from their phone.',
     },
     {
-      icon: 'scan',
-      title: 'MoveScan builds the inventory',
-      description: 'MoveScan analyzes the walkthrough, organizes the rooms, identifies items, and prepares the inventory for customer confirmation.',
+      title: 'MoveScan analyzes the inventory',
+      description: 'MoveScan identifies the items being moved and estimates total cubic feet.',
     },
     {
-      icon: 'calculator',
-      title: 'MoveScan calculates the move',
-      description: 'The system converts the job into cubic feet, truck recommendation, crew, labor time, stairs/access adjustments, packing requirements where applicable, and price.',
+      title: 'MoveScan builds the estimate',
+      description: 'MoveScan applies company settings for truck, crew, loading and unloading time, stairs, charges, and estimated total.',
     },
     {
-      icon: 'estimate',
-      title: 'Customer gets an instant estimate',
-      description: 'The customer sees a clear estimate. Your staff can review, override, approve, and send follow-up quote communication when needed.',
+      title: 'Customer gets the estimate instantly',
+      description: 'The estimate is displayed immediately and a copy is sent to the customer.',
+    },
+    {
+      title: 'Moving company reviews the request',
+      description: 'Staff can review the inventory, estimate, move details, and Final Quote Requested status from MoveScan.',
     },
   ];
-  const estimateProgression = ['Customer walkthrough', 'Inventory', 'Cubic feet', 'Truck', 'Crew', 'Labor', 'Packing', 'Company pricing', 'Instant estimate'];
-  const companySettings = ['Mover productivity', 'Labor rates', 'Minimums', 'Truck charges', 'Stair handling', 'Travel pricing', 'Packing labor', 'Box and material pricing', 'Packing preferences'];
-  const supportedServices = ['Full moving estimates', 'Load Only', 'Unload Only', 'Load & Unload', 'Storage-related walkthroughs', 'Packing Only', 'Moving + Packing'];
 
   useEffect(() => {
-    const previousTitle = document.title;
-    const metaDescription = document.querySelector('meta[name="description"]');
-    const previousDescription = metaDescription?.getAttribute('content') || '';
+    if (!isDemoModalOpen) return undefined;
 
-    document.title = product.seoTitle;
-    if (metaDescription) {
-      metaDescription.setAttribute('content', product.seoDescription);
-    }
-
-    return () => {
-      document.title = previousTitle;
-      if (metaDescription) {
-        metaDescription.setAttribute('content', previousDescription);
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsDemoModalOpen(false);
       }
     };
-  }, [product.seoDescription, product.seoTitle]);
+
+    document.body.classList.add('movescan-demo-modal-open');
+    document.addEventListener('keydown', onKeyDown);
+    demoCloseRef.current?.focus();
+
+    return () => {
+      document.body.classList.remove('movescan-demo-modal-open');
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isDemoModalOpen]);
 
   function getResponsiveMoveScanImage(screenshot) {
     if (!screenshot.mobileSrc || typeof window === 'undefined') return screenshot;
@@ -1472,43 +1820,17 @@ function MoveScanProductPage({ product }) {
     <main className="product-detail-page movescan-detail-page">
       <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="movescan-product-title">
         <div className="container product-detail-hero-inner movescan-hero-inner" style={{ '--accent': product.accent }}>
-          <div className="product-detail-copy movescan-hero-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
-            <div className="movescan-product-lockup">
-              <p className="product-detail-subheading">MoveScan | AI Instant Moving Estimates</p>
-            </div>
-            <h1 id="movescan-product-title">Give customers an instant moving estimate without sending an estimator first.</h1>
-            <p>MoveScan guides customers through a quick room-by-room walkthrough, identifies inventory, and prices the move using your company's own settings.</p>
+          <div className="product-detail-copy">
+            <p className="eyebrow">AI Guy Labsï¿½ Product</p>
+            <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
+            <h1 id="movescan-product-title">MoveScan</h1>
+            <p className="product-detail-subheading">AI-powered moving estimates</p>
+            <p>Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
-              <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start your free trial <Icon /></a>
+              <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
+              <button className="button button-secondary" type="button" onClick={() => setIsDemoModalOpen(true)}>See It in Action <Icon /></button>
+              <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
             </div>
-            <p className="movescan-cta-note">Includes 5 completed estimates. No credit card required.</p>
-          </div>
-          <div className="movescan-hero-visual" aria-label="MoveScan product preview">
-            <button className="product-screenshot-button product-screenshot-button--featured movescan-featured-shot" type="button" onClick={() => setActiveImage(getResponsiveMoveScanImage(featured))}>
-              <picture>
-                <source media="(max-width: 767px)" srcSet={featured.mobileSrc} />
-                <source media="(min-width: 768px)" srcSet={featured.desktopSrc} />
-                <img src={featured.desktopSrc} alt={featured.alt} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1180px) calc(100vw - 64px), 46vw" fetchPriority="high" />
-              </picture>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-shell movescan-benefits-section" aria-labelledby="movescan-benefits-title">
-        <div className="container movescan-section-stack">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Benefits</p>
-            <h2 id="movescan-benefits-title">Quote more leads while they’re still ready to book.</h2>
-          </div>
-          <div className="movescan-benefit-grid">
-            {benefits.map((benefit) => (
-              <article className="movescan-workflow-card movescan-benefit-card" key={benefit.title}>
-                <h3>{benefit.title}</h3>
-                <p>{benefit.description}</p>
-              </article>
-            ))}
           </div>
         </div>
       </section>
@@ -1516,100 +1838,27 @@ function MoveScanProductPage({ product }) {
       <section className="section-shell product-detail-story movescan-workflow-section" aria-labelledby="movescan-workflow-title">
         <div className="container movescan-workflow-inner">
           <div className="movescan-section-heading">
-            <p className="eyebrow">How It Works</p>
-            <h2 id="movescan-workflow-title">From customer walkthrough to estimate.</h2>
+            <p className="eyebrow">Workflow</p>
+            <h2 id="movescan-workflow-title">How MoveScan works</h2>
           </div>
-          <div className="movescan-workflow-grid movescan-workflow-grid--four">
-            {workflowSteps.map((step) => {
-              const WorkflowIcon = moveScanWorkflowIcons[step.icon];
-
-              return (
-                <article className="movescan-workflow-card" key={step.title}>
-                  <span className="movescan-workflow-icon" aria-hidden="true">{WorkflowIcon ? <WorkflowIcon strokeWidth={2} /> : null}</span>
-                  <h3>{step.title}</h3>
-                  <p>{step.description}</p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-shell movescan-operational-section" aria-labelledby="movescan-operational-title">
-        <div className="container movescan-operational-inner">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Operational Estimate</p>
-            <h2 id="movescan-operational-title">Not just an inventory scanner.</h2>
-            <p>A list of furniture is not enough to quote a move. MoveScan turns the walkthrough into the operational information a mover actually needs: estimated volume, recommended truck, crew size, loading and unloading time, stair adjustments, heavy and specialty handling, packing labor and materials where applicable, and the customer-facing price.</p>
-          </div>
-          <ol className="movescan-estimate-chain" aria-label="MoveScan estimate progression">
-            {estimateProgression.map((item) => <li key={item}>{item}</li>)}
-          </ol>
-        </div>
-      </section>
-
-      <section className="section-shell movescan-settings-section" aria-labelledby="movescan-settings-title">
-        <div className="container movescan-settings-inner">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Company Settings</p>
-            <h2 id="movescan-settings-title">Estimate the way your company actually operates.</h2>
-            <p>No two moving companies run the same crew, trucks, pricing, or packing process. MoveScan lets you configure the assumptions that matter: mover productivity, labor rates, minimums, truck charges, stair handling, travel pricing, packing labor, box and material pricing, and company packing preferences.</p>
-            <p className="movescan-emphasis-line">The estimate is automated, but the operating model is yours.</p>
-          </div>
-          <ul className="movescan-feature-list movescan-settings-list" aria-label="Configurable MoveScan settings">
-            {companySettings.map((setting) => <li key={setting}>{setting}</li>)}
-          </ul>
-        </div>
-      </section>
-
-      <section className="section-shell movescan-services-section" aria-labelledby="movescan-services-title">
-        <div className="container movescan-split-inner">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Supported Services</p>
-            <h2 id="movescan-services-title">Built for the jobs movers quote every day.</h2>
-            <p>MoveScan supports full moving estimates, Load Only, Unload Only, Load & Unload, storage-related walkthroughs, Packing Only, and Moving + Packing workflows.</p>
-            <p>Customers see the right questions for the service they selected, and your team gets the operational detail needed to review the job.</p>
-          </div>
-          <ul className="movescan-service-list" aria-label="Supported MoveScan services">
-            {supportedServices.map((service) => <li key={service}>{service}</li>)}
-          </ul>
-        </div>
-      </section>
-
-      <section className="section-shell movescan-staff-section" aria-labelledby="movescan-staff-title">
-        <div className="container movescan-split-inner movescan-split-inner--reverse">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Staff Control</p>
-            <h2 id="movescan-staff-title">Automation without losing control.</h2>
-            <p>MoveScan can produce instant customer estimates, but it does not remove your team from the process. Staff can review inventory, access details, truck and crew recommendations, labor, packing outputs, pricing, and warnings.</p>
-            <p>When needed, your team can override the estimate, approve it, and send customer-safe follow-up communication.</p>
-          </div>
-          <div className="movescan-control-panel" aria-label="MoveScan staff review controls">
-            <span>Review</span>
-            <span>Override</span>
-            <span>Approve</span>
-            <span>Follow up</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-shell movescan-why-section" aria-labelledby="movescan-why-title">
-        <div className="container movescan-section-stack">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Why MoveScan</p>
-            <h2 id="movescan-why-title">Your website works after hours. Your estimator probably does not.</h2>
-            <p>A lead that waits can turn into a lost booking. MoveScan gives serious prospects a way to keep moving while their interest is high: record the walkthrough, get an estimate, and give your team a structured job to review instead of a vague quote request.</p>
-            <p>It helps your company quote more jobs without making every lead depend on a live salesperson or scheduled in-home visit.</p>
+          <div className="movescan-workflow-grid">
+            {workflowSteps.map((step, index) => (
+              <article className="movescan-workflow-card" key={step.title}>
+                <span>{index + 1}</span>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="section-shell product-screenshot-section" aria-label="MoveScan product screenshots">
         <div className="container product-screenshot-list">
-          {supporting.map((screenshot) => (
-            <article className="product-screenshot-panel" key={screenshot.src}>
+          {supporting.map((screenshot, index) => (
+            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
               <div className="product-screenshot-copy">
-                <p className="eyebrow">Product Proof</p>
+                <p className="eyebrow">Product Experience</p>
                 <h2>{screenshot.title}</h2>
                 <p>{screenshot.description}</p>
               </div>
@@ -1621,18 +1870,51 @@ function MoveScanProductPage({ product }) {
         </div>
       </section>
 
+      <section className="section-shell movescan-integration-section" aria-labelledby="movescan-integration-title">
+        <div className="container movescan-integration-inner">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">Website Integration</p>
+            <h2 id="movescan-integration-title">Add MoveScan to your website</h2>
+            <p>Give customers a Get Instant Estimate button that launches your company-specific MoveScan experience. Your pricing, truck settings, crew rules, and estimate settings stay connected to your account.</p>
+          </div>
+          <ul className="movescan-feature-list" aria-label="MoveScan company setup includes">
+            <li>Company-specific MoveScan estimate link</li>
+            <li>Website button code</li>
+            <li>Staff/admin dashboard</li>
+            <li>Company-specific pricing and settings</li>
+          </ul>
+        </div>
+      </section>
+
       <section className="section-shell product-detail-closing" aria-labelledby="movescan-closing-title">
         <div className="container product-detail-closing-inner movescan-closing-inner">
           <p className="eyebrow">Free Trial</p>
-          <h2 id="movescan-closing-title">Start quoting with MoveScan.</h2>
-          <p>Create your company account and run your first customer walkthroughs with 5 free completed estimates.</p>
+          <h2 id="movescan-closing-title">Try MoveScan with your first estimate free.</h2>
+          <p>Request trial access and AI Guy Labsï¿½ will provision your moving-company account for the current MoveScan onboarding flow.</p>
           <div className="product-detail-actions movescan-closing-actions">
-            <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start your free trial <Icon /></a>
+            <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
             <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
           </div>
-          <p className="movescan-cta-note">No credit card required.</p>
         </div>
       </section>
+
+      {isDemoModalOpen ? (
+        <div className="movescan-demo-modal" role="dialog" aria-modal="true" aria-label="MoveScan demo video" onClick={() => setIsDemoModalOpen(false)}>
+          <div className="movescan-demo-modal__backdrop" aria-hidden="true" />
+          <div className="movescan-demo-modal__dialog" onClick={(event) => event.stopPropagation()}>
+            <button ref={demoCloseRef} className="movescan-demo-modal__close" type="button" onClick={() => setIsDemoModalOpen(false)}>Close</button>
+            <div className="movescan-demo-modal__frame">
+              {MOVESCAN_DEMO_VIDEO_URL ? (
+                <video controls playsInline preload="metadata" src={MOVESCAN_DEMO_VIDEO_URL} />
+              ) : (
+                <div className="movescan-demo-modal__placeholder">
+                  <p>Set <code>VITE_MOVESCAN_DEMO_VIDEO_URL</code> to your Cloudflare R2 public MP4 URL to enable the demo video.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {activeImage ? (
         <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.title} onClick={() => setActiveImage(null)}>
@@ -1647,7 +1929,7 @@ function MoveScanDemoPage() {
   return (
     <main className="movescan-demo-page" aria-label="Live MoveScan Demo">
       <div className="movescan-demo-chrome">
-        <a className="movescan-demo-back" href="/products/movescan">Back to AI Guy Labs™</a>
+        <a className="movescan-demo-back" href="/products/movescan">Back to AI Guy Labsï¿½</a>
         <div className="movescan-demo-actions">
           <a className="movescan-demo-open" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan</a>
           <span className="movescan-demo-label">Live MoveScan Demo</span>
@@ -1674,7 +1956,7 @@ function MoveScanDemoPage() {
       <section className="section-shell product-detail-hero" aria-labelledby="batchflow-product-title">
         <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
+            <p className="eyebrow">AI Guy Labsï¿½ Product</p>
             <img src={product.logo} alt="BatchFlow product icon." className="product-detail-logo" />
             <h1 id="batchflow-product-title">BatchFlow</h1>
             <p className="product-detail-subheading">Production workflow automation</p>
@@ -1745,7 +2027,7 @@ function SizzleProductPage({ product }) {
       <section className="section-shell product-detail-hero" aria-labelledby="sizzle-product-title">
         <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
+            <p className="eyebrow">AI Guy Labsï¿½ Product</p>
             <img src={product.logo} alt="Sizzle product icon." className="product-detail-logo" />
             <h1 id="sizzle-product-title">Sizzle</h1>
             <p className="product-detail-subheading">Interactive live cooking platform</p>
@@ -1816,7 +2098,7 @@ function SwiftSaleProductPage({ product }) {
       <section className="section-shell product-detail-hero" aria-labelledby="swiftsale-product-title">
         <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
+            <p className="eyebrow">AI Guy Labsï¿½ Product</p>
             <img src={product.logo} alt="SwiftSale product icon." className="product-detail-logo" />
             <h1 id="swiftsale-product-title">SwiftSale</h1>
             <p className="product-detail-subheading">Live selling workflow automation</p>
@@ -1887,7 +2169,7 @@ function HotspotStudioProductPage({ product }) {
       <section className="section-shell product-detail-hero" aria-labelledby="hotspot-studio-product-title">
         <div className="container product-detail-hero-inner" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
+            <p className="eyebrow">AI Guy Labsï¿½ Product</p>
             <img src={product.logo} alt="Hotspot Studio product icon." className="product-detail-logo" />
             <h1 id="hotspot-studio-product-title">Hotspot Studio</h1>
             <p className="product-detail-subheading">Turn any image into an interactive experience</p>
@@ -1980,7 +2262,7 @@ function PulsarProductPage({ product }) {
       <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="pulsar-product-title">
         <div className="container product-detail-hero-inner product-detail-hero-inner--copy-only" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
+            <p className="eyebrow">AI Guy Labsï¿½ Product</p>
             <img src={product.logo} alt="Pulsar product icon." className="product-detail-logo" />
             <h1 id="pulsar-product-title">Pulsar</h1>
             <p className="product-detail-subheading">Live audience engagement platform</p>
@@ -2051,7 +2333,7 @@ function ProductPlaceholder({ product }) {
       <main className="product-placeholder-page">
         <section className="section-shell product-placeholder-hero" aria-labelledby="product-not-found-title">
           <div className="container product-placeholder-inner">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
+            <p className="eyebrow">AI Guy Labsï¿½ Product</p>
             <h1 id="product-not-found-title">Product not found.</h1>
             <p>The product page you requested is not available.</p>
             <a className="button button-primary" href="/products">Back to Products <Icon /></a>
@@ -2066,7 +2348,7 @@ function ProductPlaceholder({ product }) {
       <section className="section-shell product-placeholder-hero" aria-labelledby="product-placeholder-title">
         <div className="container product-placeholder-inner" style={{ '--accent': product.accent }}>
           <div className="product-placeholder-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
+            <p className="eyebrow">AI Guy Labsï¿½ Product</p>
             <h1 id="product-placeholder-title">{product.name}</h1>
             <p className="product-placeholder-subheading">{product.tagline}</p>
             <ProductStatusBadge product={product} className="product-placeholder-status" />
@@ -2074,7 +2356,7 @@ function ProductPlaceholder({ product }) {
               <>
                 <div className="product-development-message">
                   <h2>Currently in Development</h2>
-                  <p>SaaSquatch is the newest AI Guy Labs™ product. We're actively designing and building the platform. More information, previews, and early access details will be available as development progresses.</p>
+                  <p>SaaSquatch is the newest AI Guy Labsï¿½ product. We're actively designing and building the platform. More information, previews, and early access details will be available as development progresses.</p>
                 </div>
                 <ProductValuation product={product} />
               </>
@@ -2181,7 +2463,7 @@ function AdminLeadsPage() {
         <section className="section-shell admin-hero" aria-labelledby="admin-title">
           <div className="container admin-lockup">
             <p className="eyebrow">Private</p>
-            <h1 id="admin-title">AI Guy Labs™ Leads</h1>
+            <h1 id="admin-title">AI Guy Labsï¿½ Leads</h1>
             <p>Enter the admin access key to manage project inquiries.</p>
             <form className="admin-auth-form" onSubmit={unlock}>
               <label>
@@ -2203,7 +2485,7 @@ function AdminLeadsPage() {
           <div className="admin-heading">
             <p className="eyebrow">Private Dashboard</p>
             <h1 id="admin-leads-title">Lead Capture</h1>
-            <p>Database-backed project inquiries submitted through the AI Guy Labs™ contact form.</p>
+            <p>Database-backed project inquiries submitted through the AI Guy Labsï¿½ contact form.</p>
             <div className="admin-actions">
               <button className="button button-secondary button-small" type="button" onClick={loadLeads}>Refresh</button>
               <button className="button button-secondary button-small" type="button" onClick={() => { window.sessionStorage.removeItem('aigl_admin_token'); setToken(''); setLeads([]); setSelectedLead(null); }}>Lock</button>
@@ -2279,17 +2561,36 @@ function LegalPage({ type }) {
       <section className="section-shell product-placeholder-hero" aria-labelledby="legal-page-title">
         <div className="container product-placeholder-inner legal-page-inner">
           <div className="product-placeholder-copy">
-            <p className="eyebrow">AI Guy Labs™</p>
+            <p className="eyebrow">AI Guy Labsï¿½</p>
             <h1 id="legal-page-title">{isPrivacy ? 'Privacy' : 'Terms'}</h1>
             <p className="product-placeholder-subheading">{isPrivacy ? 'Privacy details are being prepared.' : 'Terms of use are being prepared.'}</p>
-            <p className="product-placeholder-message">This page is part of the AI Guy Labs™ public site and will be expanded with formal {isPrivacy ? 'privacy' : 'terms'} language before launch.</p>
-            <a className="button button-primary" href="/contact">Contact AI Guy Labs™ <Icon /></a>
+            <p className="product-placeholder-message">This page is part of the AI Guy Labsï¿½ public site and will be expanded with formal {isPrivacy ? 'privacy' : 'terms'} language before launch.</p>
+            <a className="button button-primary" href="/contact">Contact AI Guy Labsï¿½ <Icon /></a>
           </div>
         </div>
       </section>
     </main>
   );
 }
+
+function NotFoundPage() {
+  return (
+    <main className="product-placeholder-page not-found-page">
+      <section className="section-shell product-placeholder-hero" aria-labelledby="not-found-title">
+        <div className="container product-placeholder-inner not-found-inner">
+          <div className="product-placeholder-copy">
+            <p className="eyebrow">AI Guy Labsï¿½</p>
+            <h1 id="not-found-title">Page not found.</h1>
+            <p className="product-placeholder-subheading">The page you requested is not available.</p>
+            <p className="product-placeholder-message">Use the main navigation or return to the product catalog to continue exploring AI Guy Labsï¿½ software.</p>
+            <a className="button button-primary" href="/products">Explore Products <Icon /></a>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 function App() {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
   const isMoveScanDemoPage = path === '/products/movescan/demo';
@@ -2305,6 +2606,12 @@ function App() {
   const isPrivacyPage = path === '/privacy';
   const isTermsPage = path === '/terms';
   const isAdminLeadsPage = path === '/admin/leads';
+  const isKnownPage = isHomePage || isProductsPage || isProductDetailPage || isApparelPage || isServicesPage || isAboutPage || isContactPage || isAdminLeadsPage || isPrivacyPage || isTermsPage;
+
+  useEffect(() => {
+    applySeoMetadata(resolveSeoMetadata(path, productDetail));
+    applyStructuredData(resolveStructuredData(path, productDetail));
+  }, [path, productDetail]);
 
   return (
     <>
@@ -2314,7 +2621,7 @@ function App() {
         <>
           {isHomePage ? <HotspotBootstrap /> : null}
           <Header />
-          {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isApparelPage ? <ApparelPage /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : <HomePage />}
+          {isProductsPage ? <ProductsPage /> : isProductDetailPage ? <ProductPlaceholder product={productDetail} /> : isApparelPage ? <ApparelPage /> : isServicesPage ? <ServicesPage /> : isAboutPage ? <AboutPage /> : isContactPage ? <ContactPage /> : isAdminLeadsPage ? <AdminLeadsPage /> : isPrivacyPage ? <LegalPage type="privacy" /> : isTermsPage ? <LegalPage type="terms" /> : isKnownPage ? <HomePage /> : <NotFoundPage />}
           {isApparelPage ? null : <TechnologyStrip />}
           <Footer />
         </>
@@ -2322,7 +2629,7 @@ function App() {
       <div id="ai-guy-labs-modal" className="aigl-modal" hidden>
         <div className="aigl-modal__backdrop" data-modal-close="true" />
         <div className="aigl-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="aigl-modal-title">
-          <h2 id="aigl-modal-title">AI Guy Labs™</h2>
+          <h2 id="aigl-modal-title">AI Guy Labsï¿½</h2>
           <p id="aigl-modal-body" />
           <button type="button" data-modal-close="true">Close</button>
         </div>
@@ -2332,4 +2639,9 @@ function App() {
 }
 
 createRoot(document.getElementById('root')).render(<App />);
+
+
+
+
+
 
