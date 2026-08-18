@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
@@ -501,6 +501,17 @@ function resolveSeoMetadata(path, product) {
     };
   }
 
+  if (cleanPath === '/go/movescan-postcard') {
+    return {
+      title: 'Redirecting to MoveScan | AI Guy Labsï¿½',
+      description: 'Redirecting to MoveScan.',
+      canonical: absoluteUrl('/go/movescan-postcard'),
+      image: absoluteUrl(DEFAULT_SEO_IMAGE),
+      robots: 'noindex,nofollow',
+      type: 'website',
+    };
+  }
+
   if (cleanPath === '/privacy' || cleanPath === '/terms') {
     const label = cleanPath === '/privacy' ? 'Privacy Policy' : 'Terms of Service';
 
@@ -731,6 +742,8 @@ const footerProducts = [
 const MOVESCAN_LOGIN_URL = 'https://movescan.aiguylabs.com/login';
 const MOVESCAN_DEMO_URL = 'https://movescan.aiguylabs.com/quote/movescan-demo';
 const MOVESCAN_FREE_TRIAL_URL = 'https://www.movescan.app';
+const MOVESCAN_POSTCARD_REDIRECT_URL = '/products/movescan?utm_source=postcard&utm_medium=direct_mail&utm_campaign=movescan_local_launch';
+const MOVESCAN_POSTCARD_TRACKING_ENDPOINT = '/api/campaign-events';
 const MOVESCAN_DEMO_VIDEO_URL = typeof window !== 'undefined' && (window.__MOVESCAN_DEMO_VIDEO_URL__ || import.meta.env.VITE_MOVESCAN_DEMO_VIDEO_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/videos/movescan-demo.mp4' : 'https://media.aiguylabs.com/movescan-demo.mp4'));
 
 function Icon({ type }) {
@@ -2343,6 +2356,41 @@ function PulsarProductPage({ product }) {
     </main>
   );
 }
+function PostcardRedirectPage() {
+  useEffect(() => {
+    const payload = {
+      eventName: 'postcard_scan',
+      campaign: 'movescan_local_launch',
+      sourcePath: '/go/movescan-postcard',
+      destinationPath: MOVESCAN_POSTCARD_REDIRECT_URL,
+      utmSource: 'postcard',
+      utmMedium: 'direct_mail',
+      utmCampaign: 'movescan_local_launch',
+      metadata: {
+        source: 'postcard',
+        medium: 'direct_mail',
+        campaignLabel: 'MoveScan local launch',
+      },
+    };
+    const body = JSON.stringify(payload);
+
+    if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+      navigator.sendBeacon(MOVESCAN_POSTCARD_TRACKING_ENDPOINT, new Blob([body], { type: 'application/json' }));
+    } else {
+      void fetch(MOVESCAN_POSTCARD_TRACKING_ENDPOINT, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body,
+        keepalive: true,
+      }).catch(() => {});
+    }
+
+    window.location.replace(MOVESCAN_POSTCARD_REDIRECT_URL);
+  }, []);
+
+  return null;
+}
+
 function ProductPlaceholder({ product }) {
   if (product?.slug === 'movescan') return <MoveScanProductPage product={product} />;
   if (product?.slug === 'batchflow') return <BatchFlowProductPage product={product} />;
@@ -2616,6 +2664,7 @@ function NotFoundPage() {
 
 function App() {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
+  const isMoveScanPostcardPage = path === '/go/movescan-postcard';
   const isMoveScanDemoPage = path === '/products/movescan/demo';
   const isHomePage = path === '/';
   const isProductsPage = path === '/products';
@@ -2638,7 +2687,9 @@ function App() {
 
   return (
     <>
-      {isMoveScanDemoPage ? (
+      {isMoveScanPostcardPage ? (
+        <PostcardRedirectPage />
+      ) : isMoveScanDemoPage ? (
         <MoveScanDemoPage />
       ) : (
         <>
