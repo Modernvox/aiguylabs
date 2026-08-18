@@ -1762,6 +1762,7 @@ function MoveScanProductPage({ product }) {
   const [activeImage, setActiveImage] = useState(null);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const demoCloseRef = useRef(null);
+  const demoVideoRef = useRef(null);
   const featured = movescanScreenshots[0];
   const supporting = movescanScreenshots.slice(1);
   const workflowSteps = [
@@ -1800,7 +1801,29 @@ function MoveScanProductPage({ product }) {
     document.addEventListener('keydown', onKeyDown);
     demoCloseRef.current?.focus();
 
+    const video = demoVideoRef.current;
+
+    if (video) {
+      try {
+        video.currentTime = 0;
+      } catch (error) {
+        // Ignore browsers that block seeking before metadata is loaded.
+      }
+
+      void video.play().catch(() => {});
+    }
+
     return () => {
+      if (video) {
+        video.pause();
+
+        try {
+          video.currentTime = 0;
+        } catch (error) {
+          // Ignore browsers that block seeking during teardown.
+        }
+      }
+
       document.body.classList.remove('movescan-demo-modal-open');
       document.removeEventListener('keydown', onKeyDown);
     };
@@ -1905,7 +1928,7 @@ function MoveScanProductPage({ product }) {
             <button ref={demoCloseRef} className="movescan-demo-modal__close" type="button" onClick={() => setIsDemoModalOpen(false)}>Close</button>
             <div className="movescan-demo-modal__frame">
               {MOVESCAN_DEMO_VIDEO_URL ? (
-                <video controls playsInline preload="metadata" src={MOVESCAN_DEMO_VIDEO_URL} />
+                <video ref={demoVideoRef} controls playsInline preload="metadata" src={MOVESCAN_DEMO_VIDEO_URL} />
               ) : (
                 <div className="movescan-demo-modal__placeholder">
                   <p>Set <code>VITE_MOVESCAN_DEMO_VIDEO_URL</code> to your Cloudflare R2 public MP4 URL to enable the demo video.</p>
