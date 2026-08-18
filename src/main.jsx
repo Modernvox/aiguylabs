@@ -2543,7 +2543,7 @@ function PrivateCampaignsPage() {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok || data.ok === false) {
-        throw new Error(data.error || 'Invalid private access password.');
+        throw new Error(data.error || 'Invalid private campaigns password.');
       }
 
       setPassword('');
@@ -2607,14 +2607,14 @@ function PrivateCampaignsPage() {
 
             <div className="private-login-card">
               <h2>Open campaign analytics</h2>
-              <p>Enter the private access password to review the postcard campaign response.</p>
+              <p>Enter the private campaigns password to review the postcard campaign response.</p>
               <form className="private-login-form" onSubmit={unlock}>
                 <label>
-                  <span>Private access password</span>
+                  <span>Private campaigns password</span>
                   <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" />
                 </label>
                 {pageState.message ? <p className="form-error">{pageState.message}</p> : null}
-                <button className="button button-primary" type="submit" disabled={isSubmitting || !password.trim()}>{isSubmitting ? 'Opening...' : 'Open Analytics'} <Icon /></button>
+                <button className="button button-primary" type="submit" disabled={isSubmitting || !password.trim()}>{isSubmitting ? 'Opening...' : 'Open Campaigns'} <Icon /></button>
               </form>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { ensureDb, getAdminToken, json, safeString } from './_lead-utils.js';
+import { ensureDb, json, safeString } from './_lead-utils.js';
 
 const SESSION_COOKIE_NAME = 'aigl_campaigns_session';
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
@@ -22,8 +22,12 @@ function parseCookies(request) {
   return cookies;
 }
 
+function getPrivateCampaignsPassword(env) {
+  return env.PRIVATE_CAMPAIGNS_PASSWORD || '';
+}
+
 function getPrivateToken(request, env) {
-  const expected = getAdminToken(env);
+  const expected = getPrivateCampaignsPassword(env);
   if (!expected) return '';
 
   const cookies = parseCookies(request);
@@ -150,6 +154,7 @@ export {
   SESSION_MAX_AGE_SECONDS,
   buildSessionCookie,
   clearSessionCookie,
+  getPrivateCampaignsPassword,
   getPrivateToken,
   isPrivateCampaignsAuthorized,
   loadCampaignAnalytics,
