@@ -259,36 +259,6 @@ const products = [
   },
 ];
 
-const movescanScreenshots = [
-  {
-    title: 'MoveScan homepage',
-    description: 'The dedicated MoveScan homepage experience presents the product in the format that fits the visitor\'s device.',
-    src: '/images/products/movescan/movescan-desktop.png',
-    desktopSrc: '/images/products/movescan/movescan-desktop.png',
-    mobileSrc: '/images/products/movescan/movescan-homepage.png',
-    alt: 'MoveScan desktop homepage marketing mockup.',
-    mobileAlt: 'MoveScan mobile homepage marketing mockup showing the full phone screen.',
-  },
-  {
-    title: 'Guided customer walkthrough',
-    description: 'MoveScan guides customers room by room so moving companies receive structured footage instead of scattered messages.',
-    src: '/images/products/movescan/movescan-walkthrough.png',
-    alt: 'MoveScan customer guided room-by-room walkthrough interface.',
-  },
-  {
-    title: 'Customer inventory review',
-    description: 'Customers can review detected rooms and inventory before submitting a cleaner estimate request.',
-    src: '/images/products/movescan/movescan-inventory-review.png',
-    alt: 'MoveScan customer inventory review interface showing reviewed rooms and items.',
-  },
-  {
-    title: 'Staff estimate review',
-    description: 'Staff can review inventory summaries and estimate recommendations before preparing a customer quote.',
-    src: '/images/products/movescan/movescan-estimate-review.png',
-    alt: 'MoveScan staff estimate review interface with quote-ready recommendations.',
-  },
-];
-
 const batchflowScreenshots = [
   {
     title: 'Production queue optimization',
@@ -1799,12 +1769,9 @@ async function trackMoveScanDemoClick() {
 }
 
 function MoveScanProductPage({ product }) {
-  const [activeImage, setActiveImage] = useState(null);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const demoCloseRef = useRef(null);
   const demoVideoRef = useRef(null);
-  const featured = movescanScreenshots[0];
-  const supporting = movescanScreenshots.slice(1);
   const workflowSteps = [
     {
       title: 'Customer records the move',
@@ -1869,16 +1836,6 @@ function MoveScanProductPage({ product }) {
     };
   }, [isDemoModalOpen]);
 
-  function getResponsiveMoveScanImage(screenshot) {
-    if (!screenshot.mobileSrc || typeof window === 'undefined') return screenshot;
-    const useMobile = window.matchMedia('(max-width: 767px)').matches;
-    return {
-      ...screenshot,
-      src: useMobile ? screenshot.mobileSrc : screenshot.desktopSrc,
-      alt: useMobile ? screenshot.mobileAlt : screenshot.alt,
-    };
-  }
-
   return (
     <main className="product-detail-page movescan-detail-page">
       <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="movescan-product-title">
@@ -1916,22 +1873,6 @@ function MoveScanProductPage({ product }) {
         </div>
       </section>
 
-      <section className="section-shell product-screenshot-section" aria-label="MoveScan product screenshots">
-        <div className="container product-screenshot-list">
-          {supporting.map((screenshot, index) => (
-            <article className={index % 2 === 0 ? 'product-screenshot-panel' : 'product-screenshot-panel product-screenshot-panel--reverse'} key={screenshot.src}>
-              <div className="product-screenshot-copy">
-                <p className="eyebrow">Product Experience</p>
-                <h2>{screenshot.title}</h2>
-                <p>{screenshot.description}</p>
-              </div>
-              <button className="product-screenshot-button" type="button" onClick={() => setActiveImage(screenshot)}>
-                <img src={screenshot.src} alt={screenshot.alt} />
-              </button>
-            </article>
-          ))}
-        </div>
-      </section>
 
       <section className="section-shell movescan-integration-section" aria-labelledby="movescan-integration-title">
         <div className="container movescan-integration-inner">
@@ -1979,12 +1920,6 @@ function MoveScanProductPage({ product }) {
         </div>
       ) : null}
 
-      {activeImage ? (
-        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.title} onClick={() => setActiveImage(null)}>
-          <button className="product-lightbox-close" type="button" onClick={() => setActiveImage(null)}>Close</button>
-          <img src={activeImage.src} alt={activeImage.alt} onClick={(event) => event.stopPropagation()} />
-        </div>
-      ) : null}
     </main>
   );
 }
