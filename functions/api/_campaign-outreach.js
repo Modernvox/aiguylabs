@@ -111,41 +111,70 @@ async function recordRecipientEvent(env, request, { token, eventName, sourcePath
   });
 }
 
-function buildOutreachEmail({ companyName, recipientEmail, productUrl, pixelUrl }) {
-  const safeCompany = escapeHtml(companyName);
+function buildOutreachEmail({ productUrl, pixelUrl }) {
   const safeUrl = escapeHtml(productUrl.toString());
-  const text = [
-    'Hello,',
-    '',
-    'I wanted to share MoveScan, AI instant moving estimate software for moving companies.',
-    '',
-    'MoveScan guides a customer through a room-by-room walkthrough, builds the inventory, estimates the move, and applies your company pricing and operating settings.',
-    '',
-    'See MoveScan: ' + productUrl.toString(),
-    '',
-    'Best,',
-    'AI Guy Labs',
-  ].join('\n');
+  const text = `Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.
+
+A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.
+
+That process made sense years ago.
+
+Today, customers are used to doing almost everything from their phones with a few swipes and taps. They don’t want to sit there typing out every couch, bed, dresser, TV, box, and table they own — and they definitely shouldn’t have to guess what size moving truck they need.
+
+And when nearly every moving company uses the same slow quote process, customers start looking for easier alternatives — including third-party marketplaces that promise a faster, simpler way to book moving help, often at the moving company’s expense through fees, commissions, and tighter control over how the job is priced or handled.
+
+MoveScan gives independent moving companies a way to offer that same kind of convenience directly, without sending the customer somewhere else first.
+
+The customer opens your MoveScan estimate link on their phone and completes a short, guided room-by-room walkthrough. MoveScan identifies the inventory, calculates estimated cubic feet, determines truck and crew needs, accounts for the move details, applies your company’s own pricing and operating rules, and produces the customer’s instant estimate.
+
+This isn’t just an AI inventory scanner that gives your staff a list to quote later. MoveScan is a complete end-to-end instant estimating system. The estimate is already built for you, leaving your staff primarily with a review-and-approve step.
+
+A customer can walk through a full three-bedroom home and receive their instant moving estimate in under five minutes.
+
+I’m looking for a small group of moving companies interested in getting involved early. I’ll personally set MoveScan up around your company’s operation and pricing at no cost, and your first 5 estimates are free.
+
+There’s also a bigger goal behind this. As more moving companies begin using MoveScan, I want to build a network of MoveScan-enabled movers and dedicate a portion of subscription revenue toward advertising that network to consumers — creating new customer demand for the same movers using the technology.
+
+I built MoveScan while actually working in the field as a mover, so it was designed around the problems we deal with on real jobs — not around what someone outside the industry thinks moving software should look like.
+
+You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:
+
+https://aiguylabs.com/products/movescan
+
+Click See It in Action to watch the demo.
+
+Best,
+Michael Pierre
+Nashville Mover / Independent Full-Stack Software Developer
+MoveScan / AI Guy Labs
+mike@aiguylabs.com`;
   const html = `<!doctype html>
 <html lang="en">
   <body style="margin:0;padding:24px;background:#f4f7fb;color:#111827;font-family:Arial,sans-serif;">
-    <main style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #dbe3ef;border-radius:8px;overflow:hidden;">
-      <div style="padding:22px 26px;background:#05070b;color:#ffffff;">
-        <p style="margin:0 0 8px;color:#8ed7ff;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;">AI Guy Labs</p>
-        <h1 style="margin:0;font-size:24px;line-height:1.25;">MoveScan for ${safeCompany}</h1>
-      </div>
-      <div style="padding:26px;">
-        <p style="margin:0 0 16px;font-size:16px;line-height:1.55;">Hello,</p>
-        <p style="margin:0 0 16px;font-size:16px;line-height:1.55;">I wanted to share MoveScan, AI instant moving estimate software for moving companies.</p>
-        <p style="margin:0 0 22px;font-size:16px;line-height:1.55;">MoveScan guides a customer through a room-by-room walkthrough, builds the inventory, estimates the move, and applies your company pricing and operating settings.</p>
-        <p style="margin:0 0 24px;"><a href="${safeUrl}" style="display:inline-block;padding:12px 18px;border-radius:6px;background:#2d7dff;color:#ffffff;font-weight:700;text-decoration:none;">See MoveScan</a></p>
-        <p style="margin:0;font-size:14px;line-height:1.5;color:#4b5563;">Best,<br>AI Guy Labs</p>
+    <main style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #dbe3ef;border-radius:8px;overflow:hidden;">
+      <div style="padding:28px 30px;">
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">That process made sense years ago.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">Today, customers are used to doing almost everything from their phones with a few swipes and taps. They don’t want to sit there typing out every couch, bed, dresser, TV, box, and table they own — and they definitely shouldn’t have to guess what size moving truck they need.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">And when nearly every moving company uses the same slow quote process, customers start looking for easier alternatives — including third-party marketplaces that promise a faster, simpler way to book moving help, often at the moving company’s expense through fees, commissions, and tighter control over how the job is priced or handled.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;"><strong>MoveScan gives independent moving companies a way to offer that same kind of convenience directly, without sending the customer somewhere else first.</strong></p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">The customer opens your MoveScan estimate link on their phone and completes a short, guided room-by-room walkthrough. MoveScan identifies the inventory, calculates estimated cubic feet, determines truck and crew needs, accounts for the move details, applies <strong>your company’s own pricing and operating rules</strong>, and produces the customer’s instant estimate.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">This isn’t just an AI inventory scanner that gives your staff a list to quote later. <strong>MoveScan is a complete end-to-end instant estimating system.</strong> The estimate is already built for you, leaving your staff primarily with a review-and-approve step.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">A customer can walk through a full three-bedroom home and receive their instant moving estimate in <strong>under five minutes.</strong></p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">I’m looking for a small group of moving companies interested in getting involved early. <strong>I’ll personally set MoveScan up around your company’s operation and pricing at no cost, and your first 5 estimates are free.</strong></p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">There’s also a bigger goal behind this. As more moving companies begin using MoveScan, I want to build a network of MoveScan-enabled movers and dedicate a portion of subscription revenue toward advertising that network to consumers — creating new customer demand for the same movers using the technology.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">I built MoveScan while actually working in the field as a mover, so it was designed around the problems we deal with on real jobs — not around what someone outside the industry thinks moving software should look like.</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:</p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;"><a href="${safeUrl}" style="color:#1264d8;">https://aiguylabs.com/products/movescan</a></p>
+        <p style="margin:0 0 24px;font-size:16px;line-height:1.65;">Click <strong>See It in Action</strong> to watch the demo.</p>
+        <p style="margin:0;font-size:16px;line-height:1.65;">Best,<br>Michael Pierre<br>Nashville Mover / Independent Full-Stack Software Developer<br>MoveScan / AI Guy Labs<br><a href="mailto:mike@aiguylabs.com" style="color:#1264d8;">mike@aiguylabs.com</a></p>
       </div>
     </main>
     <img src="${escapeHtml(pixelUrl.toString())}" width="1" height="1" alt="" style="display:block;width:1px;height:1px;border:0;opacity:0;">
   </body>
 </html>`;
-  return { text, html, recipientEmail };
+  return { text, html };
 }
 
 export {

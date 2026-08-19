@@ -81,7 +81,7 @@ async function handleOutreachSend(request, env) {
       from: OUTREACH_FROM,
       to: recipientEmail,
       replyTo: OUTREACH_REPLY_TO,
-      subject: 'MoveScan for ' + companyName,
+      subject: 'Early MoveScan Network Opportunity',
       text: email.text,
       html: email.html,
     });
