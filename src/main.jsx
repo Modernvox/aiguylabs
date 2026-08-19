@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Calculator, ClipboardCheck, FileCheck2, ScanLine, Video } from 'lucide-react';
+import { Calculator, ClipboardCheck, FileCheck2, Play, ScanLine, Video } from 'lucide-react';
 import './styles.css';
 
 const navItems = [
@@ -1854,7 +1854,7 @@ function MoveScanProductPage({ product }) {
             <p>Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
               <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
-              <button className="button button-secondary" type="button" onClick={() => { void trackMoveScanDemoClick(); setIsDemoModalOpen(true); }}>See It in Action <Icon /></button>
+              <button className="button button-secondary movescan-demo-cta" type="button" onClick={() => { void trackMoveScanDemoClick(); setIsDemoModalOpen(true); }}><Play aria-hidden="true" size={17} strokeWidth={2.2} /> <span>See It in Action</span></button>
               <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
             </div>
           </div>

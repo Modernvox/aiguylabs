@@ -4489,3 +4489,37 @@ img {
   display: block;
   flex: 0 0 auto;
 }
+
+.movescan-demo-cta {
+  position: relative;
+  border-color: rgba(89, 177, 255, 0.58);
+  background: rgba(30, 112, 225, 0.18);
+  box-shadow: 0 0 0 rgba(45, 125, 255, 0);
+  animation: movescan-demo-cta-glow 4.8s ease-in-out infinite;
+}
+
+.movescan-demo-cta svg {
+  flex: 0 0 auto;
+}
+
+.movescan-demo-cta:hover {
+  border-color: rgba(130, 208, 255, 0.9);
+  background: rgba(45, 125, 255, 0.3);
+  box-shadow: 0 0 28px rgba(45, 125, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+@keyframes movescan-demo-cta-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(45, 125, 255, 0); }
+  50% { box-shadow: 0 0 22px rgba(45, 125, 255, 0.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .movescan-demo-cta {
+    animation: none;
+  }
+
+  .movescan-demo-cta:hover {
+    transform: none;
+  }
+}
