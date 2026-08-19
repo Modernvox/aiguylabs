@@ -2456,6 +2456,9 @@ function PrivateCampaignsPage() {
   const [outreachForm, setOutreachForm] = useState({ companyName: '', recipientEmail: '' });
   const [outreachState, setOutreachState] = useState({ status: 'idle', message: '' });
   const [sendingRecipientId, setSendingRecipientId] = useState('');
+  const [isOutreachPreviewOpen, setIsOutreachPreviewOpen] = useState(false);
+  const [outreachPreview, setOutreachPreview] = useState(null);
+  const [outreachPreviewState, setOutreachPreviewState] = useState({ status: 'idle', message: '' });
 
   async function loadAnalytics(nextRange = appliedRange) {
     const params = new URLSearchParams();
@@ -2566,6 +2569,44 @@ function PrivateCampaignsPage() {
       setSendingRecipientId('');
     }
   }
+  async function openOutreachPreview() {
+    setOutreachPreviewState({ status: 'loading', message: '' });
+    try {
+      const response = await fetch('/api/private/campaigns/outreach-preview', { credentials: 'include' });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to load the email preview.');
+      setOutreachPreview(data);
+      setIsOutreachPreviewOpen(true);
+      setOutreachPreviewState({ status: 'ready', message: '' });
+    } catch (error) {
+      setOutreachPreviewState({ status: 'error', message: error.message || 'Unable to load the email preview.' });
+    }
+  }
+
+  async function sendTestToMe() {
+    if (outreachPreviewState.status === 'sending') return;
+    setOutreachPreviewState({ status: 'sending', message: '' });
+    try {
+      const response = await fetch('/api/private/campaigns/outreach-test', {
+        method: 'POST', credentials: 'include', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the test email.');
+      setOutreachPreviewState({ status: 'success', message: 'Test email sent to mike@aiguylabs.com.' });
+    } catch (error) {
+      setOutreachPreviewState({ status: 'error', message: error.message || 'Unable to send the test email.' });
+    }
+  }
+
+  useEffect(() => {
+    if (!isOutreachPreviewOpen) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setIsOutreachPreviewOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isOutreachPreviewOpen]);
   async function lock() {
     await fetch('/api/private/campaigns/session', { method: 'DELETE', credentials: 'include' }).catch(() => {});
     setDashboard(null);
@@ -2673,7 +2714,12 @@ function PrivateCampaignsPage() {
                 </label>
                 <button className="button button-primary" type="submit" disabled={outreachState.status === 'sending'}>{outreachState.status === 'sending' ? 'Sending...' : 'Send MoveScan Email'} <Icon /></button>
               </form>
+              <div className="private-outreach-tools">
+                <button className="button button-secondary button-small" type="button" onClick={openOutreachPreview} disabled={outreachPreviewState.status === 'loading'}>{outreachPreviewState.status === 'loading' ? 'Loading Preview...' : 'Preview Email'}</button>
+                <button className="button button-secondary button-small" type="button" onClick={sendTestToMe} disabled={outreachPreviewState.status === 'sending'}>{outreachPreviewState.status === 'sending' ? 'Sending Test...' : 'Send Test to Me'}</button>
+              </div>
               {outreachState.message ? <p className={outreachState.status === 'error' ? 'form-error' : 'private-state-message'}>{outreachState.message}</p> : null}
+              {outreachPreviewState.message ? <p className={outreachPreviewState.status === 'error' ? 'form-error' : 'private-state-message'}>{outreachPreviewState.message}</p> : null}
             </section>
 
             <section className="private-outreach-list" aria-labelledby="private-outreach-list-title">
@@ -2758,6 +2804,21 @@ function PrivateCampaignsPage() {
           </div>
         </div>
       </section>
+      {isOutreachPreviewOpen && outreachPreview ? (
+        <div className="private-email-preview" role="dialog" aria-modal="true" aria-labelledby="private-email-preview-title" onClick={() => setIsOutreachPreviewOpen(false)}>
+          <div className="private-email-preview__dialog" onClick={(event) => event.stopPropagation()}>
+            <div className="private-email-preview__header">
+              <div>
+                <p className="private-dashboard-kicker">Email preview</p>
+                <h2 id="private-email-preview-title">{outreachPreview.subject}</h2>
+                <p>From {outreachPreview.from} · Reply-To {outreachPreview.replyTo}</p>
+              </div>
+              <button className="private-email-preview__close" type="button" onClick={() => setIsOutreachPreviewOpen(false)}>Close</button>
+            </div>
+            <iframe title="MoveScan outreach email preview" srcDoc={outreachPreview.html} sandbox="" />
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
