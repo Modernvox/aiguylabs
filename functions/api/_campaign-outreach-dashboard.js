@@ -4,50 +4,58 @@ import { MOVESCAN_OUTREACH_CAMPAIGN, MOVESCAN_OUTREACH_PROSPECTS, ensureCampaign
 async function loadOutreachRecipients(env) {
   const db = await ensureDb(env);
   await ensureCampaignRecipientsTable(db);
-  const result = await db.prepare(`
-    select
-      cr.id,
-      cr.company_name as companyName,
-      cr.recipient_email as recipientEmail,
-      cr.status,
-      cr.created_at as createdAt,
-      cr.sent_at as sentAt,
-      max(case when ce.event_name = 'email_sent' then ce.created_at else null end) as emailSentAt,
-      max(case when ce.event_name = 'email_open' then ce.created_at else null end) as emailOpenedAt,
-      max(case when ce.event_name = 'product_page_click' then ce.created_at else null end) as productPageClickedAt,
-      max(case when ce.event_name = 'demo_click' then ce.created_at else null end) as demoClickedAt
-    from campaign_recipients cr
-    left join campaign_events ce
-      on json_extract(ce.metadata, '$.recipientId') = cr.id
-      and ce.campaign = cr.campaign
-    where cr.campaign = ?
-    group by cr.id, cr.company_name, cr.recipient_email, cr.status, cr.created_at, cr.sent_at
-    order by cr.created_at desc
+  const recipientResult = await db.prepare(`
+    select id, company_name as companyName, recipient_email as recipientEmail, status, created_at as createdAt, sent_at as sentAt
+    from campaign_recipients
+    where campaign = ?
+    order by created_at desc
     limit 200
   `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
+  const rows = recipientResult?.results || [];
+  if (!rows.length) return [];
 
-  return (result?.results || []).map((row) => ({
-    id: row.id,
-    companyName: row.companyName,
-    recipientEmail: row.recipientEmail,
-    status: row.status,
-    createdAt: row.createdAt,
-    sentAt: row.sentAt || '',
-    funnel: {
-      sent: Boolean(row.emailSentAt),
-      opened: Boolean(row.emailOpenedAt),
-      productPage: Boolean(row.productPageClickedAt),
-      demo: Boolean(row.demoClickedAt),
-    },
-    dates: {
-      sent: row.emailSentAt || '',
-      opened: row.emailOpenedAt || '',
-      productPage: row.productPageClickedAt || '',
-      demo: row.demoClickedAt || '',
-    },
-  }));
+  const eventResult = await db.prepare(`
+    select event_name as eventName, created_at as createdAt, metadata
+    from campaign_events
+    where campaign = ? and event_name in ('email_sent', 'email_open', 'product_page_click', 'demo_click')
+    order by created_at desc
+    limit 2000
+  `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
+  const eventsByRecipient = new Map();
+  for (const event of eventResult?.results || []) {
+    try {
+      const metadata = JSON.parse(event.metadata || '{}');
+      if (!metadata.recipientId) continue;
+      const current = eventsByRecipient.get(metadata.recipientId) || {};
+      if (!current[event.eventName]) current[event.eventName] = event.createdAt;
+      eventsByRecipient.set(metadata.recipientId, current);
+    } catch {}
+  }
+
+  return rows.map((row) => {
+    const events = eventsByRecipient.get(row.id) || {};
+    return {
+      id: row.id,
+      companyName: row.companyName,
+      recipientEmail: row.recipientEmail,
+      status: row.status,
+      createdAt: row.createdAt,
+      sentAt: row.sentAt || '',
+      funnel: {
+        sent: Boolean(events.email_sent),
+        opened: Boolean(events.email_open),
+        productPage: Boolean(events.product_page_click),
+        demo: Boolean(events.demo_click),
+      },
+      dates: {
+        sent: events.email_sent || '',
+        opened: events.email_open || '',
+        productPage: events.product_page_click || '',
+        demo: events.demo_click || '',
+      },
+    };
+  });
 }
-
 async function seedOutreachRecipients(env) {
   const db = await ensureDb(env);
   await ensureCampaignRecipientsTable(db);
