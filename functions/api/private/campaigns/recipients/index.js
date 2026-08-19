@@ -3,7 +3,7 @@ import { isPrivateCampaignsAuthorized } from '../../../_private-campaigns.js';
 import {
   MOVESCAN_OUTREACH_CAMPAIGN,
   buildOpenPixelUrl,
-  buildOutreachEmail,
+
   buildTrackedProductUrl,
   cleanHeaderText,
   ensureCampaignRecipientsTable,
@@ -12,7 +12,7 @@ import {
 } from '../../../_campaign-outreach.js';
 import { ensureDb } from '../../../_lead-utils.js';
 
-const FROM = 'website@aiguylabs.com';
+
 
 export async function onRequestPost({ request, env }) {
   if (!isPrivateCampaignsAuthorized(request, env)) {
@@ -34,7 +34,6 @@ export async function onRequestPost({ request, env }) {
   const createdAt = new Date().toISOString();
   const productUrl = buildTrackedProductUrl(request, token);
   const pixelUrl = buildOpenPixelUrl(request, token);
-  const email = buildOutreachEmail({ companyName, recipientEmail, productUrl, pixelUrl });
 
   await db.prepare(`
     insert into campaign_recipients (id, tracking_token, company_name, recipient_email, campaign, status, created_at, sent_at)
@@ -42,16 +41,24 @@ export async function onRequestPost({ request, env }) {
   `).bind(id, token, companyName, recipientEmail, MOVESCAN_OUTREACH_CAMPAIGN, createdAt).run();
 
   try {
-    const outreachEmail = env.OUTREACH_EMAIL;
-    if (!outreachEmail || typeof outreachEmail.send !== 'function') throw new Error('OUTREACH_EMAIL binding is not configured.');
-    const result = await outreachEmail.send({
-      from: FROM,
-      to: recipientEmail,
-      subject: 'MoveScan for ' + companyName,
-      replyTo: 'contact@aiguylabs.com',
-      text: email.text,
-      html: email.html,
+    const workerUrl = env.OUTREACH_WORKER_URL || new URL('/api/movescan-outreach/send', request.url).toString();
+    const internalToken = env.OUTREACH_INTERNAL_TOKEN || '';
+    if (!internalToken) throw new Error('OUTREACH_INTERNAL_TOKEN is not configured.');
+    const workerResponse = await fetch(workerUrl, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-outreach-token': internalToken,
+      },
+      body: JSON.stringify({
+        companyName,
+        recipientEmail,
+        productUrl: productUrl.toString(),
+        pixelUrl: pixelUrl.toString(),
+      }),
     });
+    const result = await workerResponse.json().catch(() => ({}));
+    if (!workerResponse.ok || result.ok !== true) throw new Error(result.error || 'Outreach worker send failed.');
     const sentAt = new Date().toISOString();
     await db.prepare('update campaign_recipients set status = ?, sent_at = ? where id = ?').bind('sent', sentAt, id).run();
     try {

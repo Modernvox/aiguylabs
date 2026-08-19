@@ -1,9 +1,10 @@
-﻿name = "aiguylabs-contact-email"
+name = "aiguylabs-contact-email"
 main = "workers/contact-email.js"
 compatibility_date = "2026-08-03"
 
 routes = [
-  { pattern = "aiguylabs.com/api/contact-requests*", zone_name = "aiguylabs.com" }
+  { pattern = "aiguylabs.com/api/contact-requests*", zone_name = "aiguylabs.com" },
+  { pattern = "aiguylabs.com/api/movescan-outreach/send*", zone_name = "aiguylabs.com" }
 ]
 
 [[d1_databases]]
@@ -14,3 +15,6 @@ database_id = "8334017d-655f-42f9-b1e4-ce2f4397d39a"
 [[send_email]]
 name = "EMAIL"
 destination_address = "contact@aiguylabs.com"
+
+[[send_email]]
+name = "OUTREACH_EMAIL"
