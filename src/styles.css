@@ -4550,3 +4550,43 @@ img {
     transform: none;
   }
 }
+
+/* MoveScan icon and title alignment */
+.movescan-product-heading {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 24px);
+  min-width: 0;
+  margin: 22px 0 28px;
+}
+
+.movescan-product-heading .product-detail-logo {
+  flex: 0 0 auto;
+  width: clamp(64px, 7vw, 104px);
+  height: clamp(64px, 7vw, 104px);
+  margin: 0;
+}
+
+.movescan-product-heading h1 {
+  min-width: 0;
+  margin: 0;
+}
+
+.movescan-workflow-card-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  margin-bottom: 10px;
+}
+
+.movescan-workflow-card-heading > span {
+  flex: 0 0 30px;
+  margin: 0;
+}
+
+.movescan-workflow-card-heading h3 {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}

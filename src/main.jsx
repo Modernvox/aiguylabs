@@ -1848,8 +1848,10 @@ function MoveScanProductPage({ product }) {
         <div className="container product-detail-hero-inner movescan-hero-inner" style={{ '--accent': product.accent }}>
           <div className="product-detail-copy">
             <p className="eyebrow">AI Guy Labs™ Product</p>
-            <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
-            <h1 id="movescan-product-title">MoveScan</h1>
+            <div className="movescan-product-heading">
+              <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
+              <h1 id="movescan-product-title">MoveScan</h1>
+            </div>
             <p className="product-detail-subheading">AI-powered moving estimates</p>
             <p>Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
@@ -1870,8 +1872,10 @@ function MoveScanProductPage({ product }) {
           <div className="movescan-workflow-grid">
             {workflowSteps.map((step, index) => (
               <article className="movescan-workflow-card" key={step.title}>
-                <span aria-hidden="true"><step.icon size={19} strokeWidth={1.8} /></span>
-                <h3>{step.title}</h3>
+                <div className="movescan-workflow-card-heading">
+                  <span aria-hidden="true"><step.icon size={19} strokeWidth={1.8} /></span>
+                  <h3>{step.title}</h3>
+                </div>
                 <p>{step.description}</p>
               </article>
             ))}
