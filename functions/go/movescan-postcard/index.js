@@ -32,5 +32,11 @@ export async function onRequest({ request, env }) {
     });
   }
 
-  return Response.redirect(destination.toString(), 302, buildNoCacheHeaders());
+  return new Response(null, {
+    status: 302,
+    headers: {
+      location: destination.toString(),
+      ...buildNoCacheHeaders(),
+    },
+  });
 }
