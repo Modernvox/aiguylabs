@@ -756,6 +756,7 @@ const MOVESCAN_DEMO_URL = 'https://movescan.aiguylabs.com/quote/movescan-demo';
 const MOVESCAN_FREE_TRIAL_URL = 'https://www.movescan.app';
 const MOVESCAN_POSTCARD_REDIRECT_URL = '/products/movescan?utm_source=postcard&utm_medium=direct_mail&utm_campaign=movescan_local_launch';
 const MOVESCAN_POSTCARD_TRACKING_ENDPOINT = '/api/campaign-events';
+const MOVESCAN_OUTREACH_TRACKING_ENDPOINT = '/api/campaign-events/engagement';
 const MOVESCAN_DEMO_VIDEO_URL = typeof window !== 'undefined' && (window.__MOVESCAN_DEMO_VIDEO_URL__ || import.meta.env.VITE_MOVESCAN_DEMO_VIDEO_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/videos/movescan-demo.mp4' : 'https://media.aiguylabs.com/movescan-demo.mp4'));
 
 function Icon({ type }) {
@@ -1783,6 +1784,20 @@ function HomePage() {
     </main>
   );
 }
+async function trackMoveScanDemoClick() {
+  try {
+    await fetch(MOVESCAN_OUTREACH_TRACKING_ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ eventName: 'demo_click', sourcePath: '/products/movescan' }),
+      credentials: 'include',
+      keepalive: true,
+    });
+  } catch {
+    // Tracking must never interfere with opening the demo.
+  }
+}
+
 function MoveScanProductPage({ product }) {
   const [activeImage, setActiveImage] = useState(null);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -1876,7 +1891,7 @@ function MoveScanProductPage({ product }) {
             <p>Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
               <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
-              <button className="button button-secondary" type="button" onClick={() => setIsDemoModalOpen(true)}>See It in Action <Icon /></button>
+              <button className="button button-secondary" type="button" onClick={() => { void trackMoveScanDemoClick(); setIsDemoModalOpen(true); }}>See It in Action <Icon /></button>
               <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
             </div>
           </div>
@@ -2492,6 +2507,9 @@ function PrivateCampaignsPage() {
   const [dashboard, setDashboard] = useState(null);
   const [pageState, setPageState] = useState({ status: 'checking', message: 'Checking access...' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [recipients, setRecipients] = useState([]);
+  const [outreachForm, setOutreachForm] = useState({ companyName: '', recipientEmail: '' });
+  const [outreachState, setOutreachState] = useState({ status: 'idle', message: '' });
 
   async function loadAnalytics(nextRange = appliedRange) {
     const params = new URLSearchParams();
@@ -2512,7 +2530,11 @@ function PrivateCampaignsPage() {
       throw new Error(data.error || 'Unable to load campaign analytics.');
     }
 
+    const outreachResponse = await fetch('/api/private/campaigns/outreach', { credentials: 'include' });
+    const outreachData = await outreachResponse.json().catch(() => ({}));
+    if (!outreachResponse.ok || outreachData.ok === false) throw new Error(outreachData.error || 'Unable to load outreach recipients.');
     setDashboard(data);
+    setRecipients(outreachData.recipients || []);
     setAppliedRange(nextRange);
     setDraftRange(nextRange);
     setPageState({ status: 'ready', message: '' });
@@ -2553,6 +2575,27 @@ function PrivateCampaignsPage() {
       setPageState({ status: 'locked', message: error.message || 'Unable to open campaign analytics.' });
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function sendOutreach(event) {
+    event.preventDefault();
+    if (outreachState.status === 'sending') return;
+    setOutreachState({ status: 'sending', message: '' });
+    try {
+      const response = await fetch('/api/private/campaigns/recipients', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(outreachForm),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
+      setOutreachForm({ companyName: '', recipientEmail: '' });
+      setOutreachState({ status: 'success', message: 'Tracked MoveScan email sent.' });
+      await loadAnalytics(appliedRange);
+    } catch (error) {
+      setOutreachState({ status: 'error', message: error.message || 'Unable to send the outreach email.' });
     }
   }
 
@@ -2646,6 +2689,45 @@ function PrivateCampaignsPage() {
               </div>
             </div>
 
+            <section className="private-outreach-panel" aria-labelledby="private-outreach-title">
+              <div>
+                <p className="private-dashboard-kicker">MoveScan outreach</p>
+                <h2 id="private-outreach-title">Send a tracked introduction</h2>
+                <p className="private-dashboard-note">Each send creates its own secure recipient link, open pixel, and funnel record. Email opens are approximate because mail clients may preload images.</p>
+              </div>
+              <form className="private-outreach-form" onSubmit={sendOutreach}>
+                <label>
+                  <span>Company name</span>
+                  <input value={outreachForm.companyName} onChange={(event) => setOutreachForm((current) => ({ ...current, companyName: event.target.value }))} required />
+                </label>
+                <label>
+                  <span>Recipient email</span>
+                  <input type="email" value={outreachForm.recipientEmail} onChange={(event) => setOutreachForm((current) => ({ ...current, recipientEmail: event.target.value }))} required />
+                </label>
+                <button className="button button-primary" type="submit" disabled={outreachState.status === 'sending'}>{outreachState.status === 'sending' ? 'Sending...' : 'Send MoveScan Email'} <Icon /></button>
+              </form>
+              {outreachState.message ? <p className={outreachState.status === 'error' ? 'form-error' : 'private-state-message'}>{outreachState.message}</p> : null}
+            </section>
+
+            <section className="private-outreach-list" aria-labelledby="private-outreach-list-title">
+              <div className="private-range-head">
+                <div>
+                  <h2 id="private-outreach-list-title">Outreach funnel</h2>
+                  <p>Sent &rarr; Opened &rarr; Product Page &rarr; Demo</p>
+                </div>
+              </div>
+              {recipients.length ? recipients.map((recipient) => (
+                <article className="private-outreach-row" key={recipient.id}>
+                  <div className="private-outreach-recipient">
+                    <strong>{recipient.companyName}</strong>
+                    <span>{recipient.recipientEmail}</span>
+                  </div>
+                  <div className="private-outreach-funnel" aria-label={recipient.companyName + ' funnel status'}>
+                    {['sent', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
+                  </div>
+                </article>
+              )) : <p className="private-empty">No outreach recipients yet.</p>}
+            </section>
             <div className="private-summary-grid">
               {summaryCards.map((card) => (
                 <article className="private-summary-card" key={card.label}>
