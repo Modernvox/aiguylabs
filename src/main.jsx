@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Calculator, ClipboardCheck, FileCheck2, ScanLine, Video } from 'lucide-react';
 import './styles.css';
 
 const navItems = [
@@ -1775,22 +1776,27 @@ function MoveScanProductPage({ product }) {
   const workflowSteps = [
     {
       title: 'Customer records the move',
+      icon: Video,
       description: 'The customer completes a guided room-by-room video walkthrough from their phone.',
     },
     {
       title: 'MoveScan analyzes the inventory',
+      icon: ScanLine,
       description: 'MoveScan identifies the items being moved and estimates total cubic feet.',
     },
     {
       title: 'MoveScan builds the estimate',
+      icon: Calculator,
       description: 'MoveScan applies company settings for truck, crew, loading and unloading time, stairs, charges, and estimated total.',
     },
     {
       title: 'Customer gets the estimate instantly',
+      icon: FileCheck2,
       description: 'The estimate is displayed immediately and a copy is sent to the customer.',
     },
     {
       title: 'Moving company reviews the request',
+      icon: ClipboardCheck,
       description: 'Staff can review the inventory, estimate, move details, and Final Quote Requested status from MoveScan.',
     },
   ];
@@ -1864,7 +1870,7 @@ function MoveScanProductPage({ product }) {
           <div className="movescan-workflow-grid">
             {workflowSteps.map((step, index) => (
               <article className="movescan-workflow-card" key={step.title}>
-                <span>{index + 1}</span>
+                <span aria-hidden="true"><step.icon size={19} strokeWidth={1.8} /></span>
                 <h3>{step.title}</h3>
                 <p>{step.description}</p>
               </article>
