@@ -2451,6 +2451,7 @@ function PrivateCampaignsPage() {
   const [recipients, setRecipients] = useState([]);
   const [outreachForm, setOutreachForm] = useState({ companyName: '', recipientEmail: '' });
   const [outreachState, setOutreachState] = useState({ status: 'idle', message: '' });
+  const [sendingRecipientId, setSendingRecipientId] = useState('');
 
   async function loadAnalytics(nextRange = appliedRange) {
     const params = new URLSearchParams();
@@ -2540,6 +2541,27 @@ function PrivateCampaignsPage() {
     }
   }
 
+  async function sendRecipient(recipient) {
+    if (!recipient?.id || sendingRecipientId) return;
+    setSendingRecipientId(recipient.id);
+    setOutreachState({ status: 'sending', message: '' });
+    try {
+      const response = await fetch('/api/private/campaigns/recipients', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ recipientId: recipient.id }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
+      setOutreachState({ status: 'success', message: 'Tracked MoveScan email sent to ' + recipient.companyName + '.' });
+      await loadAnalytics(appliedRange);
+    } catch (error) {
+      setOutreachState({ status: 'error', message: error.message || 'Unable to send the outreach email.' });
+    } finally {
+      setSendingRecipientId('');
+    }
+  }
   async function lock() {
     await fetch('/api/private/campaigns/session', { method: 'DELETE', credentials: 'include' }).catch(() => {});
     setDashboard(null);
@@ -2665,6 +2687,14 @@ function PrivateCampaignsPage() {
                   </div>
                   <div className="private-outreach-funnel" aria-label={recipient.companyName + ' funnel status'}>
                     {['sent', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
+                  </div>
+                  <div className="private-outreach-action">
+                    <span className={'private-outreach-status ' + (recipient.funnel?.demo ? 'is-demo' : recipient.funnel?.productPage ? 'is-product-page' : recipient.funnel?.opened ? 'is-opened' : recipient.funnel?.sent ? 'is-sent' : '')}>
+                      {recipient.funnel?.demo ? 'Demo' : recipient.funnel?.productPage ? 'Product Page' : recipient.funnel?.opened ? 'Opened' : recipient.funnel?.sent ? 'Sent' : 'Not Sent'}
+                    </span>
+                    <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={Boolean(recipient.funnel?.sent) || Boolean(sendingRecipientId)}>
+                      {sendingRecipientId === recipient.id ? 'Sending...' : recipient.funnel?.sent ? 'Sent' : 'Send'}
+                    </button>
                   </div>
                 </article>
               )) : <p className="private-empty">No outreach recipients yet.</p>}

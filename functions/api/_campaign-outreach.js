@@ -4,6 +4,38 @@ import { recordCampaignEvent } from './_campaign-events.js';
 const MOVESCAN_OUTREACH_CAMPAIGN = 'movescan_local_launch';
 const MOVESCAN_RECIPIENT_COOKIE = 'aigl_movescan_recipient';
 const TRACKING_COOKIE_MAX_AGE = 60 * 60 * 24 * 90;
+const MOVESCAN_OUTREACH_PROSPECTS = [
+  ['Moxa Moving', 'info@moxamoving.com'],
+  ['People’s Choice Moving & Storage', 'info@peopleschoicemoving.com'],
+  ['Nashville Packers and Movers', 'jmmoving84@gmail.com'],
+  ['Little Guys Movers – Murfreesboro', 'murfreesboro@littleguys.com'],
+  ['Next Step Moving', 'nextstepmoving2019@gmail.com'],
+  ['Kincaid Moving & Storage', 'kincaidmoving@aol.com'],
+  ['Boro Moving', 'Scott@BoroMoving.com'],
+  ['King & Queen Movers', 'info@kingandqueenmovers.com'],
+  ['JustPro Moving', 'info@justpromoving.com'],
+  ['Family Movers 615', 'familymovers615@gmail.com'],
+  ['Home-Aid Moving', 'william@home-aidmoving.com'],
+  ['6th Man Movers', 'Jacob@6thmanmovers.com'],
+  ['Tennessee Country Boys Moving', 'tennesseecountryboysmoving@gmail.com'],
+  ['Dash Moving & Logistics', 'darrin@dashmovingtn.com'],
+  ["Rice’s Professional Moving Services", 'RicesMovingTN@gmail.com'],
+  ['JourneyMen Moving Tennessee', 'journeymanmoving.aaron@gmail.com'],
+  ['ATC Moving Company', 'atcmoving401@gmail.com'],
+  ['QuickSwitch Movers', 'quickswitchmoverstn@gmail.com'],
+  ['Move It or Lose It', 'moveitorloseitmoves@gmail.com'],
+  ['Yellowjacket Moving Service', 'info@yellowjacketmovingservice.com'],
+  ['Alpha Moving & Storage', 'booking@alphamovingtn.com'],
+  ['Better Day Movers', 'Betterdaymovers@gmail.com'],
+  ['Daniels Moving and Logistics', 'danielslogisticsllc3@gmail.com'],
+  ['Jett Moving Services', 'jettmoving@gmail.com'],
+  ['Marigold Movers', 'marigoldmovers@gmail.com'],
+  ['Southern Relocation Services', 'info@southernrelocationservices.com'],
+  ["Hank’s Moving Service", 'info@hanksmovingservicellc.com'],
+  ['At Ease Moving', 'move@ateasemoving.com'],
+  ['Highbrow Moving', 'info@highbrowmoving.com'],
+  ['True Friends Moving Company', 'chris@truefriendsmoving.com'],
+];
 
 function cleanHeaderText(value, max) {
   return safeString(value, max).replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
@@ -179,6 +211,7 @@ mike@aiguylabs.com`;
 
 export {
   MOVESCAN_OUTREACH_CAMPAIGN,
+  MOVESCAN_OUTREACH_PROSPECTS,
   MOVESCAN_RECIPIENT_COOKIE,
   TRACKING_COOKIE_MAX_AGE,
   cleanHeaderText,

@@ -4420,7 +4420,7 @@ img {
 
 .private-outreach-row {
   display: grid;
-  grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.2fr) auto;
   gap: 16px;
   align-items: center;
   border: 1px solid rgba(135, 176, 255, 0.12);
@@ -4466,6 +4466,33 @@ img {
   border-color: rgba(82, 183, 255, 0.55);
   background: rgba(45, 125, 255, 0.14);
   color: #8ed7ff;
+}
+
+.private-outreach-action {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  min-width: 96px;
+}
+
+.private-outreach-status {
+  color: #9aa8bc;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.private-outreach-status.is-sent,
+.private-outreach-status.is-opened,
+.private-outreach-status.is-product-page,
+.private-outreach-status.is-demo {
+  color: #8ed7ff;
+}
+
+.private-outreach-action .button {
+  min-width: 84px;
 }
 
 @media (max-width: 820px) {

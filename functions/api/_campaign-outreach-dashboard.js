@@ -1,5 +1,5 @@
 import { ensureDb } from './_lead-utils.js';
-import { MOVESCAN_OUTREACH_CAMPAIGN, ensureCampaignRecipientsTable } from './_campaign-outreach.js';
+import { MOVESCAN_OUTREACH_CAMPAIGN, MOVESCAN_OUTREACH_PROSPECTS, ensureCampaignRecipientsTable } from './_campaign-outreach.js';
 
 async function loadOutreachRecipients(env) {
   const db = await ensureDb(env);
@@ -48,4 +48,41 @@ async function loadOutreachRecipients(env) {
   }));
 }
 
-export { loadOutreachRecipients };
+async function seedOutreachRecipients(env) {
+  const db = await ensureDb(env);
+  await ensureCampaignRecipientsTable(db);
+  let added = 0;
+  let existing = 0;
+
+  for (const [companyName, recipientEmail] of MOVESCAN_OUTREACH_PROSPECTS) {
+    const normalizedEmail = recipientEmail.toLowerCase();
+    const match = await db.prepare(`
+      select id
+      from campaign_recipients
+      where campaign = ? and lower(recipient_email) = ?
+      limit 1
+    `).bind(MOVESCAN_OUTREACH_CAMPAIGN, normalizedEmail).first();
+
+    if (match) {
+      existing += 1;
+      continue;
+    }
+
+    await db.prepare(`
+      insert into campaign_recipients (id, tracking_token, company_name, recipient_email, campaign, status, created_at, sent_at)
+      values (?, ?, ?, ?, ?, 'unsent', ?, null)
+    `).bind(
+      crypto.randomUUID(),
+      crypto.randomUUID(),
+      companyName,
+      recipientEmail,
+      MOVESCAN_OUTREACH_CAMPAIGN,
+      new Date().toISOString(),
+    ).run();
+    added += 1;
+  }
+
+  return { added, existing, total: MOVESCAN_OUTREACH_PROSPECTS.length };
+}
+
+export { loadOutreachRecipients, seedOutreachRecipients };
