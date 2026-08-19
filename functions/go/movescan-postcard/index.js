@@ -1,5 +1,13 @@
 import { buildRedirectUrl, recordCampaignEvent } from '../../api/_campaign-events.js';
 
+function buildNoCacheHeaders() {
+  return {
+    'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
+    pragma: 'no-cache',
+    expires: '0',
+  };
+}
+
 export async function onRequest({ request, env }) {
   const destination = buildRedirectUrl(request.url);
 
@@ -24,5 +32,5 @@ export async function onRequest({ request, env }) {
     });
   }
 
-  return Response.redirect(destination.toString(), 302);
+  return Response.redirect(destination.toString(), 302, buildNoCacheHeaders());
 }
