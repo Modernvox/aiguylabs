@@ -1,6 +1,6 @@
-import { json } from '../../../../_lead-utils.js';
-import { isPrivateCampaignsAuthorized } from '../../../../_private-campaigns.js';
-import { OUTREACH_TEST_EMAIL, getOutreachPreviewUrls } from '../../../../_campaign-outreach-preview.js';
+import { json } from '../../../_lead-utils.js';
+import { isPrivateCampaignsAuthorized } from '../../../_private-campaigns.js';
+import { OUTREACH_TEST_EMAIL, getOutreachPreviewUrls } from '../../../_campaign-outreach-preview.js';
 
 export async function onRequestPost({ request, env }) {
   if (!isPrivateCampaignsAuthorized(request, env)) {
