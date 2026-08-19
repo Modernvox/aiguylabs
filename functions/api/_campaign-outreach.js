@@ -56,20 +56,9 @@ function isTrackingToken(value) {
 }
 
 async function ensureCampaignRecipientsTable(db) {
-  await db.exec(`
-    create table if not exists campaign_recipients (
-      id text primary key,
-      tracking_token text not null unique,
-      company_name text not null,
-      recipient_email text not null,
-      campaign text not null,
-      status text not null default 'pending',
-      created_at text not null,
-      sent_at text
-    );
-  `);
-  await db.exec('create index if not exists campaign_recipients_campaign_idx on campaign_recipients(campaign);');
-  await db.exec('create index if not exists campaign_recipients_token_idx on campaign_recipients(tracking_token);');
+  await db.prepare(`create table if not exists campaign_recipients (id text primary key, tracking_token text not null unique, company_name text not null, recipient_email text not null, campaign text not null, status text not null default 'pending', created_at text not null, sent_at text)`).run();
+  await db.prepare('create index if not exists campaign_recipients_campaign_idx on campaign_recipients(campaign)').run();
+  await db.prepare('create index if not exists campaign_recipients_token_idx on campaign_recipients(tracking_token)').run();
 }
 
 function getCookies(request) {
