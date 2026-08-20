@@ -17,7 +17,7 @@ async function loadOutreachRecipients(env) {
   const eventResult = await db.prepare(`
     select event_name as eventName, created_at as createdAt, metadata
     from campaign_events
-    where campaign = ? and event_name in ('email_sent', 'email_open', 'product_page_click', 'demo_click')
+    where campaign = ? and event_name in ('email_sent', 'email_open', 'product_page_click', 'demo_click', 'demo_opened', 'video_started', 'video_25_watched', 'video_50_watched', 'video_completed')
     order by created_at desc
     limit 2000
   `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
@@ -45,13 +45,25 @@ async function loadOutreachRecipients(env) {
         sent: Boolean(events.email_sent),
         opened: Boolean(events.email_open),
         productPage: Boolean(events.product_page_click),
-        demo: Boolean(events.demo_click),
+        demo: Boolean(events.demo_click || events.demo_opened),
       },
+      demoEngagement: {
+        opened: events.demo_opened || '',
+        started: events.video_started || '',
+        watched25: events.video_25_watched || '',
+        watched50: events.video_50_watched || '',
+        completed: events.video_completed || '',
+      },
+      lead: Boolean(events.video_started),
+      hotLead: Boolean(events.video_50_watched),
+      leadAt: events.video_started || '',
+      hotLeadAt: events.video_50_watched || '',
+      latestActivity: Object.values(events).filter(Boolean).sort().at(-1) || '',
       dates: {
         sent: events.email_sent || '',
         opened: events.email_open || '',
         productPage: events.product_page_click || '',
-        demo: events.demo_click || '',
+        demo: events.demo_click || events.demo_opened || '',
       },
     };
   });

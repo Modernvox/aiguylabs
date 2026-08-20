@@ -1755,17 +1755,17 @@ function HomePage() {
     </main>
   );
 }
-async function trackMoveScanDemoClick() {
+async function trackMoveScanEngagement(eventName) {
   try {
     await fetch(MOVESCAN_OUTREACH_TRACKING_ENDPOINT, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ eventName: 'demo_click', sourcePath: '/products/movescan' }),
+      body: JSON.stringify({ eventName, sourcePath: '/products/movescan' }),
       credentials: 'include',
       keepalive: true,
     });
   } catch {
-    // Tracking must never interfere with opening the demo.
+    // Tracking must never interfere with the demo experience.
   }
 }
 
@@ -1856,7 +1856,7 @@ function MoveScanProductPage({ product }) {
             <p>Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
               <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
-              <button className="button button-secondary movescan-demo-cta" type="button" onClick={() => { void trackMoveScanDemoClick(); setIsDemoModalOpen(true); }}><Play aria-hidden="true" size={17} strokeWidth={2.2} /> <span>See It in Action</span></button>
+              <button className="button button-secondary movescan-demo-cta" type="button" onClick={() => { void trackMoveScanEngagement('demo_click'); void trackMoveScanEngagement('demo_opened'); setIsDemoModalOpen(true); }}><Play aria-hidden="true" size={17} strokeWidth={2.2} /> <span>See It in Action</span></button>
               <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
             </div>
           </div>
@@ -1919,7 +1919,10 @@ function MoveScanProductPage({ product }) {
             <button ref={demoCloseRef} className="movescan-demo-modal__close" type="button" onClick={() => setIsDemoModalOpen(false)}>Close</button>
             <div className="movescan-demo-modal__frame">
               {MOVESCAN_DEMO_VIDEO_URL ? (
-                <video ref={demoVideoRef} controls playsInline preload="metadata" src={MOVESCAN_DEMO_VIDEO_URL} />
+                <video ref={demoVideoRef} controls playsInline preload="metadata" src={MOVESCAN_DEMO_VIDEO_URL}
+                onPlay={() => { void trackMoveScanEngagement('video_started'); }}
+                onTimeUpdate={(event) => { const video = event.currentTarget; if (!Number.isFinite(video.duration) || video.duration <= 0) return; const progress = video.currentTime / video.duration; if (progress >= 0.25) void trackMoveScanEngagement('video_25_watched'); if (progress >= 0.5) void trackMoveScanEngagement('video_50_watched'); }}
+                onEnded={() => { void trackMoveScanEngagement('video_completed'); }} />
               ) : (
                 <div className="movescan-demo-modal__placeholder">
                   <p>Set <code>VITE_MOVESCAN_DEMO_VIDEO_URL</code> to your Cloudflare R2 public MP4 URL to enable the demo video.</p>
@@ -2656,6 +2659,8 @@ function PrivateCampaignsPage() {
     { label: 'Last 30 days', value: summary.scansLast30Days ?? 0 },
   ];
 
+  const leads = recipients.filter((recipient) => recipient.lead);
+
   if (pageState.status === 'locked') {
     return (
       <main className="private-campaigns-page">
@@ -2737,7 +2742,7 @@ function PrivateCampaignsPage() {
               <div className="private-range-head">
                 <div>
                   <h2 id="private-outreach-list-title">Outreach funnel</h2>
-                  <p>Sent &rarr; Opened &rarr; Product Page &rarr; Demo</p>
+                  <p>Sent &rarr; Opened &rarr; Product Page &rarr; Demo Opened &rarr; Video Started &rarr; 50% Watched</p>
                 </div>
               </div>
               {recipients.length ? recipients.map((recipient) => (
@@ -2747,11 +2752,14 @@ function PrivateCampaignsPage() {
                     <span>{recipient.recipientEmail}</span>
                   </div>
                   <div className="private-outreach-funnel" aria-label={recipient.companyName + ' funnel status'}>
-                    {['sent', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
+                    {['sent', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage === 'demo' ? 'Demo Opened' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
+                  </div>
+                  <div className="private-outreach-engagement" aria-label={recipient.companyName + ' demo engagement'}>
+                    {['opened', 'started', 'watched25', 'watched50', 'completed'].map((stage) => <span className={recipient.demoEngagement?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'opened' ? 'Demo Opened' : stage === 'started' ? 'Video Started' : stage === 'watched25' ? '25% Watched' : stage === 'watched50' ? '50% Watched' : 'Completed'}</span>)}
                   </div>
                   <div className="private-outreach-action">
-                    <span className={'private-outreach-status ' + (recipient.funnel?.demo ? 'is-demo' : recipient.funnel?.productPage ? 'is-product-page' : recipient.funnel?.opened ? 'is-opened' : recipient.funnel?.sent ? 'is-sent' : '')}>
-                      {recipient.funnel?.demo ? 'Demo' : recipient.funnel?.productPage ? 'Product Page' : recipient.funnel?.opened ? 'Opened' : recipient.funnel?.sent ? 'Sent' : 'Not Sent'}
+                    <span className={'private-outreach-status ' + (recipient.hotLead ? 'is-hot-lead' : recipient.lead ? 'is-lead' : recipient.funnel?.demo ? 'is-demo' : recipient.funnel?.productPage ? 'is-product-page' : recipient.funnel?.opened ? 'is-opened' : recipient.funnel?.sent ? 'is-sent' : '')}>
+                      {recipient.hotLead ? 'Hot Lead' : recipient.lead ? 'Lead' : recipient.funnel?.demo ? 'Demo' : recipient.funnel?.productPage ? 'Product Page' : recipient.funnel?.opened ? 'Opened' : recipient.funnel?.sent ? 'Sent' : 'Not Sent'}
                     </span>
                     <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={Boolean(recipient.funnel?.sent) || Boolean(sendingRecipientId)}>
                       {sendingRecipientId === recipient.id ? 'Sending...' : recipient.funnel?.sent ? 'Sent' : 'Send'}
@@ -2759,6 +2767,31 @@ function PrivateCampaignsPage() {
                   </div>
                 </article>
               )) : <p className="private-empty">No outreach recipients yet.</p>}
+            </section>
+
+            <section className="private-leads-list" aria-labelledby="private-leads-title">
+              <div className="private-range-head">
+                <div>
+                  <h2 id="private-leads-title">Leads</h2>
+                  <p>Prospects who opened the demo and started watching.</p>
+                </div>
+              </div>
+              {leads.length ? leads.map((recipient) => (
+                <article className="private-lead-row" key={recipient.id}>
+                  <div className="private-outreach-recipient">
+                    <strong>{recipient.companyName}</strong>
+                    <span>{recipient.recipientEmail}</span>
+                  </div>
+                  <div className="private-lead-stage">
+                    <strong className={recipient.hotLead ? 'is-hot-lead' : 'is-lead'}>{recipient.hotLead ? 'Hot Lead' : 'Lead'}</strong>
+                    <span>{recipient.demoEngagement?.completed ? 'Completed' : recipient.demoEngagement?.watched50 ? '50% Watched' : recipient.demoEngagement?.watched25 ? '25% Watched' : recipient.demoEngagement?.started ? 'Video Started' : 'Demo Opened'}</span>
+                  </div>
+                  <div className="private-lead-dates">
+                    <span>Lead: {formatCampaignTimestamp(recipient.leadAt)}</span>
+                    <span>Latest: {formatCampaignTimestamp(recipient.latestActivity)}</span>
+                  </div>
+                </article>
+              )) : <p className="private-empty">No demo leads yet.</p>}
             </section>
             <div className="private-summary-grid">
               {summaryCards.map((card) => (

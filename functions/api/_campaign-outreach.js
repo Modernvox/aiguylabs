@@ -132,9 +132,25 @@ async function getRecipientByToken(env, token) {
   `).bind(token, MOVESCAN_OUTREACH_CAMPAIGN).first();
 }
 
-async function recordRecipientEvent(env, request, { token, eventName, sourcePath, destinationPath, metadata = {} }) {
+async function recordRecipientEvent(env, request, { token, eventName, sourcePath, destinationPath, metadata = {}, once = false }) {
   const recipient = await getRecipientByToken(env, token);
   if (!recipient) return null;
+
+  const eventMetadata = {
+    ...metadata,
+    recipientId: recipient.id,
+    companyName: recipient.company_name,
+  };
+  if (once) {
+    const existing = await ensureDb(env).then((db) => db.prepare(`
+      select id, created_at as createdAt
+      from campaign_events
+      where campaign = ? and event_name = ? and instr(metadata, ?) > 0
+      order by created_at asc
+      limit 1
+    `).bind(recipient.campaign, eventName, '"recipientId":"' + recipient.id + '"').first());
+    if (existing) return { duplicate: true, id: existing.id, createdAt: existing.createdAt };
+  }
 
   return recordCampaignEvent(env, request, {
     eventName,
@@ -144,11 +160,7 @@ async function recordRecipientEvent(env, request, { token, eventName, sourcePath
     utmSource: 'movescan_outreach',
     utmMedium: 'email',
     utmCampaign: recipient.campaign,
-    metadata: {
-      ...metadata,
-      recipientId: recipient.id,
-      companyName: recipient.company_name,
-    },
+    metadata: eventMetadata,
   });
 }
 
