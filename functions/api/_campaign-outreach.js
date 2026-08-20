@@ -101,6 +101,7 @@ function buildTrackedProductUrl(request, token) {
   url.searchParams.set('utm_source', 'movescan_outreach');
   url.searchParams.set('utm_medium', 'email');
   url.searchParams.set('utm_campaign', MOVESCAN_OUTREACH_CAMPAIGN);
+  if (isTrackingToken(token)) url.searchParams.set('ms_recipient', token);
   return url;
 }
 

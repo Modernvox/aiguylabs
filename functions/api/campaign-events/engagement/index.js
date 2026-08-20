@@ -1,5 +1,5 @@
 import { json, readJson, safeString } from '../../_lead-utils.js';
-import { getRecipientToken, recordRecipientEvent } from '../../_campaign-outreach.js';
+import { buildRecipientCookie, getRecipientToken, isTrackingToken, recordRecipientEvent } from '../../_campaign-outreach.js';
 
 export async function onRequestPost({ request, env }) {
   const body = await readJson(request);
@@ -10,7 +10,9 @@ export async function onRequestPost({ request, env }) {
   }
 
   try {
-    const token = getRecipientToken(request);
+    const cookieToken = getRecipientToken(request);
+    const queryToken = safeString(body?.trackingToken || body?.tracking_token, 100);
+    const token = cookieToken || (eventName === 'product_page_view' && isTrackingToken(queryToken) ? queryToken : '');
     const result = await recordRecipientEvent(env, request, {
       token,
       eventName,
@@ -19,7 +21,9 @@ export async function onRequestPost({ request, env }) {
       metadata: { source: eventName === 'product_page_view' ? 'movescan-product-page' : 'movescan-demo-video' },
       once: eventName !== 'demo_click',
     });
-    return json({ ok: true, tracked: Boolean(result) }, { status: 202, headers: { 'cache-control': 'no-store' } });
+    const headers = { 'cache-control': 'no-store' };
+    if (!cookieToken && token) headers['set-cookie'] = buildRecipientCookie(request, token);
+    return json({ ok: true, tracked: Boolean(result) }, { status: 202, headers });
   } catch (error) {
     console.error('Unable to record MoveScan engagement event', { code: error?.code || 'UNKNOWN' });
     return json({ ok: true, tracked: false }, { status: 202, headers: { 'cache-control': 'no-store' } });

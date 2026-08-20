@@ -1757,10 +1757,20 @@ function HomePage() {
 }
 async function trackMoveScanEngagement(eventName) {
   try {
+    const payload = { eventName, sourcePath: '/products/movescan' };
+    if (eventName === 'product_page_view' && typeof window !== 'undefined') {
+      const pageUrl = new URL(window.location.href);
+      const trackingToken = pageUrl.searchParams.get('ms_recipient') || '';
+      if (trackingToken) {
+        payload.trackingToken = trackingToken;
+        pageUrl.searchParams.delete('ms_recipient');
+        window.history.replaceState({}, '', pageUrl.pathname + pageUrl.search + pageUrl.hash);
+      }
+    }
     await fetch(MOVESCAN_OUTREACH_TRACKING_ENDPOINT, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ eventName, sourcePath: '/products/movescan' }),
+      body: JSON.stringify(payload),
       credentials: 'include',
       keepalive: true,
     });
