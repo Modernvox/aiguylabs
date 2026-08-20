@@ -5,6 +5,7 @@ compatibility_date = "2026-08-03"
 
 [vars]
 TURNSTILE_SITE_KEY = "0x4AAAAAAEGfe-t_wmxWPW0p"
+OUTREACH_WORKER_URL = "https://aiguylabs-contact-email.mikejstpierre.workers.dev/api/movescan-outreach/send"
 
 [[d1_databases]]
 binding = "DB"

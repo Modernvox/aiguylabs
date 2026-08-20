@@ -1,6 +1,7 @@
 name = "aiguylabs-contact-email"
 main = "workers/contact-email.js"
 compatibility_date = "2026-08-03"
+workers_dev = true
 
 routes = [
   { pattern = "aiguylabs.com/api/contact-requests*", zone_name = "aiguylabs.com" },
