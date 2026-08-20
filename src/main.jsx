@@ -1896,8 +1896,11 @@ function MoveScanProductPage({ product }) {
           <div className="movescan-section-heading">
             <p className="eyebrow">Website Integration</p>
             <h2 id="movescan-integration-title">Add MoveScan to your website</h2>
-            <p>Give customers a Get Instant Estimate button that launches your company-specific MoveScan experience. Your pricing, truck settings, crew rules, and estimate settings stay connected to your account.</p>
           </div>
+          <div className="movescan-integration-visual">
+            <img src="/images/getinstantestimatelink.png" alt="MoveScan Get Instant Estimate website button" />
+          </div>
+          <p className="movescan-integration-description">Give customers a Get Instant Estimate button that launches your company-specific MoveScan experience. Your pricing, truck settings, crew rules, and estimate settings stay connected to your account.</p>
           <ul className="movescan-feature-list" aria-label="MoveScan company setup includes">
             <li>Company-specific MoveScan estimate link</li>
             <li>Website button code</li>

@@ -4942,3 +4942,64 @@ img {
     margin-bottom: 0;
   }
 }
+.movescan-integration-inner {
+  grid-template-areas:
+    "heading visual"
+    "description visual"
+    "features features";
+}
+
+.movescan-integration-inner > .movescan-section-heading {
+  grid-area: heading;
+  margin-bottom: 0;
+}
+
+.movescan-integration-description {
+  grid-area: description;
+  margin: 0;
+  color: #cdd8e8;
+  font-size: clamp(1rem, 1.3vw, 1.16rem);
+  line-height: 1.58;
+}
+
+.movescan-integration-visual {
+  grid-area: visual;
+  align-self: center;
+  min-width: 0;
+}
+
+.movescan-integration-visual img {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin-inline: auto;
+  border: 1px solid rgba(135, 176, 255, 0.16);
+  border-radius: 14px;
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.32);
+}
+
+.movescan-integration-inner > .movescan-feature-list {
+  grid-area: features;
+}
+
+@media (max-width: 860px) {
+  .movescan-integration-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "heading"
+      "visual"
+      "description"
+      "features";
+    gap: 22px;
+  }
+
+  .movescan-integration-inner > .movescan-section-heading {
+    margin-bottom: 0;
+  }
+
+  .movescan-integration-visual img {
+    max-width: 100%;
+  }
+}
