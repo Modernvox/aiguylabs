@@ -2742,7 +2742,7 @@ function PrivateCampaignsPage() {
               <div className="private-range-head">
                 <div>
                   <h2 id="private-outreach-list-title">Outreach funnel</h2>
-                  <p>Sent &rarr; Opened &rarr; Product Page &rarr; Demo Opened &rarr; Video Started &rarr; 50% Watched</p>
+                  <p>Sent &rarr; Delivered &rarr; Opened &rarr; Product Page &rarr; Demo Opened &rarr; Video Started &rarr; 50% Watched</p>
                 </div>
               </div>
               {recipients.length ? recipients.map((recipient) => (
@@ -2752,14 +2752,14 @@ function PrivateCampaignsPage() {
                     <span>{recipient.recipientEmail}</span>
                   </div>
                   <div className="private-outreach-funnel" aria-label={recipient.companyName + ' funnel status'}>
-                    {['sent', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage === 'demo' ? 'Demo Opened' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
+                    {['sent', 'delivered', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage === 'demo' ? 'Demo Opened' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
                   </div>
                   <div className="private-outreach-engagement" aria-label={recipient.companyName + ' demo engagement'}>
                     {['opened', 'started', 'watched25', 'watched50', 'completed'].map((stage) => <span className={recipient.demoEngagement?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'opened' ? 'Demo Opened' : stage === 'started' ? 'Video Started' : stage === 'watched25' ? '25% Watched' : stage === 'watched50' ? '50% Watched' : 'Completed'}</span>)}
                   </div>
                   <div className="private-outreach-action">
-                    <span className={'private-outreach-status ' + (recipient.hotLead ? 'is-hot-lead' : recipient.lead ? 'is-lead' : recipient.funnel?.demo ? 'is-demo' : recipient.funnel?.productPage ? 'is-product-page' : recipient.funnel?.opened ? 'is-opened' : recipient.funnel?.sent ? 'is-sent' : '')}>
-                      {recipient.hotLead ? 'Hot Lead' : recipient.lead ? 'Lead' : recipient.funnel?.demo ? 'Demo' : recipient.funnel?.productPage ? 'Product Page' : recipient.funnel?.opened ? 'Opened' : recipient.funnel?.sent ? 'Sent' : 'Not Sent'}
+                    <span className={'private-outreach-status ' + (recipient.delivery?.status && recipient.delivery.status !== 'pending' ? 'is-delivery-' + recipient.delivery.status : recipient.hotLead ? 'is-hot-lead' : recipient.lead ? 'is-lead' : recipient.funnel?.demo ? 'is-demo' : recipient.funnel?.productPage ? 'is-product-page' : recipient.funnel?.opened ? 'is-opened' : recipient.funnel?.sent ? 'is-sent' : '')}>
+                      {recipient.delivery?.status && recipient.delivery.status !== 'pending' ? recipient.delivery.status.charAt(0).toUpperCase() + recipient.delivery.status.slice(1) : recipient.hotLead ? 'Hot Lead' : recipient.lead ? 'Lead' : recipient.funnel?.demo ? 'Demo' : recipient.funnel?.productPage ? 'Product Page' : recipient.funnel?.opened ? 'Opened' : recipient.funnel?.sent ? 'Sent' : 'Not Sent'}
                     </span>
                     <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={Boolean(recipient.funnel?.sent) || Boolean(sendingRecipientId)}>
                       {sendingRecipientId === recipient.id ? 'Sending...' : recipient.funnel?.sent ? 'Sent' : 'Send'}

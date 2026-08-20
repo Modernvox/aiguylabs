@@ -27,8 +27,8 @@ export async function recordCampaignEvent(env, request, record) {
   const db = await ensureDb(env);
   await ensureCampaignEventsTable(db);
 
-  const id = crypto.randomUUID();
-  const createdAt = new Date().toISOString();
+  const id = record.id || crypto.randomUUID();
+  const createdAt = record.createdAt || new Date().toISOString();
   const ipAddress = safeString(request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || '', 120);
   const userAgent = safeString(request.headers.get('user-agent') || '', 600);
   const referrer = safeString(request.headers.get('referer') || '', 500);

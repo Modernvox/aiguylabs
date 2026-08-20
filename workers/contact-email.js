@@ -5,6 +5,8 @@ import {
   onRequestPost,
   onRequestPut,
 } from '../functions/api/contact-requests/index.js';
+import { recordCampaignEvent } from '../functions/api/_campaign-events.js';
+import { ensureCampaignRecipientsTable, MOVESCAN_OUTREACH_CAMPAIGN } from '../functions/api/_campaign-outreach.js';
 import {
   buildOutreachEmail,
   cleanHeaderText,
@@ -92,7 +94,92 @@ async function handleOutreachSend(request, env) {
   }
 }
 
+const DELIVERY_EVENT_NAMES = {
+  'cf.email.sending.message.delivered': 'email_delivered',
+  'cf.email.sending.message.deferred': 'email_deferred',
+  'cf.email.sending.message.bounced': 'email_bounced',
+  'cf.email.sending.message.rejected': 'email_rejected',
+  'cf.email.sending.message.complained': 'email_complained',
+  'cf.email.sending.message.failed': 'email_failed',
+};
+
+function parseQueueEvent(body) {
+  if (typeof body === 'string') {
+    try { return JSON.parse(body); } catch { return null; }
+  }
+  return body && typeof body === 'object' ? body : null;
+}
+
+async function recordEmailDeliveryEvent(env, body) {
+  const event = parseQueueEvent(body);
+  const eventName = DELIVERY_EVENT_NAMES[event?.type];
+  const payload = event?.payload || {};
+  const messageId = cleanHeaderText(payload.messageId, 240);
+  const recipientEmail = cleanHeaderText(payload.recipient, 240).toLowerCase();
+  const providerEventId = cleanHeaderText(payload.eventId, 240);
+  if (!eventName || !messageId || !recipientEmail || !providerEventId) return false;
+
+  const db = env.DB;
+  if (!db) throw new Error('Campaign database is not configured.');
+  await ensureCampaignRecipientsTable(db);
+  const recipient = await db.prepare(`
+    select id, company_name as companyName, recipient_email as recipientEmail, campaign
+    from campaign_recipients
+    where campaign = ? and lower(recipient_email) = ?
+    limit 1
+  `).bind(MOVESCAN_OUTREACH_CAMPAIGN, recipientEmail).first();
+  if (!recipient) return false;
+
+  const sentEvent = await db.prepare(`
+    select id from campaign_events
+    where campaign = ? and event_name = 'email_sent' and instr(metadata, ?) > 0
+    limit 1
+  `).bind(recipient.campaign, '"messageId":"' + messageId + '"').first();
+  if (!sentEvent) return false;
+
+  const createdAt = event?.metadata?.eventTimestamp || new Date().toISOString();
+  const delivery = payload.delivery || {};
+  try {
+    await recordCampaignEvent(env, new Request('https://aiguylabs.com/api/email-events', {
+      headers: { 'user-agent': 'cloudflare-email-service-event' },
+    }), {
+      id: 'email-provider:' + providerEventId,
+      createdAt,
+      eventName,
+      campaign: recipient.campaign,
+      sourcePath: '/api/email-events',
+      destinationPath: '/private/campaigns',
+      utmSource: 'movescan_outreach',
+      utmMedium: 'email',
+      utmCampaign: recipient.campaign,
+      metadata: {
+        recipientId: recipient.id,
+        companyName: recipient.companyName,
+        providerEventId,
+        messageId,
+        providerStatus: delivery.status || eventName.replace('email_', ''),
+        smtpStatusCode: delivery.smtpStatusCode || '',
+        smtpEnhancedStatusCode: delivery.smtpEnhancedStatusCode || '',
+      },
+    });
+  } catch (error) {
+    if (!String(error?.message || '').toLowerCase().includes('constraint')) throw error;
+  }
+  return true;
+}
 export default {
+
+  async queue(batch, env) {
+    for (const message of batch.messages) {
+      try {
+        await recordEmailDeliveryEvent(env, message.body);
+        message.ack();
+      } catch (error) {
+        console.error('Unable to process Cloudflare email delivery event', { code: error?.code || 'UNKNOWN' });
+        message.retry();
+      }
+    }
+  },
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === '/api/movescan-outreach/send') return handleOutreachSend(request, env);

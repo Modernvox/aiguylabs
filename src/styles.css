@@ -4841,3 +4841,21 @@ img {
     grid-template-columns: 1fr;
   }
 }
+
+.private-outreach-status.is-delivery-delivered {
+  color: #7df0c1;
+}
+
+.private-outreach-status.is-delivery-deferred {
+  color: #ffd37d;
+}
+
+.private-outreach-status.is-delivery-bounced,
+.private-outreach-status.is-delivery-rejected,
+.private-outreach-status.is-delivery-complained {
+  color: #ff9a9a;
+}
+
+.private-outreach-status.is-delivery-failed {
+  color: #ff9a9a;
+}

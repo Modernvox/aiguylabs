@@ -19,3 +19,7 @@ destination_address = "contact@aiguylabs.com"
 
 [[send_email]]
 name = "OUTREACH_EMAIL"
+[[queues.consumers]]
+queue = "aiguylabs-email-events"
+max_batch_size = 10
+max_batch_timeout = 5

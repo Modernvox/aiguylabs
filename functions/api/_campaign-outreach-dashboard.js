@@ -17,7 +17,7 @@ async function loadOutreachRecipients(env) {
   const eventResult = await db.prepare(`
     select event_name as eventName, created_at as createdAt, metadata
     from campaign_events
-    where campaign = ? and event_name in ('email_sent', 'email_open', 'product_page_click', 'demo_click', 'demo_opened', 'video_started', 'video_25_watched', 'video_50_watched', 'video_completed')
+    where campaign = ? and event_name in ('email_sent', 'email_open', 'product_page_click', 'demo_click', 'demo_opened', 'video_started', 'video_25_watched', 'video_50_watched', 'video_completed', 'email_delivered', 'email_deferred', 'email_bounced', 'email_rejected', 'email_complained', 'email_failed')
     order by created_at desc
     limit 2000
   `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
@@ -27,7 +27,12 @@ async function loadOutreachRecipients(env) {
       const metadata = JSON.parse(event.metadata || '{}');
       if (!metadata.recipientId) continue;
       const current = eventsByRecipient.get(metadata.recipientId) || {};
-      if (!current[event.eventName]) current[event.eventName] = event.createdAt;
+      if (event.eventName.startsWith('email_') && ['email_delivered', 'email_deferred', 'email_bounced', 'email_rejected', 'email_complained', 'email_failed'].includes(event.eventName)) {
+        const candidate = { status: event.eventName.replace('email_', ''), at: event.createdAt };
+        if (!current.delivery || candidate.at > current.delivery.at) current.delivery = candidate;
+      } else if (!current[event.eventName]) {
+        current[event.eventName] = event.createdAt;
+      }
       eventsByRecipient.set(metadata.recipientId, current);
     } catch {}
   }
@@ -43,10 +48,12 @@ async function loadOutreachRecipients(env) {
       sentAt: row.sentAt || '',
       funnel: {
         sent: Boolean(events.email_sent),
+        delivered: events.delivery?.status === 'delivered',
         opened: Boolean(events.email_open),
         productPage: Boolean(events.product_page_click),
         demo: Boolean(events.demo_click || events.demo_opened),
       },
+      delivery: events.delivery || { status: 'pending', at: '' },
       demoEngagement: {
         opened: events.demo_opened || '',
         started: events.video_started || '',
@@ -58,7 +65,7 @@ async function loadOutreachRecipients(env) {
       hotLead: Boolean(events.video_50_watched),
       leadAt: events.video_started || '',
       hotLeadAt: events.video_50_watched || '',
-      latestActivity: Object.values(events).filter(Boolean).sort().at(-1) || '',
+      latestActivity: Object.entries(events).flatMap(([key, value]) => key === 'delivery' ? [value.at] : [value]).filter((value) => typeof value === 'string' && value).sort().at(-1) || '',
       dates: {
         sent: events.email_sent || '',
         opened: events.email_open || '',
