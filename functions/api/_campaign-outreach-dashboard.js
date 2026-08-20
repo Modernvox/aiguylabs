@@ -17,7 +17,7 @@ async function loadOutreachRecipients(env) {
   const eventResult = await db.prepare(`
     select event_name as eventName, created_at as createdAt, metadata
     from campaign_events
-    where campaign = ? and event_name in ('email_sent', 'email_open', 'product_page_click', 'demo_click', 'demo_opened', 'video_started', 'video_25_watched', 'video_50_watched', 'video_completed', 'email_delivered', 'email_deferred', 'email_bounced', 'email_rejected', 'email_complained', 'email_failed')
+    where campaign = ? and event_name in ('email_sent', 'email_open', 'product_page_click', 'product_page_view', 'demo_click', 'demo_opened', 'video_started', 'video_25_watched', 'video_50_watched', 'video_completed', 'email_delivered', 'email_deferred', 'email_bounced', 'email_rejected', 'email_complained', 'email_failed')
     order by created_at desc
     limit 2000
   `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
@@ -50,10 +50,11 @@ async function loadOutreachRecipients(env) {
         sent: Boolean(events.email_sent),
         delivered: events.delivery?.status === 'delivered',
         opened: Boolean(events.email_open),
-        productPage: Boolean(events.product_page_click),
+        productPage: Boolean(events.product_page_view),
         demo: Boolean(events.demo_click || events.demo_opened),
       },
       delivery: events.delivery || { status: 'pending', at: '' },
+      productPageClick: events.product_page_click || '',
       demoEngagement: {
         opened: events.demo_opened || '',
         started: events.video_started || '',
@@ -69,7 +70,7 @@ async function loadOutreachRecipients(env) {
       dates: {
         sent: events.email_sent || '',
         opened: events.email_open || '',
-        productPage: events.product_page_click || '',
+        productPage: events.product_page_view || '',
         demo: events.demo_click || events.demo_opened || '',
       },
     };

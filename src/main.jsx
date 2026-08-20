@@ -1802,6 +1802,10 @@ function MoveScanProductPage({ product }) {
   ];
 
   useEffect(() => {
+    void trackMoveScanEngagement('product_page_view');
+  }, []);
+
+  useEffect(() => {
     if (!isDemoModalOpen) return undefined;
 
     const onKeyDown = (event) => {

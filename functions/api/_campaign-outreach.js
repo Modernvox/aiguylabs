@@ -193,7 +193,7 @@ I built MoveScan while actually working in the field as a mover, so it was desig
 
 You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:
 
-https://aiguylabs.com/products/movescan
+${productUrl.toString()}
 
 Click See It in Action to watch the demo.
 
@@ -222,7 +222,7 @@ mike@aiguylabs.com`;
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">There’s also a bigger goal behind this. As more moving companies begin using MoveScan, I want to build a network of MoveScan-enabled movers and dedicate a portion of subscription revenue toward advertising that network to consumers — creating new customer demand for the same movers using the technology.</p>
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">I built MoveScan while actually working in the field as a mover, so it was designed around the problems we deal with on real jobs — not around what someone outside the industry thinks moving software should look like.</p>
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;"><a href="${safeUrl}" style="color:#1264d8;">https://aiguylabs.com/products/movescan</a></p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;"><a href="${safeUrl}" style="color:#1264d8;">${productUrl.toString()}</a></p>
         <p style="margin:0 0 24px;font-size:16px;line-height:1.65;">Click <strong>See It in Action</strong> to watch the demo.</p>
         <p style="margin:0;font-size:16px;line-height:1.65;">Best,<br>Michael Pierre<br>Nashville Mover / Independent Full-Stack Software Developer<br>MoveScan / AI Guy Labs<br><a href="mailto:mike@aiguylabs.com" style="color:#1264d8;">mike@aiguylabs.com</a></p>
       </div>
