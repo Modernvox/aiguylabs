@@ -2513,6 +2513,48 @@ function sortOutreachRecipients(recipients, sortKey) {
     .map(({ recipient }) => recipient);
 }
 
+const deliveryStatusLabels = {
+  delivered: 'Delivered',
+  failed: 'Delivery Failed',
+  bounced: 'Bounced',
+  rejected: 'Rejected',
+  deferred: 'Deferred',
+  complained: 'Complaint',
+  doesnt_exist: "Doesn't Exist",
+};
+
+function getDeliveryStatusLabel(status) {
+  return deliveryStatusLabels[status] || (status ? status.charAt(0).toUpperCase() + status.slice(1) : '');
+}
+
+function canRetryDelivery(status) {
+  return ['failed', 'bounced', 'rejected', 'deferred'].includes(status);
+}
+
+function getRecipientStatusClass(recipient) {
+  const deliveryStatus = recipient.delivery?.status;
+  if (deliveryStatus && deliveryStatus !== 'pending') return 'is-delivery-' + deliveryStatus;
+  if (recipient.hotLead) return 'is-hot-lead';
+  if (recipient.lead) return 'is-lead';
+  if (recipient.funnel?.demo) return 'is-demo';
+  if (recipient.funnel?.productPage) return 'is-product-page';
+  if (recipient.funnel?.opened) return 'is-opened';
+  if (recipient.funnel?.sent) return 'is-sent';
+  return '';
+}
+
+function getRecipientStatusLabel(recipient) {
+  const deliveryStatus = recipient.delivery?.status;
+  if (deliveryStatus && deliveryStatus !== 'pending') return getDeliveryStatusLabel(deliveryStatus);
+  if (recipient.hotLead) return 'Hot Lead';
+  if (recipient.lead) return 'Lead';
+  if (recipient.funnel?.demo) return 'Demo';
+  if (recipient.funnel?.productPage) return 'Product Page';
+  if (recipient.funnel?.opened) return 'Opened';
+  if (recipient.funnel?.sent) return 'Sent';
+  return 'Not Sent';
+}
+
 function PrivateCampaignsPage() {
   const [password, setPassword] = useState('');
   const [draftRange, setDraftRange] = useState(() => getDefaultCampaignRange());
@@ -2630,6 +2672,7 @@ function PrivateCampaignsPage() {
 
   async function sendRecipient(recipient) {
     if (!recipient?.id || sendingRecipientId) return;
+    const retry = canRetryDelivery(recipient.delivery?.status);
     setSendingRecipientId(recipient.id);
     setOutreachState({ status: 'sending', message: '' });
     try {
@@ -2637,7 +2680,7 @@ function PrivateCampaignsPage() {
         method: 'POST',
         credentials: 'include',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ recipientId: recipient.id }),
+        body: JSON.stringify({ recipientId: recipient.id, retry }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
@@ -2831,11 +2874,11 @@ function PrivateCampaignsPage() {
                     {['opened', 'started', 'watched25', 'watched50', 'completed'].map((stage) => <span className={recipient.demoEngagement?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'opened' ? 'Demo Opened' : stage === 'started' ? 'Video Started' : stage === 'watched25' ? '25% Watched' : stage === 'watched50' ? '50% Watched' : 'Completed'}</span>)}
                   </div>
                   <div className="private-outreach-action">
-                    <span className={'private-outreach-status ' + (recipient.delivery?.status && recipient.delivery.status !== 'pending' ? 'is-delivery-' + recipient.delivery.status : recipient.hotLead ? 'is-hot-lead' : recipient.lead ? 'is-lead' : recipient.funnel?.demo ? 'is-demo' : recipient.funnel?.productPage ? 'is-product-page' : recipient.funnel?.opened ? 'is-opened' : recipient.funnel?.sent ? 'is-sent' : '')}>
-                      {recipient.delivery?.status && recipient.delivery.status !== 'pending' ? recipient.delivery.status.charAt(0).toUpperCase() + recipient.delivery.status.slice(1) : recipient.hotLead ? 'Hot Lead' : recipient.lead ? 'Lead' : recipient.funnel?.demo ? 'Demo' : recipient.funnel?.productPage ? 'Product Page' : recipient.funnel?.opened ? 'Opened' : recipient.funnel?.sent ? 'Sent' : 'Not Sent'}
+                    <span className={'private-outreach-status ' + getRecipientStatusClass(recipient)}>
+                      {getRecipientStatusLabel(recipient)}
                     </span>
-                    <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={Boolean(recipient.funnel?.sent) || Boolean(sendingRecipientId)}>
-                      {sendingRecipientId === recipient.id ? 'Sending...' : recipient.funnel?.sent ? 'Sent' : 'Send'}
+                    <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={(Boolean(recipient.funnel?.sent) && !canRetryDelivery(recipient.delivery?.status)) || Boolean(sendingRecipientId)}>
+                      {sendingRecipientId === recipient.id ? 'Sending...' : canRetryDelivery(recipient.delivery?.status) ? 'Retry' : recipient.funnel?.sent ? 'Sent' : 'Send'}
                     </button>
                   </div>
                 </article>

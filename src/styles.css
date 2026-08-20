@@ -4943,8 +4943,9 @@ img {
   color: #ff9a9a;
 }
 
-.private-outreach-status.is-delivery-failed {
-  color: #ff9a9a;
+.private-outreach-status.is-delivery-failed,
+.private-outreach-status.is-delivery-doesnt_exist {
+  color: #ff5f6d;
 }
 @media (max-width: 767px) {
   .movescan-hero-inner {

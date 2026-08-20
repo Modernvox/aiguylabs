@@ -5,9 +5,9 @@ async function loadOutreachRecipients(env) {
   const db = await ensureDb(env);
   await ensureCampaignRecipientsTable(db);
   const recipientResult = await db.prepare(`
-    select id, company_name as companyName, recipient_email as recipientEmail, status, created_at as createdAt, sent_at as sentAt
+    select id, company_name as companyName, recipient_email as recipientEmail, status, delivery_status as deliveryStatus, created_at as createdAt, sent_at as sentAt
     from campaign_recipients
-    where campaign = ?
+    where campaign = ? and lower(recipient_email) <> 'admin@movescan.com'
     order by created_at desc
     limit 200
   `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
@@ -28,7 +28,9 @@ async function loadOutreachRecipients(env) {
       if (!metadata.recipientId) continue;
       const current = eventsByRecipient.get(metadata.recipientId) || {};
       if (event.eventName.startsWith('email_') && ['email_delivered', 'email_deferred', 'email_bounced', 'email_rejected', 'email_complained', 'email_failed'].includes(event.eventName)) {
-        const candidate = { status: event.eventName.replace('email_', ''), at: event.createdAt };
+        const providerDetails = [metadata.providerStatus, metadata.smtpStatusCode, metadata.smtpEnhancedStatusCode, metadata.reason, metadata.message].filter(Boolean).join(' ');
+        const explicitlyInvalidMailbox = /(?:5\.1\.1|5\.1\.10|mailbox|recipient|user).*(?:invalid|unknown|does not exist|not found|unavailable)/i.test(providerDetails);
+        const candidate = { status: explicitlyInvalidMailbox ? 'doesnt_exist' : event.eventName.replace('email_', ''), at: event.createdAt };
         if (!current.delivery || candidate.at > current.delivery.at) current.delivery = candidate;
       } else if (!current[event.eventName]) {
         current[event.eventName] = event.createdAt;
@@ -53,7 +55,7 @@ async function loadOutreachRecipients(env) {
         productPage: Boolean(events.product_page_view),
         demo: Boolean(events.demo_click || events.demo_opened),
       },
-      delivery: events.delivery || { status: 'pending', at: '' },
+      delivery: row.deliveryStatus ? { status: row.deliveryStatus, at: events.delivery?.at || '' } : events.delivery || { status: 'pending', at: '' },
       productPageClick: events.product_page_click || '',
       demoEngagement: {
         opened: events.demo_opened || '',

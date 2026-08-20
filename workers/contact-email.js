@@ -139,6 +139,9 @@ async function recordEmailDeliveryEvent(env, body) {
 
   const createdAt = event?.metadata?.eventTimestamp || new Date().toISOString();
   const delivery = payload.delivery || {};
+  const providerDetails = [delivery.status, delivery.smtpStatusCode, delivery.smtpEnhancedStatusCode, payload.reason, payload.message].filter(Boolean).join(' ');
+  const explicitlyInvalidMailbox = /(?:5\.1\.1|5\.1\.10|mailbox|recipient|user).*(?:invalid|unknown|does not exist|not found|unavailable)/i.test(providerDetails);
+  const deliveryStatus = explicitlyInvalidMailbox ? 'doesnt_exist' : eventName.replace('email_', '');
   try {
     await recordCampaignEvent(env, new Request('https://aiguylabs.com/api/email-events', {
       headers: { 'user-agent': 'cloudflare-email-service-event' },
@@ -165,6 +168,7 @@ async function recordEmailDeliveryEvent(env, body) {
   } catch (error) {
     if (!String(error?.message || '').toLowerCase().includes('constraint')) throw error;
   }
+  await db.prepare('update campaign_recipients set delivery_status = ? where id = ?').bind(deliveryStatus, recipient.id).run();
   return true;
 }
 export default {

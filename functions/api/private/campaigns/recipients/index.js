@@ -44,7 +44,7 @@ export async function onRequestPost({ request, env }) {
   if (body.recipientId) {
     recipient = await loadRecipient(db, cleanHeaderText(body.recipientId, 80));
     if (!recipient) return json({ ok: false, error: 'Recipient was not found.' }, { status: 404, headers: { 'cache-control': 'no-store' } });
-    if (recipient.status === 'sent') return json({ ok: false, error: 'This recipient has already been sent.' }, { status: 409, headers: { 'cache-control': 'no-store' } });
+    if (recipient.status === 'sent' && body.retry !== true) return json({ ok: false, error: 'This recipient has already been sent. Use the explicit retry action for a failed delivery.' }, { status: 409, headers: { 'cache-control': 'no-store' } });
   } else {
     const companyName = cleanHeaderText(body.companyName || body.company_name, 180);
     const recipientEmail = cleanHeaderText(body.recipientEmail || body.recipient_email, 240).toLowerCase();
@@ -89,7 +89,7 @@ export async function onRequestPost({ request, env }) {
     if (!workerResponse.ok || result.ok !== true) throw new Error(result.error || 'Outreach worker send failed.');
 
     const sentAt = new Date().toISOString();
-    await db.prepare('update campaign_recipients set status = ?, sent_at = ? where id = ?').bind('sent', sentAt, recipient.id).run();
+    await db.prepare('update campaign_recipients set status = ?, delivery_status = null, sent_at = ? where id = ?').bind('sent', sentAt, recipient.id).run();
     try {
       await recordRecipientEvent(env, request, {
         token: recipient.trackingToken,
