@@ -722,7 +722,7 @@ const footerProducts = [
   { label: 'SaaSquatch', href: '/products/saasquatch', status: 'IN DEVELOPMENT' },
 ];
 
-const MOVESCAN_LOGIN_URL = 'https://movescan.aiguylabs.com/login';
+const MOVESCAN_LOGIN_URL = 'https://movescan.app/login';
 const MOVESCAN_DEMO_URL = 'https://movescan.aiguylabs.com/quote/movescan-demo';
 const MOVESCAN_FREE_TRIAL_URL = 'https://www.movescan.app';
 const MOVESCAN_POSTCARD_REDIRECT_URL = '/products/movescan?utm_source=postcard&utm_medium=direct_mail&utm_campaign=movescan_local_launch';
