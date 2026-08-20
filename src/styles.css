@@ -4711,3 +4711,51 @@ img {
     overflow-wrap: anywhere;
   }
 }
+
+/* Keep the MoveScan integration flow explicit on narrow screens. */
+@media (max-width: 860px) {
+  .movescan-integration-inner {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+
+  .movescan-integration-inner > .movescan-section-heading,
+  .movescan-integration-inner > .movescan-feature-list {
+    display: block;
+    position: static;
+    grid-column: auto;
+    grid-row: auto;
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .movescan-integration-inner > .movescan-section-heading {
+    margin-bottom: 28px;
+  }
+
+  .movescan-feature-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .movescan-feature-list li {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: normal;
+    word-break: normal;
+    white-space: normal;
+  }
+}
