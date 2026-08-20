@@ -1913,7 +1913,7 @@ function MoveScanProductPage({ product }) {
       <section className="section-shell product-detail-closing" aria-labelledby="movescan-closing-title">
         <div className="container product-detail-closing-inner movescan-closing-inner">
           <p className="eyebrow">Free Trial</p>
-          <h2 id="movescan-closing-title">Try MoveScan with your first estimate free.</h2>
+          <h2 id="movescan-closing-title">Try MoveScan with your first five estimates free.</h2>
           <p>Request trial access and AI Guy Labs™ will provision your moving-company account for the current MoveScan onboarding flow.</p>
           <div className="product-detail-actions movescan-closing-actions">
             <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
