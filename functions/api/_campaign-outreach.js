@@ -170,6 +170,8 @@ function buildOutreachEmail({ productUrl, pixelUrl }) {
   const movescanHomepageImageUrl = 'https://aiguylabs.com/images/products/movescan/movescan-homepage.png';
   const text = `Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.
 
+See MoveScan in Action -> ${productUrl.toString()}
+
 A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.
 
 That process made sense years ago.
@@ -210,6 +212,7 @@ mike@aiguylabs.com`;
       <div style="padding:28px 30px;">
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.</p>
         <p style="margin:24px 0;text-align:center;"><a href="${safeUrl}" style="display:block;text-decoration:none;"><img src="${movescanHomepageImageUrl}" alt="MoveScan homepage and instant moving estimate experience" width="560" style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto;border:0;"></a></p>
+        <p style="margin:0 0 24px;text-align:center;"><a href="${safeUrl}" style="display:inline-block;background:#1264d8;color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;line-height:1.2;padding:14px 22px;border-radius:6px;">See MoveScan in Action &rarr;</a></p>
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.</p>
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">That process made sense years ago.</p>
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">Today, customers are used to doing almost everything from their phones with a few swipes and taps. They don’t want to sit there typing out every couch, bed, dresser, TV, box, and table they own — and they definitely shouldn’t have to guess what size moving truck they need.</p>
