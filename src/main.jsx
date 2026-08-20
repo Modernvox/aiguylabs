@@ -2531,12 +2531,23 @@ function PrivateCampaignsPage() {
     event.preventDefault();
     if (outreachState.status === 'sending') return;
     setOutreachState({ status: 'sending', message: '' });
+
+    const companyName = outreachForm.companyName.trim();
+    const recipientEmail = outreachForm.recipientEmail.trim();
+    if (!companyName || !recipientEmail) {
+      setOutreachState({ status: 'error', message: 'Company name and recipient email are required for a real outreach send.' });
+      return;
+    }
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(recipientEmail)) {
+      setOutreachState({ status: 'error', message: 'Enter a valid recipient email for a real outreach send.' });
+      return;
+    }
     try {
       const response = await fetch('/api/private/campaigns/recipients', {
         method: 'POST',
         credentials: 'include',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(outreachForm),
+        body: JSON.stringify({ companyName, recipientEmail }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
@@ -2703,7 +2714,7 @@ function PrivateCampaignsPage() {
                 <h2 id="private-outreach-title">Send a tracked introduction</h2>
                 <p className="private-dashboard-note">Each send creates its own secure recipient link, open pixel, and funnel record. Email opens are approximate because mail clients may preload images.</p>
               </div>
-              <form className="private-outreach-form" onSubmit={sendOutreach}>
+              <form className="private-outreach-form" onSubmit={sendOutreach} noValidate>
                 <label>
                   <span>Company name</span>
                   <input value={outreachForm.companyName} onChange={(event) => setOutreachForm((current) => ({ ...current, companyName: event.target.value }))} required />

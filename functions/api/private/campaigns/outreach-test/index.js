@@ -24,11 +24,16 @@ export async function onRequestPost({ request, env }) {
       }),
     });
     const result = await workerResponse.json().catch(() => ({}));
-    if (!workerResponse.ok || result.ok !== true) return json({ ok: false, error: 'Unable to send the test email.' }, { status: 502, headers: { 'cache-control': 'no-store' } });
+    if (!workerResponse.ok || result.ok !== true) {
+      const reason = typeof result.error === 'string' ? result.error : 'The email worker rejected the request.';
+      console.error('MoveScan test email rejected', { status: workerResponse.status, reason });
+      return json({ ok: false, error: 'Test email failed: ' + reason }, { status: 502, headers: { 'cache-control': 'no-store' } });
+    }
     return json({ ok: true }, { status: 202, headers: { 'cache-control': 'no-store' } });
   } catch (error) {
-    console.error('Unable to send MoveScan test email', { code: error?.code || 'UNKNOWN' });
-    return json({ ok: false, error: 'Unable to send the test email.' }, { status: 502, headers: { 'cache-control': 'no-store' } });
+    const reason = typeof error?.message === 'string' ? error.message.slice(0, 180) : 'The email request could not be completed.';
+    console.error('Unable to send MoveScan test email', { code: error?.code || 'UNKNOWN', reason });
+    return json({ ok: false, error: 'Test email failed: ' + reason }, { status: 502, headers: { 'cache-control': 'no-store' } });
   }
 }
 
