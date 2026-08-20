@@ -4275,6 +4275,33 @@ img {
   color: #cdd8e8;
 }
 
+.private-outreach-list-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.private-outreach-sort {
+  display: grid;
+  flex: 0 0 190px;
+  gap: 6px;
+  color: #cdd8e8;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.private-outreach-sort select {
+  min-height: 40px;
+  box-sizing: border-box;
+  border: 1px solid rgba(160, 176, 205, 0.24);
+  border-radius: 8px;
+  background: #05070c;
+  color: #fff;
+  padding: 0 10px;
+  font: inherit;
+}
+
 .private-range-form {
   display: grid;
   gap: 14px;
@@ -4508,6 +4535,16 @@ img {
 }
 
 @media (max-width: 560px) {
+  .private-outreach-list-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .private-outreach-sort {
+    flex-basis: auto;
+    width: 100%;
+  }
+
   .private-outreach-funnel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

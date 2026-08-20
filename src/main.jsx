@@ -2474,6 +2474,45 @@ function getAllTimeCampaignRange() {
   return { from: '1970-01-01', to: end.toISOString().slice(0, 10) };
 }
 
+const outreachSortOptions = [
+  { value: 'default', label: 'Default' },
+  { value: 'opened', label: 'Opened first' },
+  { value: 'productPage', label: 'Product Page first' },
+  { value: 'demo', label: 'Demo activity first' },
+  { value: 'sent', label: 'Newest sent' },
+];
+
+function getOutreachSortTimestamp(recipient, sortKey) {
+  if (sortKey === 'opened') return recipient.dates?.opened || '';
+  if (sortKey === 'productPage') return recipient.dates?.productPage || '';
+  if (sortKey === 'sent') return recipient.sentAt || recipient.dates?.sent || '';
+  if (sortKey === 'demo') {
+    return [
+      recipient.demoEngagement?.completed,
+      recipient.demoEngagement?.watched50,
+      recipient.demoEngagement?.watched25,
+      recipient.demoEngagement?.started,
+      recipient.demoEngagement?.opened,
+      recipient.dates?.demo,
+    ].filter(Boolean).sort().at(-1) || '';
+  }
+  return '';
+}
+
+function sortOutreachRecipients(recipients, sortKey) {
+  if (sortKey === 'default') return recipients;
+  return recipients
+    .map((recipient, index) => ({ recipient, index, timestamp: getOutreachSortTimestamp(recipient, sortKey) }))
+    .sort((a, b) => {
+      const aHasTimestamp = Boolean(a.timestamp);
+      const bHasTimestamp = Boolean(b.timestamp);
+      if (aHasTimestamp !== bHasTimestamp) return aHasTimestamp ? -1 : 1;
+      if (a.timestamp !== b.timestamp) return b.timestamp.localeCompare(a.timestamp);
+      return a.index - b.index;
+    })
+    .map(({ recipient }) => recipient);
+}
+
 function PrivateCampaignsPage() {
   const [password, setPassword] = useState('');
   const [draftRange, setDraftRange] = useState(() => getDefaultCampaignRange());
@@ -2485,6 +2524,7 @@ function PrivateCampaignsPage() {
   const [outreachForm, setOutreachForm] = useState({ companyName: '', recipientEmail: '' });
   const [outreachState, setOutreachState] = useState({ status: 'idle', message: '' });
   const [sendingRecipientId, setSendingRecipientId] = useState('');
+  const [outreachSort, setOutreachSort] = useState('default');
   const [isOutreachPreviewOpen, setIsOutreachPreviewOpen] = useState(false);
   const [outreachPreview, setOutreachPreview] = useState(null);
   const [outreachPreviewState, setOutreachPreviewState] = useState({ status: 'idle', message: '' });
@@ -2686,6 +2726,7 @@ function PrivateCampaignsPage() {
   ];
 
   const leads = recipients.filter((recipient) => recipient.lead);
+  const sortedRecipients = sortOutreachRecipients(recipients, outreachSort);
 
   if (pageState.status === 'locked') {
     return (
@@ -2765,13 +2806,19 @@ function PrivateCampaignsPage() {
             </section>
 
             <section className="private-outreach-list" aria-labelledby="private-outreach-list-title">
-              <div className="private-range-head">
+              <div className="private-range-head private-outreach-list-head">
                 <div>
                   <h2 id="private-outreach-list-title">Outreach funnel</h2>
                   <p>Sent &rarr; Delivered &rarr; Opened &rarr; Product Page &rarr; Demo Opened &rarr; Video Started &rarr; 50% Watched</p>
                 </div>
+                <label className="private-outreach-sort">
+                  <span>Sort</span>
+                  <select value={outreachSort} onChange={(event) => setOutreachSort(event.target.value)}>
+                    {outreachSortOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
+                  </select>
+                </label>
               </div>
-              {recipients.length ? recipients.map((recipient) => (
+              {sortedRecipients.length ? sortedRecipients.map((recipient) => (
                 <article className="private-outreach-row" key={recipient.id}>
                   <div className="private-outreach-recipient">
                     <strong>{recipient.companyName}</strong>
