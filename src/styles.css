@@ -4685,3 +4685,29 @@ img {
     padding: 16px;
   }
 }
+
+@media (max-width: 860px) {
+  .movescan-integration-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: 28px;
+    box-sizing: border-box;
+  }
+
+  .movescan-integration-inner > *,
+  .movescan-feature-list {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .movescan-feature-list li {
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+  }
+}
