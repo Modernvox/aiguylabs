@@ -1898,7 +1898,7 @@ function MoveScanProductPage({ product }) {
                   <span aria-hidden="true"><step.icon size={19} strokeWidth={1.8} /></span>
                   <h3>{step.title}</h3>
                 </div>
-                <img className='movescan-workflow-card-image' src={step.image} alt={step.title + ' screenshot'} loading='lazy' />
+                <img className='movescan-workflow-card-image' src={step.image} alt={step.title + ' screenshot'} />
                 <p>{step.description}</p>
               </article>
             ))}
