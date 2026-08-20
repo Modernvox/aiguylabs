@@ -105,6 +105,10 @@ function buildTrackedProductUrl(request, token) {
   return url;
 }
 
+function buildTrackedOutreachUrl(request, token) {
+  return new URL('/go/movescan-outreach/' + encodeURIComponent(token), request.url);
+}
+
 function buildOpenPixelUrl(request, token) {
   return new URL('/api/campaign/open/' + encodeURIComponent(token), request.url);
 }
@@ -166,11 +170,12 @@ async function recordRecipientEvent(env, request, { token, eventName, sourcePath
 }
 
 function buildOutreachEmail({ productUrl, pixelUrl }) {
-  const safeUrl = escapeHtml(productUrl.toString());
+  const trackedProductUrl = productUrl.toString();
+  const safeUrl = escapeHtml(trackedProductUrl);
   const movescanHomepageImageUrl = 'https://aiguylabs.com/images/products/movescan/movescan-homepage.png';
   const text = `Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.
 
-See MoveScan in Action -> ${productUrl.toString()}
+See MoveScan in Action -> ${trackedProductUrl}
 
 A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.
 
@@ -196,7 +201,7 @@ I built MoveScan while actually working in the field as a mover, so it was desig
 
 You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:
 
-${productUrl.toString()}
+${trackedProductUrl}
 
 Click See It in Action to watch the demo.
 
@@ -226,7 +231,7 @@ mike@aiguylabs.com`;
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">There’s also a bigger goal behind this. As more moving companies begin using MoveScan, I want to build a network of MoveScan-enabled movers and dedicate a portion of subscription revenue toward advertising that network to consumers — creating new customer demand for the same movers using the technology.</p>
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">I built MoveScan while actually working in the field as a mover, so it was designed around the problems we deal with on real jobs — not around what someone outside the industry thinks moving software should look like.</p>
         <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;"><a href="${safeUrl}" style="color:#1264d8;">${productUrl.toString()}</a></p>
+        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;"><a href="${safeUrl}" style="color:#1264d8;">${trackedProductUrl}</a></p>
         <p style="margin:0 0 24px;font-size:16px;line-height:1.65;">Click <strong>See It in Action</strong> to watch the demo.</p>
         <p style="margin:0;font-size:16px;line-height:1.65;">Best,<br>Michael Pierre<br>Nashville Mover / Independent Full-Stack Software Developer<br>MoveScan / AI Guy Labs<br><a href="mailto:mike@aiguylabs.com" style="color:#1264d8;">mike@aiguylabs.com</a></p>
       </div>
@@ -247,6 +252,7 @@ export {
   getRecipientByToken,
   getRecipientToken,
   buildTrackedProductUrl,
+  buildTrackedOutreachUrl,
   buildOpenPixelUrl,
   buildRecipientCookie,
   recordRecipientEvent,

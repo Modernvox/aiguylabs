@@ -3,7 +3,7 @@ import { isPrivateCampaignsAuthorized } from '../../../_private-campaigns.js';
 import {
   MOVESCAN_OUTREACH_CAMPAIGN,
   buildOpenPixelUrl,
-  buildTrackedProductUrl,
+  buildTrackedOutreachUrl,
   cleanHeaderText,
   ensureCampaignRecipientsTable,
   recordRecipientEvent,
@@ -65,7 +65,7 @@ export async function onRequestPost({ request, env }) {
     recipient = { id, trackingToken: token, companyName, recipientEmail, status: 'pending' };
   }
 
-  const productUrl = buildTrackedProductUrl(request, recipient.trackingToken);
+  const productUrl = buildTrackedOutreachUrl(request, recipient.trackingToken);
   const pixelUrl = buildOpenPixelUrl(request, recipient.trackingToken);
 
   try {
