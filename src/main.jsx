@@ -1787,26 +1787,31 @@ function MoveScanProductPage({ product }) {
     {
       title: 'Customer records the move',
       icon: Video,
+      image: '/images/scan_kitchen.png',
       description: 'The customer completes a guided room-by-room video walkthrough from their phone.',
     },
     {
       title: 'MoveScan analyzes the inventory',
       icon: ScanLine,
+      image: '/images/scanned_items.png',
       description: 'MoveScan identifies the items being moved and estimates total cubic feet.',
     },
     {
       title: 'MoveScan builds the estimate',
       icon: Calculator,
+      image: '/images/estimate1.png',
       description: 'MoveScan applies company settings for truck, crew, loading and unloading time, stairs, charges, and estimated total.',
     },
     {
       title: 'Customer gets the estimate instantly',
       icon: FileCheck2,
+      image: '/images/instant_estimate.png',
       description: 'The estimate is displayed immediately and a copy is sent to the customer.',
     },
     {
       title: 'Moving company reviews the request',
       icon: ClipboardCheck,
+      image: '/images/estimate2.png',
       description: 'Staff can review the inventory, estimate, move details, and Final Quote Requested status from MoveScan.',
     },
   ];
@@ -1893,6 +1898,7 @@ function MoveScanProductPage({ product }) {
                   <span aria-hidden="true"><step.icon size={19} strokeWidth={1.8} /></span>
                   <h3>{step.title}</h3>
                 </div>
+                <img className='movescan-workflow-card-image' src={step.image} alt={step.title + ' screenshot'} loading='lazy' />
                 <p>{step.description}</p>
               </article>
             ))}
