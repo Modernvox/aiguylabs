@@ -4924,3 +4924,21 @@ img {
     max-width: 100%;
   }
 }
+@media (max-width: 767px) {
+  .movescan-detail-page .product-detail-hero {
+    padding-top: 72px;
+  }
+
+  .movescan-detail-page .movescan-hero-inner {
+    gap: 14px;
+  }
+
+  .movescan-detail-page .movescan-product-heading {
+    margin-top: 8px;
+    margin-bottom: 10px;
+  }
+
+  .movescan-detail-page .product-detail-subheading {
+    margin-bottom: 0;
+  }
+}
