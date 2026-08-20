@@ -1857,12 +1857,15 @@ function MoveScanProductPage({ product }) {
               <h1 id="movescan-product-title">MoveScan</h1>
             </div>
             <p className="product-detail-subheading">AI-powered moving estimates</p>
-            <p>Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
+            <p className="movescan-hero-description">Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
             <div className="product-detail-actions movescan-hero-actions">
               <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
               <button className="button button-secondary movescan-demo-cta" type="button" onClick={() => { void trackMoveScanEngagement('demo_click'); void trackMoveScanEngagement('demo_opened'); setIsDemoModalOpen(true); }}><Play aria-hidden="true" size={17} strokeWidth={2.2} /> <span>See It in Action</span></button>
               <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
             </div>
+          </div>
+          <div className="movescan-hero-visual">
+            <img src="/images/products/movescan/movescan-desktop.png" alt="MoveScan desktop moving estimate dashboard" />
           </div>
         </div>
       </section>

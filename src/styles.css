@@ -3540,6 +3540,7 @@ p {
     text-align: right;
   }
 }
+
 @media (max-width: 767px) {
   .movescan-showcase-hero,
   .product-showcase-hero {
@@ -4572,6 +4573,55 @@ img {
   margin: 0;
 }
 
+.movescan-hero-inner {
+  grid-template-areas:
+    "eyebrow visual"
+    "heading visual"
+    "subheading visual"
+    "description visual"
+    "actions visual";
+}
+
+.movescan-hero-inner > .product-detail-copy {
+  display: contents;
+}
+
+.movescan-hero-inner > .eyebrow {
+  grid-area: eyebrow;
+}
+
+.movescan-hero-inner .movescan-product-heading {
+  grid-area: heading;
+}
+
+.movescan-hero-inner .product-detail-subheading {
+  grid-area: subheading;
+}
+
+.movescan-hero-inner .movescan-hero-description {
+  grid-area: description;
+}
+
+.movescan-hero-inner .movescan-hero-actions {
+  grid-area: actions;
+}
+
+.movescan-hero-visual {
+  grid-area: visual;
+  align-self: center;
+  min-width: 0;
+}
+
+.movescan-hero-visual img {
+  display: block;
+  width: 100%;
+  max-width: 620px;
+  height: auto;
+  margin-inline: auto;
+  border: 1px solid rgba(126, 179, 255, 0.24);
+  border-radius: 14px;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.42), 0 0 34px rgba(45, 125, 255, 0.12);
+}
 .movescan-workflow-card-heading {
   display: flex;
   align-items: flex-start;
@@ -4858,4 +4908,19 @@ img {
 
 .private-outreach-status.is-delivery-failed {
   color: #ff9a9a;
+}
+@media (max-width: 767px) {
+  .movescan-hero-inner {
+    grid-template-areas:
+      "eyebrow"
+      "heading"
+      "subheading"
+      "visual"
+      "description"
+      "actions";
+  }
+
+  .movescan-hero-visual img {
+    max-width: 100%;
+  }
 }
