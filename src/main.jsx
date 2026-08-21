@@ -1863,28 +1863,19 @@ function MoveScanProductPage({ product }) {
 
   return (
     <main className="product-detail-page movescan-detail-page">
-      <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-labelledby="movescan-product-title">
+      <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-label="MoveScan product hero">
         <div className="container product-detail-hero-inner movescan-hero-inner" style={{ '--accent': product.accent }}>
-          <div className="product-detail-copy">
-            <p className="eyebrow">AI Guy Labs™ Product</p>
-            <div className="movescan-product-heading">
-              <img src={product.logo} alt="MoveScan product icon." className="product-detail-logo" />
-              <h1 id="movescan-product-title">MoveScan</h1>
-            </div>
-            <p className="product-detail-subheading">AI-powered moving estimates</p>
-            <p className="movescan-hero-description">Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
-            <div className="product-detail-actions movescan-hero-actions">
-              <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
-              <button className="button button-secondary movescan-demo-cta" type="button" onClick={() => { void trackMoveScanEngagement('demo_click'); void trackMoveScanEngagement('demo_opened'); setIsDemoModalOpen(true); }}><Play aria-hidden="true" size={17} strokeWidth={2.2} /> <span>See It in Action</span></button>
-              <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
-            </div>
-          </div>
           <div className="movescan-hero-visual">
             <picture>
               <source media="(max-width: 767px)" srcSet="/images/landing_page_mobile.png?v=2f7ea73" />
               <img src="/images/landing_page_desktop.png?v=2f7ea73" alt="MoveScan moving estimate platform" />
             </picture>
           </div>
+          <div className="product-detail-actions movescan-hero-actions">
+            <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
+            <button className="button button-secondary movescan-demo-cta" type="button" onClick={() => { void trackMoveScanEngagement('demo_click'); void trackMoveScanEngagement('demo_opened'); setIsDemoModalOpen(true); }}><Play aria-hidden="true" size={17} strokeWidth={2.2} /> <span>See It in Action</span></button>
+          </div>
+          <p className="movescan-hero-description">Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
         </div>
       </section>
 
