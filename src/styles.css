@@ -5183,3 +5183,143 @@ img {
     margin-top: 0;
   }
 }
+.movescan-product-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #000;
+  pointer-events: none;
+  animation: movescan-splash-overlay 3.15s ease forwards;
+}
+
+.movescan-product-splash__brain,
+.movescan-product-splash__brand {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+
+.movescan-product-splash__brain img {
+  display: block;
+  width: clamp(92px, 18vw, 172px);
+  max-width: 42vw;
+  height: auto;
+  filter: drop-shadow(0 0 0 rgba(82, 183, 255, 0));
+  opacity: 0;
+  transform: scale(0.92);
+  animation: movescan-splash-brain 1.35s ease forwards;
+}
+
+.movescan-product-splash__brand {
+  gap: 18px;
+  align-content: center;
+  opacity: 0;
+  animation: movescan-splash-brand 1.45s ease 1.35s forwards;
+}
+
+.movescan-product-splash__brand p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: clamp(0.68rem, 2vw, 0.82rem);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-align: center;
+}
+
+.movescan-product-splash__brand img {
+  display: block;
+  width: clamp(150px, 30vw, 260px);
+  max-width: 72vw;
+  height: auto;
+}
+
+@keyframes movescan-splash-brain {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+    filter: drop-shadow(0 0 0 rgba(82, 183, 255, 0));
+  }
+  24% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  48% {
+    opacity: 1;
+    transform: scale(1.04);
+    filter: drop-shadow(0 0 34px rgba(82, 183, 255, 0.86));
+  }
+  72% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 14px rgba(82, 183, 255, 0.34));
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.98);
+    filter: drop-shadow(0 0 0 rgba(82, 183, 255, 0));
+  }
+}
+
+@keyframes movescan-splash-brand {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  22%, 72% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+
+@keyframes movescan-splash-overlay {
+  0%, 82% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .movescan-product-splash {
+    animation: movescan-splash-overlay-reduced 1.25s ease forwards;
+  }
+
+  .movescan-product-splash__brain img {
+    animation: movescan-splash-brain-reduced 0.45s ease forwards;
+    transform: none;
+    filter: none;
+  }
+
+  .movescan-product-splash__brand {
+    animation: movescan-splash-brand-reduced 0.8s ease 0.45s forwards;
+    transform: none;
+  }
+}
+
+@keyframes movescan-splash-brain-reduced {
+  0% { opacity: 0; }
+  45% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes movescan-splash-brand-reduced {
+  0% { opacity: 0; }
+  35%, 78% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes movescan-splash-overlay-reduced {
+  0%, 78% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}

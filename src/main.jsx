@@ -729,6 +729,7 @@ const MOVESCAN_POSTCARD_REDIRECT_URL = '/products/movescan?utm_source=postcard&u
 const MOVESCAN_POSTCARD_TRACKING_ENDPOINT = '/api/campaign-events';
 const MOVESCAN_OUTREACH_TRACKING_ENDPOINT = '/api/campaign-events/engagement';
 const MOVESCAN_DEMO_VIDEO_URL = typeof window !== 'undefined' && (window.__MOVESCAN_DEMO_VIDEO_URL__ || import.meta.env.VITE_MOVESCAN_DEMO_VIDEO_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/videos/movescan-demo.mp4' : 'https://media.aiguylabs.com/movescan-demo.mp4'));
+const MOVESCAN_SPLASH_STORAGE_KEY = 'aigl_movescan_product_splash_seen';
 
 function Icon({ type }) {
   if (type === 'message') {
@@ -1781,6 +1782,7 @@ async function trackMoveScanEngagement(eventName) {
 
 function MoveScanProductPage({ product }) {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [isMoveScanSplashVisible, setIsMoveScanSplashVisible] = useState(false);
   const demoCloseRef = useRef(null);
   const demoVideoRef = useRef(null);
   const workflowSteps = [
@@ -1818,6 +1820,21 @@ function MoveScanProductPage({ product }) {
 
   useEffect(() => {
     void trackMoveScanEngagement('product_page_view');
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    try {
+      if (window.localStorage.getItem(MOVESCAN_SPLASH_STORAGE_KEY) === '1') return undefined;
+      window.localStorage.setItem(MOVESCAN_SPLASH_STORAGE_KEY, '1');
+    } catch {
+      // If storage is blocked, still show the intro for this page view.
+    }
+
+    setIsMoveScanSplashVisible(true);
+    const timer = window.setTimeout(() => setIsMoveScanSplashVisible(false), 3200);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -1863,6 +1880,17 @@ function MoveScanProductPage({ product }) {
 
   return (
     <main className="product-detail-page movescan-detail-page">
+      {isMoveScanSplashVisible ? (
+        <div className="movescan-product-splash" aria-hidden="true">
+          <div className="movescan-product-splash__brain">
+            <img src="/images/icon.png" alt="" />
+          </div>
+          <div className="movescan-product-splash__brand">
+            <p>BROUGHT TO YOU BY</p>
+            <img src="/images/aiguy_logo.PNG" alt="" />
+          </div>
+        </div>
+      ) : null}
       <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-label="MoveScan product hero">
         <div className="container product-detail-hero-inner movescan-hero-inner" style={{ '--accent': product.accent }}>
           <div className="movescan-hero-visual">
