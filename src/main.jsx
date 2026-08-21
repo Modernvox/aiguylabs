@@ -1933,8 +1933,9 @@ function MoveScanProductPage({ product }) {
           <div className="movescan-section-heading movescan-explainer-heading">
             <p className="eyebrow">What Is MoveScan?</p>
             <h2 id="movescan-explainer-title">How MoveScan Works</h2>
-            <p>MoveScan turns the customer's phone into a guided estimate walkthrough.</p>
-            <p>Instead of trying to build a furniture list over the phone, guessing from memory, or sending an estimator to every home, the customer walks through the move step by step and provides the details MoveScan needs to prepare a useful estimate.</p>
+            <p>MoveScan turns the customer's phone into a guided, mostly tap-driven estimate walkthrough.</p>
+            <p>Instead of asking the customer to type out a long furniture list, guess from memory, or explain the whole move over the phone, MoveScan guides them through simple choices: tap, select, record, review, and confirm.</p>
+            <p>They still enter basic information where text is truly needed, such as contact details, ZIP codes, notes, or corrections. But the main experience is built around quick selections and short room recordings, not a traditional online form.</p>
           </div>
 
           <div className="movescan-explainer-step-list" aria-label="How MoveScan works from customer walkthrough to company review">
@@ -1943,6 +1944,7 @@ function MoveScanProductPage({ product }) {
               <div>
                 <h3>The customer starts from their phone</h3>
                 <p>The customer taps your Get Instant Estimate button or opens a MoveScan invitation link from your company. MoveScan opens in the customer's mobile browser, so they do not need to download an app.</p>
+                <p>From there, the customer is guided through the estimate with buttons, selections, and short prompts instead of being dropped into a blank form and asked to describe the whole job from scratch.</p>
                 <p><strong>Why this helps your company:</strong> The estimate starts while the customer is already interested. You are not waiting on a long first phone call, a callback, or a scheduled in-home visit just to collect basic move details.</p>
               </div>
             </article>
@@ -1953,6 +1955,7 @@ function MoveScanProductPage({ product }) {
                 <h3>The customer chooses the type of job</h3>
                 <p>The customer selects the service they need, such as Full Move, Loading Only, Unloading Only, Packing Only, Packing + Loading, or a supported storage workflow.</p>
                 <p>MoveScan asks follow-up questions based on that service type. A full move, a loading-only job, a packing job, and a storage job do not all need the same questions, so the walkthrough adjusts to the job.</p>
+                <p>Most of these choices are taps or selections, which keeps the customer moving instead of forcing them to write a custom explanation for every scenario.</p>
                 <p><strong>Why this helps your company:</strong> Your staff gets cleaner information because the customer is not forced through questions that do not apply to their job.</p>
               </div>
             </article>
@@ -1961,7 +1964,7 @@ function MoveScanProductPage({ product }) {
               <span>3</span>
               <div>
                 <h3>The customer enters the important move details</h3>
-                <p>Depending on the service, the customer provides the details that shape the estimate:</p>
+                <p>Depending on the service, the customer provides the details that shape the estimate. Many of these are selected from guided choices, while contact information, ZIP codes, and notes use normal text fields when needed:</p>
                 <ul className="movescan-explainer-detail-list">
                   <li>Name, email, phone number, and service ZIP codes</li>
                   <li>Pickup and/or delivery location details</li>
@@ -1971,7 +1974,7 @@ function MoveScanProductPage({ product }) {
                   <li>Storage source, container or storage unit size, and how full it is when that applies</li>
                   <li>Specialty or heavy items, such as a piano, safe, oversized furniture, exercise equipment, pool table, or another heavy item</li>
                 </ul>
-                <p><strong>Why this helps your company:</strong> These are the details that usually create surprise labor time later. MoveScan collects them up front so the estimate is based on more than two bedrooms and a couch.</p>
+                <p><strong>Why this helps your company:</strong> These are the details that usually create surprise labor time later. MoveScan collects them up front with a guided flow, so the estimate is based on more than two bedrooms and a couch without making the customer write a long explanation.</p>
               </div>
             </article>
 
@@ -1979,9 +1982,9 @@ function MoveScanProductPage({ product }) {
               <span>4</span>
               <div>
                 <h3>The customer sets up the rooms or packing areas</h3>
-                <p>For moving services, MoveScan builds a room-by-room walkthrough. The customer can select or confirm areas like bedrooms, bathrooms, living room, kitchen, dining room, garage, basement, attic, office, laundry, storage room, and other rooms.</p>
-                <p>For Packing Only, the customer selects the areas they want packed and can add custom packing areas.</p>
-                <p><strong>Why this helps your company:</strong> Instead of one long, messy video or a vague written list, the job is organized by room. That makes the inventory easier to review and easier to price.</p>
+                <p>For moving services, MoveScan builds a room-by-room walkthrough. The customer taps the rooms or areas involved, such as bedrooms, bathrooms, living room, kitchen, dining room, garage, basement, attic, office, laundry, storage room, and other rooms.</p>
+                <p>For Packing Only, the customer selects the areas they want packed and can add custom packing areas when needed.</p>
+                <p><strong>Why this helps your company:</strong> Instead of one long, messy video or a vague written list, the job is organized by room through simple customer choices. That makes the inventory easier to review and easier to price.</p>
               </div>
             </article>
 
@@ -1989,10 +1992,10 @@ function MoveScanProductPage({ product }) {
               <span>5</span>
               <div>
                 <h3>The customer records each room with their phone</h3>
-                <p>For each room or packing area, the customer taps the room, starts recording, allows camera access, and uses the back camera to show the space. They can also upload an existing video when needed.</p>
+                <p>For each room or packing area, the customer taps the room, taps record, allows camera access, and uses the back camera to show the space. They can also upload an existing video when needed.</p>
                 <p>They walk slowly and show the items and contents that matter for the estimate, such as furniture, boxes, shelves, closets, wall-mounted items, large items, delicate items, and visible packing contents.</p>
                 <p>When they are done, they stop recording, review the video, and choose Use this video. They can retake the video, skip a room, rename a room, add another room, or remove a customer-added room when the workflow allows it.</p>
-                <p><strong>Why this helps your company:</strong> The customer is not trying to remember every item from memory. MoveScan gets room-by-room information from the actual space.</p>
+                <p><strong>Why this helps your company:</strong> The customer is not trying to remember every item from memory or manually build a furniture list. MoveScan gets room-by-room information from the actual space.</p>
               </div>
             </article>
 
@@ -2010,10 +2013,11 @@ function MoveScanProductPage({ product }) {
               <span>7</span>
               <div>
                 <h3>The customer checks the room results</h3>
-                <p>The customer reviews the rooms and the inventory MoveScan found. They can edit item names, adjust quantities, change categories, add notes, mark items that need disassembly, remove items, or add missing items.</p>
+                <p>The customer reviews the rooms and the inventory MoveScan found. Much of this review is tap-driven: they confirm items, answer questions, mark whether something is moving, and continue through the flow.</p>
+                <p>When something truly needs correction, they can still edit item names, adjust quantities, change categories, add notes, mark items that need disassembly, remove items, or add missing items.</p>
                 <p>If MoveScan finds something that needs confirmation, such as whether an appliance is moving or staying, the customer answers that directly.</p>
                 <p>For packing workflows, the customer can review packing contents, visible quantities, hidden or customer-declared contents, categories, notes, and packing details.</p>
-                <p><strong>Why this helps your company:</strong> The customer helps clean up the estimate before it reaches your staff. That reduces back-and-forth and gives your team a stronger starting point than a phone note or rough checklist.</p>
+                <p><strong>Why this helps your company:</strong> The customer helps clean up the estimate before it reaches your staff, mostly by reviewing and confirming what MoveScan found. That reduces back-and-forth and gives your team a stronger starting point than a phone note or rough checklist.</p>
               </div>
             </article>
 
@@ -2071,6 +2075,7 @@ function MoveScanProductPage({ product }) {
           </div>
 
           <div className="movescan-explainer-summary">
+            <p>MoveScan does not just digitize the old estimate form. It changes how the customer provides the information in the first place: tap, select, record, review, and confirm, with typing reserved for the details that actually need it.</p>
             <p>MoveScan gives customers a simple guided walkthrough and gives moving companies a clearer estimate file to work from. The result is less guessing, less manual list-building, and a faster path from interested customer to usable estimate.</p>
             <p>It does not remove your team's judgment. It helps collect and organize the job so your company can review the estimate with more context and less back-and-forth.</p>
           </div>
