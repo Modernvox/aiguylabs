@@ -18,7 +18,7 @@ function buildMoveScanFallback() {
 }
 
 async function fetchIndexHtml(request, env) {
-  const indexUrl = new URL('/index.html', request.url);
+  const indexUrl = new URL('/', request.url);
   const assetRequest = new Request(indexUrl.toString(), request);
   return env.ASSETS.fetch(assetRequest);
 }
@@ -46,9 +46,10 @@ export async function onRequestGet({ request, env }) {
   const headers = new Headers(assetResponse.headers);
   headers.set('content-type', 'text/html; charset=utf-8');
   headers.set('cache-control', 'public, max-age=0, must-revalidate');
+  headers.delete('location');
 
   return new Response(html, {
-    status: assetResponse.status,
+    status: 200,
     headers,
   });
 }
