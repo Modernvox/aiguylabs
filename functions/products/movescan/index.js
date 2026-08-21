@@ -6,7 +6,21 @@ function replaceFirst(source, pattern, replacement) {
 }
 
 function buildMoveScanFallback() {
-  return `<main style="min-height:100vh;background:#000;color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  return `<header style="position:sticky;top:0;z-index:10;background:rgba(0,0,0,.92);border-bottom:1px solid rgba(135,176,255,.16);color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+        <div style="width:min(100% - 48px,1180px);min-height:76px;margin:0 auto;display:flex;align-items:center;gap:24px;">
+          <a href="/" aria-label="AI Guy Labs home" style="display:inline-flex;align-items:center;flex:0 0 auto;"><img src="/images/aiguy_logo.PNG" alt="AI Guy Labs\u2122" style="display:block;height:46px;width:auto;max-width:220px;object-fit:contain;"></a>
+          <nav aria-label="Primary navigation" style="display:flex;align-items:center;justify-content:center;gap:22px;flex:1;">
+            <a href="/" style="color:#dce8ff;text-decoration:none;font-size:14px;font-weight:700;">Home</a>
+            <a href="/products" style="color:#dce8ff;text-decoration:none;font-size:14px;font-weight:700;">Products</a>
+            <a href="/apparel" style="color:#dce8ff;text-decoration:none;font-size:14px;font-weight:700;">Apparel</a>
+            <a href="/services" style="color:#dce8ff;text-decoration:none;font-size:14px;font-weight:700;">Services</a>
+            <a href="/about" style="color:#dce8ff;text-decoration:none;font-size:14px;font-weight:700;">About Me</a>
+            <a href="/contact" style="color:#dce8ff;text-decoration:none;font-size:14px;font-weight:700;">Contact</a>
+          </nav>
+          <a href="/contact" style="display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 16px;border-radius:999px;background:#54a4ff;color:#02050a;font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap;">Work With Me</a>
+        </div>
+      </header>
+      <main style="min-height:100vh;background:#000;color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
         <section style="padding:48px 20px;max-width:960px;margin:0 auto;">
           <p style="margin:0 0 12px;color:#54a4ff;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;">AI Guy Labs\u2122 Product</p>
           <h1 style="margin:0 0 14px;font-size:clamp(42px,8vw,86px);line-height:.95;letter-spacing:-.04em;">MoveScan</h1>
