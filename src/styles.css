@@ -1210,6 +1210,14 @@ p {
   margin-bottom: clamp(34px, 5vw, 62px);
 }
 
+.movescan-explainer-heading-copy {
+  min-width: 0;
+}
+
+.movescan-explainer-heading-media {
+  display: none;
+}
+
 .movescan-explainer-heading h2 {
   max-width: 860px;
   font-size: clamp(2.55rem, 4.1vw, 4.8rem);
@@ -1220,6 +1228,29 @@ p {
   margin-top: 18px;
   font-size: clamp(1.04rem, 1.28vw, 1.18rem);
   line-height: 1.68;
+}
+
+@media (min-width: 1024px) {
+  .movescan-explainer-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(390px, 0.85fr);
+    align-items: center;
+    gap: clamp(34px, 5vw, 84px);
+    max-width: min(1320px, calc(100vw - 48px));
+  }
+
+  .movescan-explainer-heading-media {
+    display: block;
+    justify-self: end;
+    width: min(48vw, 660px);
+    margin-right: clamp(-80px, -4vw, -28px);
+  }
+
+  .movescan-explainer-heading-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 }
 
 .movescan-explainer-step-list {

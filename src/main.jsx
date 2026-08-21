@@ -1931,13 +1931,19 @@ function MoveScanProductPage({ product }) {
       <section className="section-shell movescan-explainer-section" aria-labelledby="movescan-explainer-title">
         <div className="container movescan-explainer-inner">
           <div className="movescan-section-heading movescan-explainer-heading">
-            <h2 id="movescan-explainer-title">How MoveScan Works</h2>
-            <h3>Turn your website into a 24/7 AI-powered estimator</h3>
-            <p>MoveScan turns the customer&rsquo;s phone into a guided moving-estimate walkthrough&mdash;and turns your website into a place where customers can actually get an estimate instead of just requesting one.</p>
-            <p>A typical two- to three-bedroom home can complete the entire walkthrough in under five minutes.</p>
-            <p>There are no furniture lists to type. No app to download. No 20-minute phone conversation just to figure out what someone owns.</p>
-            <p>The customer simply shows MoveScan their home, room by room. Most room recordings take only a few seconds, with a maximum of 20 seconds per room. MoveScan&rsquo;s AI analyzes those quick recordings, builds the inventory, combines it with the customer&rsquo;s move details, and applies your company&rsquo;s pricing rules to produce an instant estimate.</p>
-            <p>That means your company can be generating estimates 24 hours a day&mdash;even while you&rsquo;re sleeping, working another move, or helping another customer.</p>
+            <div className="movescan-explainer-heading-copy">
+              <h2 id="movescan-explainer-title">How MoveScan Works</h2>
+              <h3>Turn your website into a 24/7 AI-powered estimator</h3>
+              <p>MoveScan turns the customer&rsquo;s phone into a guided moving-estimate walkthrough&mdash;and turns your website into a place where customers can actually get an estimate instead of just requesting one.</p>
+              <p>A typical two- to three-bedroom home can complete the entire walkthrough in under five minutes.</p>
+              <p>There are no furniture lists to type. No app to download. No 20-minute phone conversation just to figure out what someone owns.</p>
+              <p>The customer simply shows MoveScan their home, room by room. Most room recordings take only a few seconds, with a maximum of 20 seconds per room. MoveScan&rsquo;s AI analyzes those quick recordings, builds the inventory, combines it with the customer&rsquo;s move details, and applies your company&rsquo;s pricing rules to produce an instant estimate.</p>
+              <p>That means your company can be generating estimates 24 hours a day&mdash;even while you&rsquo;re sleeping, working another move, or helping another customer.</p>
+            </div>
+            <picture className="movescan-explainer-heading-media" aria-hidden="true">
+              <source media="(min-width: 768px)" srcSet="/images/how_movescan_works_hweo.png" />
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" />
+            </picture>
           </div>
 
           <div className="movescan-explainer-step-list" aria-label="How MoveScan works from customer walkthrough to company review">
