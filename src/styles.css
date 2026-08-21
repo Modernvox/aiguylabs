@@ -5066,8 +5066,8 @@ img {
   .movescan-detail-page .movescan-hero-inner {
     grid-template-areas:
       "visual"
-      "description"
-      "actions";
+      "actions"
+      "description";
     gap: 14px;
   }
 
@@ -5105,6 +5105,14 @@ img {
     border: 0;
     border-radius: 0;
     box-shadow: none;
+  }
+
+  .movescan-detail-page .movescan-hero-actions {
+    margin-top: 0;
+  }
+
+  .movescan-detail-page .movescan-hero-description {
+    margin: 0;
   }
 }
 
