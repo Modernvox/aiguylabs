@@ -1191,9 +1191,6 @@ p {
   line-height: 1.55;
 }
 
-.movescan-workflow-pagination {
-  display: none;
-}
 
 .movescan-integration-section {
   padding-top: clamp(52px, 8vw, 100px);
@@ -3683,54 +3680,10 @@ img {
 }
 
 @media (max-width: 767px) {
-  .movescan-workflow-grid {
-    display: flex;
-    grid-template-columns: none;
-    gap: 14px;
-    overflow-x: auto;
-    overflow-y: visible;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .movescan-workflow-grid::-webkit-scrollbar {
+  .movescan-workflow-section {
     display: none;
   }
 
-  .movescan-workflow-card {
-    flex: 0 0 100%;
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
-  }
-
-  .movescan-workflow-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 18px;
-  }
-
-  .movescan-workflow-pagination button {
-    width: 7px;
-    height: 7px;
-    padding: 0;
-    border: 0;
-    border-radius: 999px;
-    background: rgba(142, 215, 255, 0.28);
-    cursor: pointer;
-    transition: width 180ms ease, background 180ms ease;
-  }
-
-  .movescan-workflow-pagination button.is-active {
-    width: 20px;
-    background: #8ed7ff;
-  }
-
-  .movescan-workflow-card,
   .movescan-feature-list li {
     border-radius: 14px;
   }
