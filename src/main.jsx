@@ -1880,7 +1880,10 @@ function MoveScanProductPage({ product }) {
             </div>
           </div>
           <div className="movescan-hero-visual">
-            <img src="/images/products/movescan/movescan-desktop.png" alt="MoveScan desktop moving estimate dashboard" />
+            <picture>
+              <source media="(max-width: 767px)" srcSet="/images/landing_page_mobile.png" />
+              <img src="/images/landing_page_desktop.png" alt="MoveScan moving estimate platform" />
+            </picture>
           </div>
         </div>
       </section>

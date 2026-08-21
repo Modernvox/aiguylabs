@@ -4649,6 +4649,10 @@ img {
   min-width: 0;
 }
 
+.movescan-hero-visual picture {
+  display: block;
+}
+
 .movescan-hero-visual img {
   display: block;
   width: 100%;
@@ -4957,7 +4961,6 @@ img {
       "description"
       "actions";
   }
-
   .movescan-hero-visual img {
     max-width: 100%;
   }
