@@ -5064,15 +5064,10 @@ img {
   }
 
   .movescan-detail-page .movescan-hero-inner {
-    grid-template-areas:
-      "visual"
-      "actions"
-      "description";
-    gap: 14px;
-  }
-
-  .movescan-detail-page .product-detail-copy {
-    display: contents;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
 
   .movescan-detail-page .product-detail-copy > .eyebrow,
@@ -5108,7 +5103,19 @@ img {
   }
 
   .movescan-detail-page .movescan-hero-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
     margin-top: 0;
+  }
+
+  .movescan-detail-page .movescan-hero-actions .button {
+    display: flex;
+    width: 100%;
+    min-height: 52px;
+    justify-content: center;
   }
 
   .movescan-detail-page .movescan-hero-description {
