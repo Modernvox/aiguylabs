@@ -5058,13 +5058,25 @@ img {
 /* Mobile MoveScan hero: let the supplied artwork stand on its own. */
 @media (max-width: 767px) {
   .movescan-detail-page .product-detail-hero {
-    padding-top: 42px;
+    padding-top: 0;
+    padding-bottom: 36px;
   }
 
+  .movescan-detail-page .movescan-hero-inner {
+    grid-template-areas:
+      "visual"
+      "description"
+      "actions";
+    gap: 14px;
+  }
+
+  .movescan-detail-page .product-detail-copy {
+    display: contents;
+  }
+
+  .movescan-detail-page .product-detail-copy > .eyebrow,
   .movescan-detail-page .movescan-product-heading {
-    gap: 0;
-    margin-top: 0;
-    margin-bottom: 8px;
+    display: none;
   }
 
   .movescan-detail-page .movescan-product-heading .product-detail-logo,
@@ -5075,6 +5087,7 @@ img {
   .movescan-detail-page .movescan-hero-visual {
     width: 100%;
     margin: 0;
+    align-self: start;
   }
 
   .movescan-detail-page .movescan-hero-visual img {
