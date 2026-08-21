@@ -1195,7 +1195,7 @@ p {
 .movescan-explainer-section {
   background: #030509;
   padding-top: clamp(70px, 9vw, 122px);
-  padding-bottom: clamp(62px, 8vw, 106px);
+  padding-bottom: clamp(62px, 8vw, 110px);
 }
 
 .movescan-explainer-inner {
@@ -1204,29 +1204,28 @@ p {
 }
 
 .movescan-explainer-heading {
-  max-width: 940px;
-  margin-bottom: clamp(30px, 5vw, 56px);
+  max-width: 980px;
+  margin-bottom: clamp(34px, 5vw, 62px);
 }
 
 .movescan-explainer-heading h2 {
-  max-width: 920px;
-  font-size: clamp(2.4rem, 4.2vw, 4.7rem);
+  max-width: 860px;
+  font-size: clamp(2.55rem, 4.1vw, 4.8rem);
 }
 
 .movescan-explainer-heading p:not(.eyebrow) {
-  max-width: 760px;
+  max-width: 780px;
   margin-top: 18px;
   font-size: clamp(1.04rem, 1.28vw, 1.18rem);
+  line-height: 1.68;
 }
 
-.movescan-explainer-comparison {
+.movescan-explainer-step-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(16px, 2vw, 22px);
-  margin-bottom: clamp(28px, 4vw, 48px);
+  gap: clamp(18px, 2.2vw, 26px);
 }
 
-.movescan-explainer-comparison article,
 .movescan-explainer-step,
 .movescan-explainer-summary {
   min-width: 0;
@@ -1235,40 +1234,38 @@ p {
   background: rgba(5, 9, 17, 0.78);
 }
 
-.movescan-explainer-comparison article {
-  padding: clamp(22px, 3vw, 32px);
+.movescan-explainer-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(15px, 2vw, 22px);
+  align-items: start;
+  padding: clamp(26px, 3vw, 36px);
 }
 
-.movescan-explainer-comparison article:first-child {
-  background: rgba(8, 12, 20, 0.66);
+.movescan-explainer-step--wide {
+  grid-column: 1 / -1;
 }
 
-.movescan-explainer-comparison article:last-child {
-  border-color: rgba(84, 164, 255, 0.28);
-  background: linear-gradient(135deg, rgba(8, 20, 38, 0.86), rgba(5, 9, 17, 0.78));
-}
-
-.movescan-explainer-comparison h3,
 .movescan-explainer-step h3 {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   color: #fff;
-  font-size: clamp(1.15rem, 1.5vw, 1.42rem);
+  font-size: clamp(1.18rem, 1.5vw, 1.46rem);
   line-height: 1.18;
   letter-spacing: -0.02em;
 }
 
-.movescan-explainer-comparison p,
 .movescan-explainer-step p,
-.movescan-explainer-summary p {
+.movescan-explainer-summary p,
+.movescan-explainer-detail-list {
   margin: 0;
   color: #cdd8e8;
-  font-size: clamp(1rem, 1.15vw, 1.09rem);
-  line-height: 1.68;
+  font-size: clamp(1rem, 1.12vw, 1.08rem);
+  line-height: 1.7;
 }
 
 .movescan-explainer-step p + p,
 .movescan-explainer-summary p + p {
-  margin-top: 14px;
+  margin-top: 15px;
 }
 
 .movescan-explainer-step strong {
@@ -1276,30 +1273,12 @@ p {
   font-weight: 850;
 }
 
-.movescan-explainer-steps {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(16px, 2vw, 22px);
-}
-
-.movescan-explainer-step {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: clamp(14px, 2vw, 20px);
-  align-items: start;
-  padding: clamp(24px, 3vw, 34px);
-}
-
-.movescan-explainer-step:nth-child(5) {
-  grid-column: 1 / -1;
-}
-
 .movescan-explainer-step > span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border: 1px solid rgba(84, 164, 255, 0.44);
   border-radius: 999px;
   background: rgba(84, 164, 255, 0.1);
@@ -1310,24 +1289,55 @@ p {
   box-shadow: 0 0 22px rgba(84, 164, 255, 0.08);
 }
 
+.movescan-explainer-detail-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.movescan-explainer-detail-list li {
+  min-width: 0;
+  position: relative;
+  padding-left: 18px;
+}
+
+.movescan-explainer-detail-list li::before {
+  content: "";
+  position: absolute;
+  top: 0.78em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #54a4ff;
+  box-shadow: 0 0 12px rgba(84, 164, 255, 0.4);
+}
+
+.movescan-explainer-detail-list + p {
+  margin-top: 18px;
+}
+
 .movescan-explainer-summary {
-  max-width: 980px;
-  margin-top: clamp(22px, 4vw, 38px);
-  padding: clamp(24px, 3vw, 34px);
+  max-width: 1040px;
+  margin-top: clamp(24px, 4vw, 42px);
+  padding: clamp(26px, 3vw, 36px);
   border-color: rgba(84, 164, 255, 0.24);
+  background: linear-gradient(135deg, rgba(8, 20, 38, 0.86), rgba(5, 9, 17, 0.78));
 }
 
 .movescan-explainer-summary p {
   color: #eff6ff;
 }
 
-@media (max-width: 900px) {
-  .movescan-explainer-comparison,
-  .movescan-explainer-steps {
+@media (max-width: 980px) {
+  .movescan-explainer-step-list {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .movescan-explainer-step:nth-child(5) {
+  .movescan-explainer-step--wide {
     grid-column: auto;
   }
 }
@@ -1347,7 +1357,7 @@ p {
   }
 
   .movescan-explainer-heading h2 {
-    font-size: clamp(1.82rem, 8vw, 2.7rem);
+    font-size: clamp(1.85rem, 8vw, 2.65rem);
     line-height: 1.08;
     letter-spacing: -0.035em;
   }
@@ -1355,23 +1365,17 @@ p {
   .movescan-explainer-heading p:not(.eyebrow) {
     margin-top: 16px;
     font-size: 1.02rem;
-    line-height: 1.66;
+    line-height: 1.68;
   }
 
-  .movescan-explainer-comparison {
-    gap: 16px;
-    margin-bottom: 30px;
+  .movescan-explainer-step-list {
+    gap: 20px;
   }
 
-  .movescan-explainer-comparison article,
   .movescan-explainer-step,
   .movescan-explainer-summary {
     border-radius: 16px;
     padding: 24px;
-  }
-
-  .movescan-explainer-steps {
-    gap: 18px;
   }
 
   .movescan-explainer-step {
@@ -1380,25 +1384,30 @@ p {
   }
 
   .movescan-explainer-step > span {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
   }
 
-  .movescan-explainer-comparison h3,
   .movescan-explainer-step h3 {
     margin-bottom: 13px;
     font-size: 1.2rem;
   }
 
-  .movescan-explainer-comparison p,
   .movescan-explainer-step p,
-  .movescan-explainer-summary p {
+  .movescan-explainer-summary p,
+  .movescan-explainer-detail-list {
     font-size: 1rem;
-    line-height: 1.72;
+    line-height: 1.74;
   }
 
   .movescan-explainer-step p + p,
   .movescan-explainer-summary p + p {
+    margin-top: 16px;
+  }
+
+  .movescan-explainer-detail-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
     margin-top: 16px;
   }
 }
