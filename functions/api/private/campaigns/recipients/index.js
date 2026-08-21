@@ -37,6 +37,9 @@ export async function onRequestPost({ request, env }) {
   const body = await readJson(request);
   if (!body) return json({ ok: false, error: 'Invalid request.' }, { status: 400, headers: { 'cache-control': 'no-store' } });
 
+  const emailSubject = body.subject;
+  const emailBodyText = body.bodyText || body.body;
+
   const db = await ensureDb(env);
   await ensureCampaignRecipientsTable(db);
   let recipient;
@@ -83,6 +86,8 @@ export async function onRequestPost({ request, env }) {
         recipientEmail: recipient.recipientEmail,
         productUrl: productUrl.toString(),
         pixelUrl: pixelUrl.toString(),
+        subject: emailSubject,
+        bodyText: emailBodyText,
       }),
     });
     const result = await workerResponse.json().catch(() => ({}));

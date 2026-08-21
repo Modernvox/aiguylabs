@@ -1,4 +1,4 @@
-import { json } from '../../../_lead-utils.js';
+import { json, readJson } from '../../../_lead-utils.js';
 import { isPrivateCampaignsAuthorized } from '../../../_private-campaigns.js';
 import { OUTREACH_TEST_EMAIL, getOutreachPreviewUrls } from '../../../_campaign-outreach-preview.js';
 
@@ -11,6 +11,9 @@ export async function onRequestPost({ request, env }) {
   const internalToken = env.OUTREACH_INTERNAL_TOKEN || '';
   if (!internalToken) return json({ ok: false, error: 'Test email is not configured.' }, { status: 503, headers: { 'cache-control': 'no-store' } });
 
+  const body = await readJson(request);
+  if (!body) return json({ ok: false, error: 'Invalid request.' }, { status: 400, headers: { 'cache-control': 'no-store' } });
+
   const { productUrl, pixelUrl } = getOutreachPreviewUrls(request);
   try {
     const workerResponse = await fetch(workerUrl, {
@@ -21,6 +24,8 @@ export async function onRequestPost({ request, env }) {
         recipientEmail: OUTREACH_TEST_EMAIL,
         productUrl: productUrl.toString(),
         pixelUrl: pixelUrl.toString(),
+        subject: body.subject,
+        bodyText: body.bodyText || body.body,
       }),
     });
     const result = await workerResponse.json().catch(() => ({}));

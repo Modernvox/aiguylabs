@@ -9,11 +9,16 @@ function getOutreachPreviewUrls(request) {
   };
 }
 
-function buildOutreachPreview(request) {
+function buildOutreachPreview(request, options = {}) {
   const { productUrl, pixelUrl } = getOutreachPreviewUrls(request);
+  const email = buildOutreachEmail({
+    productUrl,
+    pixelUrl,
+    subject: options.subject,
+    bodyText: options.bodyText,
+  });
   return {
-    ...buildOutreachEmail({ productUrl, pixelUrl }),
-    subject: 'Early MoveScan Network Opportunity',
+    ...email,
     from: 'mike@aiguylabs.com',
     replyTo: OUTREACH_TEST_EMAIL,
   };

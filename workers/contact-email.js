@@ -49,6 +49,8 @@ async function handleOutreachSend(request, env) {
   const recipientEmail = cleanHeaderText(body?.recipientEmail, 240).toLowerCase();
   const productUrl = cleanHeaderText(body?.productUrl, 1000);
   const pixelUrl = cleanHeaderText(body?.pixelUrl, 1000);
+  const subject = body?.subject;
+  const bodyText = body?.bodyText || body?.body;
   if (!companyName || !recipientEmail || !isEmail(recipientEmail) || !productUrl || !pixelUrl) {
     return json({ ok: false, error: 'Invalid outreach email request.' }, { status: 400 });
   }
@@ -67,6 +69,8 @@ async function handleOutreachSend(request, env) {
     recipientEmail,
     productUrl: parsedProductUrl,
     pixelUrl: parsedPixelUrl,
+    subject,
+    bodyText,
   });
 
   if (body?.validateOnly === true) {
@@ -83,7 +87,7 @@ async function handleOutreachSend(request, env) {
       from: OUTREACH_FROM,
       to: recipientEmail,
       replyTo: OUTREACH_REPLY_TO,
-      subject: 'Early MoveScan Network Opportunity',
+      subject: email.subject,
       text: email.text,
       html: email.html,
     });

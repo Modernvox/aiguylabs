@@ -2548,6 +2548,42 @@ function getRecipientStatusLabel(recipient) {
   return 'Not Sent';
 }
 
+const DEFAULT_MOVESCAN_OUTREACH_SUBJECT = 'Early MoveScan Network Opportunity';
+const DEFAULT_MOVESCAN_OUTREACH_BODY = `Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.
+
+A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.
+
+That process made sense years ago.
+
+Today, customers are used to doing almost everything from their phones with a few swipes and taps. They don’t want to sit there typing out every couch, bed, dresser, TV, box, and table they own — and they definitely shouldn’t have to guess what size moving truck they need.
+
+And when nearly every moving company uses the same slow quote process, customers start looking for easier alternatives — including third-party marketplaces that promise a faster, simpler way to book moving help, often at the moving company’s expense through fees, commissions, and tighter control over how the job is priced or handled.
+
+MoveScan gives independent moving companies a way to offer that same kind of convenience directly, without sending the customer somewhere else first.
+
+The customer opens your MoveScan estimate link on their phone and completes a short, guided room-by-room walkthrough. MoveScan identifies the inventory, calculates estimated cubic feet, determines truck and crew needs, accounts for the move details, applies your company’s own pricing and operating rules, and produces the customer’s instant estimate.
+
+This isn’t just an AI inventory scanner that gives your staff a list to quote later. MoveScan is a complete end-to-end instant estimating system. The estimate is already built for you, leaving your staff primarily with a review-and-approve step.
+
+A customer can walk through a full three-bedroom home and receive their instant moving estimate in under five minutes.
+
+I’m looking for a small group of moving companies interested in getting involved early. I’ll personally set MoveScan up around your company’s operation and pricing at no cost, and your first 5 estimates are free.
+
+There’s also a bigger goal behind this. As more moving companies begin using MoveScan, I want to build a network of MoveScan-enabled movers and dedicate a portion of subscription revenue toward advertising that network to consumers — creating new customer demand for the same movers using the technology.
+
+I built MoveScan while actually working in the field as a mover, so it was designed around the problems we deal with on real jobs — not around what someone outside the industry thinks moving software should look like.
+
+You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:
+
+https://aiguylabs.com/products/movescan
+
+Click See It in Action to watch the demo.
+
+Best,
+Michael Pierre
+Nashville Mover / Independent Full-Stack Software Developer
+MoveScan / AI Guy Labs
+mike@aiguylabs.com`;
 function PrivateCampaignsPage() {
   const [password, setPassword] = useState('');
   const [draftRange, setDraftRange] = useState(() => getDefaultCampaignRange());
@@ -2557,6 +2593,7 @@ function PrivateCampaignsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [recipients, setRecipients] = useState([]);
   const [outreachForm, setOutreachForm] = useState({ companyName: '', recipientEmail: '' });
+  const [outreachEmail, setOutreachEmail] = useState({ subject: DEFAULT_MOVESCAN_OUTREACH_SUBJECT, bodyText: DEFAULT_MOVESCAN_OUTREACH_BODY });
   const [outreachState, setOutreachState] = useState({ status: 'idle', message: '' });
   const [sendingRecipientId, setSendingRecipientId] = useState('');
   const [outreachSort, setOutreachSort] = useState('default');
@@ -2651,7 +2688,7 @@ function PrivateCampaignsPage() {
         method: 'POST',
         credentials: 'include',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ companyName, recipientEmail }),
+        body: JSON.stringify({ companyName, recipientEmail, subject: outreachEmail.subject, bodyText: outreachEmail.bodyText }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
@@ -2673,7 +2710,7 @@ function PrivateCampaignsPage() {
         method: 'POST',
         credentials: 'include',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ recipientId: recipient.id, retry }),
+        body: JSON.stringify({ recipientId: recipient.id, retry, subject: outreachEmail.subject, bodyText: outreachEmail.bodyText }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
@@ -2688,7 +2725,12 @@ function PrivateCampaignsPage() {
   async function openOutreachPreview() {
     setOutreachPreviewState({ status: 'loading', message: '' });
     try {
-      const response = await fetch('/api/private/campaigns/outreach-preview', { credentials: 'include' });
+      const response = await fetch('/api/private/campaigns/outreach-preview', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ subject: outreachEmail.subject, bodyText: outreachEmail.bodyText }),
+      });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to load the email preview.');
       setOutreachPreview(data);
@@ -2705,7 +2747,7 @@ function PrivateCampaignsPage() {
     try {
       const response = await fetch('/api/private/campaigns/outreach-test', {
         method: 'POST', credentials: 'include', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ subject: outreachEmail.subject, bodyText: outreachEmail.bodyText }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the test email.');
@@ -2830,6 +2872,14 @@ function PrivateCampaignsPage() {
                 <label>
                   <span>Recipient email</span>
                   <input type="email" value={outreachForm.recipientEmail} onChange={(event) => setOutreachForm((current) => ({ ...current, recipientEmail: event.target.value }))} required />
+                </label>
+                <label className="private-outreach-subject-field">
+                  <span>Email subject</span>
+                  <input value={outreachEmail.subject} onChange={(event) => setOutreachEmail((current) => ({ ...current, subject: event.target.value }))} />
+                </label>
+                <label className="private-outreach-body-field">
+                  <span>Email body/content</span>
+                  <textarea rows="18" value={outreachEmail.bodyText} onChange={(event) => setOutreachEmail((current) => ({ ...current, bodyText: event.target.value }))} />
                 </label>
                 <button className="button button-primary" type="submit" disabled={outreachState.status === 'sending'}>{outreachState.status === 'sending' ? 'Sending...' : 'Send MoveScan Email'} <Icon /></button>
               </form>
@@ -3241,9 +3291,3 @@ function App() {
 }
 
 createRoot(document.getElementById('root')).render(<App />);
-
-
-
-
-
-

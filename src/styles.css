@@ -965,7 +965,7 @@ p {
   .header-inner { grid-template-columns: 150px 1fr auto; }
   .desktop-nav { gap: 16px; font-size: 0.86rem; }
   .hero-grid { grid-template-columns: 1fr; gap: 52px; }
-  
+
 
 .hero-section { min-height: auto; }
   .portfolio-showcase { max-width: 760px; margin: 0 auto; }
@@ -1015,7 +1015,7 @@ p {
     font-weight: 750;
   }
   .mobile-nav a:not(.button):hover { background: rgba(45, 125, 255, 0.12); }
-  
+
 
 .hero-section { padding-top: 126px; padding-bottom: 88px; min-height: auto; }
   h1 { font-size: clamp(3rem, 13vw, 5.3rem); }
@@ -4424,7 +4424,8 @@ img {
   font-weight: 800;
 }
 
-.private-outreach-form input {
+.private-outreach-form input,
+.private-outreach-form textarea {
   width: 100%;
   min-height: 48px;
   box-sizing: border-box;
@@ -4436,7 +4437,20 @@ img {
   font: inherit;
 }
 
-.private-outreach-form input:focus {
+.private-outreach-form textarea {
+  min-height: 340px;
+  padding: 14px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.private-outreach-subject-field,
+.private-outreach-body-field {
+  grid-column: 1 / -1;
+}
+
+.private-outreach-form input:focus,
+.private-outreach-form textarea:focus {
   outline: none;
   border-color: rgba(82, 183, 255, 0.78);
   box-shadow: 0 0 0 3px rgba(82, 183, 255, 0.12);

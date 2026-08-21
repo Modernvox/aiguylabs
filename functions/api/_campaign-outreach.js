@@ -170,13 +170,8 @@ async function recordRecipientEvent(env, request, { token, eventName, sourcePath
   });
 }
 
-function buildOutreachEmail({ productUrl, pixelUrl }) {
-  const trackedProductUrl = productUrl.toString();
-  const safeUrl = escapeHtml(trackedProductUrl);
-  const movescanHomepageImageUrl = 'https://aiguylabs.com/images/products/movescan/movescan-homepage.png';
-  const text = `Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.
-
-See MoveScan in Action -> ${trackedProductUrl}
+const DEFAULT_OUTREACH_SUBJECT = 'Early MoveScan Network Opportunity';
+const DEFAULT_OUTREACH_BODY = `Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.
 
 A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.
 
@@ -202,7 +197,7 @@ I built MoveScan while actually working in the field as a mover, so it was desig
 
 You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:
 
-${trackedProductUrl}
+https://aiguylabs.com/products/movescan
 
 Click See It in Action to watch the demo.
 
@@ -211,39 +206,60 @@ Michael Pierre
 Nashville Mover / Independent Full-Stack Software Developer
 MoveScan / AI Guy Labs
 mike@aiguylabs.com`;
+
+function normalizeOutreachSubject(value) {
+  return cleanHeaderText(value || DEFAULT_OUTREACH_SUBJECT, 180) || DEFAULT_OUTREACH_SUBJECT;
+}
+
+function normalizeOutreachBody(value) {
+  return safeString(value || DEFAULT_OUTREACH_BODY, 12000).replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim() || DEFAULT_OUTREACH_BODY;
+}
+
+function textWithTrackedLinks(bodyText, trackedProductUrl) {
+  return bodyText.replace(/https:\/\/aiguylabs\.com\/products\/movescan/g, trackedProductUrl);
+}
+
+function renderEmailParagraph(paragraph, safeUrl) {
+  const escaped = escapeHtml(paragraph).replace(/https:\/\/aiguylabs\.com\/products\/movescan/g, '<a href="' + safeUrl + '" style="color:#1264d8;">https://aiguylabs.com/products/movescan</a>');
+  return '<p style="margin:0 0 18px;font-size:16px;line-height:1.65;white-space:pre-wrap;">' + escaped + '</p>';
+}
+
+function buildOutreachEmail({ productUrl, pixelUrl, subject, bodyText }) {
+  const trackedProductUrl = productUrl.toString();
+  const safeUrl = escapeHtml(trackedProductUrl);
+  const safePixelUrl = escapeHtml(pixelUrl.toString());
+  const movescanHomepageImageUrl = 'https://aiguylabs.com/images/products/movescan/movescan-homepage.png';
+  const normalizedSubject = normalizeOutreachSubject(subject);
+  const normalizedBody = normalizeOutreachBody(bodyText);
+  const paragraphs = normalizedBody.split(/\n{2,}/).map((part) => part.trim()).filter(Boolean);
+  const textParts = paragraphs.length ? [...paragraphs] : [DEFAULT_OUTREACH_BODY];
+  textParts.splice(1, 0, 'See MoveScan in Action -> ' + trackedProductUrl);
+  const text = textWithTrackedLinks(textParts.join('\n\n'), trackedProductUrl);
+  const htmlParts = [];
+  paragraphs.forEach((paragraph, index) => {
+    htmlParts.push(renderEmailParagraph(paragraph, safeUrl));
+    if (index === 0) {
+      htmlParts.push('<p style="margin:24px 0;text-align:center;"><a href="' + safeUrl + '" style="display:block;text-decoration:none;"><img src="' + movescanHomepageImageUrl + '" alt="MoveScan homepage and instant moving estimate experience" width="560" style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto;border:0;"></a></p>');
+      htmlParts.push('<p style="margin:0 0 24px;text-align:center;"><a href="' + safeUrl + '" style="display:inline-block;background:#1264d8;color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;line-height:1.2;padding:14px 22px;border-radius:6px;">See MoveScan in Action &rarr;</a></p>');
+    }
+  });
   const html = `<!doctype html>
 <html lang="en">
   <body style="margin:0;padding:24px;background:#f4f7fb;color:#111827;font-family:Arial,sans-serif;">
     <main style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #dbe3ef;border-radius:8px;overflow:hidden;">
       <div style="padding:28px 30px;">
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.</p>
-        <p style="margin:24px 0;text-align:center;"><a href="${safeUrl}" style="display:block;text-decoration:none;"><img src="${movescanHomepageImageUrl}" alt="MoveScan homepage and instant moving estimate experience" width="560" style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto;border:0;"></a></p>
-        <p style="margin:0 0 24px;text-align:center;"><a href="${safeUrl}" style="display:inline-block;background:#1264d8;color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;line-height:1.2;padding:14px 22px;border-radius:6px;">See MoveScan in Action &rarr;</a></p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">That process made sense years ago.</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">Today, customers are used to doing almost everything from their phones with a few swipes and taps. They don’t want to sit there typing out every couch, bed, dresser, TV, box, and table they own — and they definitely shouldn’t have to guess what size moving truck they need.</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">And when nearly every moving company uses the same slow quote process, customers start looking for easier alternatives — including third-party marketplaces that promise a faster, simpler way to book moving help, often at the moving company’s expense through fees, commissions, and tighter control over how the job is priced or handled.</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;"><strong>MoveScan gives independent moving companies a way to offer that same kind of convenience directly, without sending the customer somewhere else first.</strong></p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">The customer opens your MoveScan estimate link on their phone and completes a short, guided room-by-room walkthrough. MoveScan identifies the inventory, calculates estimated cubic feet, determines truck and crew needs, accounts for the move details, applies <strong>your company’s own pricing and operating rules</strong>, and produces the customer’s instant estimate.</p>
-
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">This isn’t just an AI inventory scanner that gives your staff a list to quote later. <strong>MoveScan is a complete end-to-end instant estimating system.</strong> The estimate is already built for you, leaving your staff primarily with a review-and-approve step.</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">A customer can walk through a full three-bedroom home and receive their instant moving estimate in <strong>under five minutes.</strong></p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">I’m looking for a small group of moving companies interested in getting involved early. <strong>I’ll personally set MoveScan up around your company’s operation and pricing at no cost, and your first 5 estimates are free.</strong></p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">There’s also a bigger goal behind this. As more moving companies begin using MoveScan, I want to build a network of MoveScan-enabled movers and dedicate a portion of subscription revenue toward advertising that network to consumers — creating new customer demand for the same movers using the technology.</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">I built MoveScan while actually working in the field as a mover, so it was designed around the problems we deal with on real jobs — not around what someone outside the industry thinks moving software should look like.</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;">You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:</p>
-        <p style="margin:0 0 18px;font-size:16px;line-height:1.65;"><a href="${safeUrl}" style="color:#1264d8;">${trackedProductUrl}</a></p>
-        <p style="margin:0 0 24px;font-size:16px;line-height:1.65;">Click <strong>See It in Action</strong> to watch the demo.</p>
-        <p style="margin:0;font-size:16px;line-height:1.65;">Best,<br>Michael Pierre<br>Nashville Mover / Independent Full-Stack Software Developer<br>MoveScan / AI Guy Labs<br><a href="mailto:mike@aiguylabs.com" style="color:#1264d8;">mike@aiguylabs.com</a></p>
+        ${htmlParts.join('\n        ')}
       </div>
     </main>
-    <img src="${escapeHtml(pixelUrl.toString())}" width="1" height="1" alt="" style="display:block;width:1px;height:1px;border:0;opacity:0;">
+    <img src="${safePixelUrl}" width="1" height="1" alt="" style="display:block;width:1px;height:1px;border:0;opacity:0;">
   </body>
 </html>`;
-  return { text, html };
+  return { subject: normalizedSubject, text, html };
 }
 
 export {
+  DEFAULT_OUTREACH_BODY,
+  DEFAULT_OUTREACH_SUBJECT,
   MOVESCAN_OUTREACH_CAMPAIGN,
   MOVESCAN_OUTREACH_PROSPECTS,
   MOVESCAN_RECIPIENT_COOKIE,
