@@ -1895,8 +1895,10 @@ function MoveScanProductPage({ product }) {
         <div className="container product-detail-hero-inner movescan-hero-inner" style={{ '--accent': product.accent }}>
           <div className="movescan-hero-visual">
             <picture>
+              <source media="(max-width: 767px)" type="image/webp" srcSet="/images/landing_page_mobile.webp?v=2f7ea73" />
               <source media="(max-width: 767px)" srcSet="/images/landing_page_mobile.png?v=2f7ea73" />
-              <img src="/images/landing_page_desktop.png?v=2f7ea73" alt="MoveScan moving estimate platform" />
+              <source type="image/webp" srcSet="/images/landing_page_desktop.webp?v=2f7ea73" />
+              <img src="/images/landing_page_desktop.png?v=2f7ea73" alt="MoveScan moving estimate platform" width="1535" height="1024" loading="eager" fetchPriority="high" decoding="async" />
             </picture>
           </div>
           <div className="product-detail-actions movescan-hero-actions">
