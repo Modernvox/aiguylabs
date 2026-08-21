@@ -4431,17 +4431,28 @@ img {
   box-sizing: border-box;
   border: 1px solid rgba(160, 176, 205, 0.24);
   border-radius: 8px;
-  background: #05070c;
-  color: #fff;
   padding: 0 14px;
   font: inherit;
 }
 
+.private-outreach-form input {
+  background: #ffffff;
+  color: #111827;
+}
+
 .private-outreach-form textarea {
-  min-height: 340px;
-  padding: 14px;
-  line-height: 1.55;
+  min-height: 420px;
+  background: #ffffff;
+  color: #111827;
+  padding: 18px 20px;
+  font: 400 1rem/1.65 Arial, sans-serif;
   resize: vertical;
+  white-space: pre-wrap;
+}
+
+.private-outreach-form input::placeholder,
+.private-outreach-form textarea::placeholder {
+  color: #6b7280;
 }
 
 .private-outreach-subject-field,
@@ -4452,8 +4463,8 @@ img {
 .private-outreach-form input:focus,
 .private-outreach-form textarea:focus {
   outline: none;
-  border-color: rgba(82, 183, 255, 0.78);
-  box-shadow: 0 0 0 3px rgba(82, 183, 255, 0.12);
+  border-color: rgba(82, 183, 255, 0.9);
+  box-shadow: 0 0 0 3px rgba(82, 183, 255, 0.18);
 }
 
 .private-outreach-list {

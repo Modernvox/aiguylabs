@@ -2600,8 +2600,10 @@ function PrivateCampaignsPage() {
   const [isOutreachPreviewOpen, setIsOutreachPreviewOpen] = useState(false);
   const [outreachPreview, setOutreachPreview] = useState(null);
   const [outreachPreviewState, setOutreachPreviewState] = useState({ status: 'idle', message: '' });
+  const [templateSaveState, setTemplateSaveState] = useState({ status: 'idle', message: '' });
 
-  async function loadAnalytics(nextRange = appliedRange) {
+  async function loadAnalytics(nextRange = appliedRange, options = {}) {
+    const shouldLoadTemplate = options.loadTemplate !== false;
     const params = new URLSearchParams();
     if (nextRange.from) params.set('from', nextRange.from);
     if (nextRange.to) params.set('to', nextRange.to);
@@ -2623,6 +2625,19 @@ function PrivateCampaignsPage() {
     const outreachResponse = await fetch('/api/private/campaigns/outreach', { credentials: 'include' });
     const outreachData = await outreachResponse.json().catch(() => ({}));
     if (!outreachResponse.ok || outreachData.ok === false) throw new Error(outreachData.error || 'Unable to load outreach recipients.');
+
+    if (shouldLoadTemplate) {
+      const templateResponse = await fetch('/api/private/campaigns/outreach-template', { credentials: 'include' });
+      const templateData = await templateResponse.json().catch(() => ({}));
+      if (!templateResponse.ok || templateData.ok === false) throw new Error(templateData.error || 'Unable to load outreach email template.');
+      if (templateData.template?.subject || templateData.template?.bodyText) {
+        setOutreachEmail({
+          subject: templateData.template.subject || DEFAULT_MOVESCAN_OUTREACH_SUBJECT,
+          bodyText: templateData.template.bodyText || DEFAULT_MOVESCAN_OUTREACH_BODY,
+        });
+      }
+    }
+
     setDashboard(data);
     setRecipients(outreachData.recipients || []);
     setAppliedRange(nextRange);
@@ -2694,7 +2709,7 @@ function PrivateCampaignsPage() {
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
       setOutreachForm({ companyName: '', recipientEmail: '' });
       setOutreachState({ status: 'success', message: 'Tracked MoveScan email sent.' });
-      await loadAnalytics(appliedRange);
+      await loadAnalytics(appliedRange, { loadTemplate: false });
     } catch (error) {
       setOutreachState({ status: 'error', message: error.message || 'Unable to send the outreach email.' });
     }
@@ -2715,13 +2730,37 @@ function PrivateCampaignsPage() {
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
       setOutreachState({ status: 'success', message: 'Tracked MoveScan email sent to ' + recipient.companyName + '.' });
-      await loadAnalytics(appliedRange);
+      await loadAnalytics(appliedRange, { loadTemplate: false });
     } catch (error) {
       setOutreachState({ status: 'error', message: error.message || 'Unable to send the outreach email.' });
     } finally {
       setSendingRecipientId('');
     }
   }
+  async function saveOutreachTemplate() {
+    if (templateSaveState.status === 'saving') return;
+    setTemplateSaveState({ status: 'saving', message: '' });
+    try {
+      const response = await fetch('/api/private/campaigns/outreach-template', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ subject: outreachEmail.subject, bodyText: outreachEmail.bodyText }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to save the email template.');
+      if (data.template?.subject || data.template?.bodyText) {
+        setOutreachEmail({
+          subject: data.template.subject || DEFAULT_MOVESCAN_OUTREACH_SUBJECT,
+          bodyText: data.template.bodyText || DEFAULT_MOVESCAN_OUTREACH_BODY,
+        });
+      }
+      setTemplateSaveState({ status: 'success', message: 'Template saved' });
+    } catch (error) {
+      setTemplateSaveState({ status: 'error', message: error.message || 'Unable to save the email template.' });
+    }
+  }
+
   async function openOutreachPreview() {
     setOutreachPreviewState({ status: 'loading', message: '' });
     try {
@@ -2773,7 +2812,7 @@ function PrivateCampaignsPage() {
 
   async function refresh() {
     try {
-      await loadAnalytics(appliedRange);
+      await loadAnalytics(appliedRange, { loadTemplate: false });
     } catch (error) {
       setPageState({ status: 'error', message: error.message || 'Unable to load campaign analytics.' });
     }
@@ -2875,18 +2914,21 @@ function PrivateCampaignsPage() {
                 </label>
                 <label className="private-outreach-subject-field">
                   <span>Email subject</span>
-                  <input value={outreachEmail.subject} onChange={(event) => setOutreachEmail((current) => ({ ...current, subject: event.target.value }))} />
+                  <input value={outreachEmail.subject} onChange={(event) => { setOutreachEmail((current) => ({ ...current, subject: event.target.value })); setTemplateSaveState({ status: 'idle', message: '' }); }} />
                 </label>
                 <label className="private-outreach-body-field">
                   <span>Email body/content</span>
-                  <textarea rows="18" value={outreachEmail.bodyText} onChange={(event) => setOutreachEmail((current) => ({ ...current, bodyText: event.target.value }))} />
+                  <textarea rows="18" value={outreachEmail.bodyText} onChange={(event) => { setOutreachEmail((current) => ({ ...current, bodyText: event.target.value })); setTemplateSaveState({ status: 'idle', message: '' }); }} />
                 </label>
                 <button className="button button-primary" type="submit" disabled={outreachState.status === 'sending'}>{outreachState.status === 'sending' ? 'Sending...' : 'Send MoveScan Email'} <Icon /></button>
               </form>
               <div className="private-outreach-tools">
+                <button className="button button-primary button-small" type="button" onClick={saveOutreachTemplate} disabled={templateSaveState.status === 'saving'}>{templateSaveState.status === 'saving' ? 'Saving...' : 'Save Email Template'}</button>
                 <button className="button button-secondary button-small" type="button" onClick={openOutreachPreview} disabled={outreachPreviewState.status === 'loading'}>{outreachPreviewState.status === 'loading' ? 'Loading Preview...' : 'Preview Email'}</button>
                 <button className="button button-secondary button-small" type="button" onClick={sendTestToMe} disabled={outreachPreviewState.status === 'sending'}>{outreachPreviewState.status === 'sending' ? 'Sending Test...' : 'Send Test to Me'}</button>
               </div>
+              {templateSaveState.message ? <p className={templateSaveState.status === 'error' ? 'form-error' : 'private-state-message'}>{templateSaveState.message}</p> : null}
+
               {outreachState.message ? <p className={outreachState.status === 'error' ? 'form-error' : 'private-state-message'}>{outreachState.message}</p> : null}
               {outreachPreviewState.message ? <p className={outreachPreviewState.status === 'error' ? 'form-error' : 'private-state-message'}>{outreachPreviewState.message}</p> : null}
             </section>

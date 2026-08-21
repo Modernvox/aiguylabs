@@ -82,6 +82,41 @@ async function ensureCampaignRecipientsTable(db) {
   await db.prepare('create index if not exists campaign_recipients_token_idx on campaign_recipients(tracking_token)').run();
 }
 
+async function ensureCampaignEmailTemplatesTable(db) {
+  await db.prepare(`create table if not exists campaign_email_templates (campaign text primary key, subject text not null, body_text text not null, updated_at text not null)`).run();
+}
+
+async function loadCampaignEmailTemplate(env) {
+  const db = await ensureDb(env);
+  await ensureCampaignEmailTemplatesTable(db);
+  const row = await db.prepare(`
+    select subject, body_text as bodyText, updated_at as updatedAt
+    from campaign_email_templates
+    where campaign = ?
+    limit 1
+  `).bind(MOVESCAN_OUTREACH_CAMPAIGN).first();
+  return {
+    subject: normalizeOutreachSubject(row?.subject),
+    bodyText: normalizeOutreachBody(row?.bodyText),
+    updatedAt: row?.updatedAt || '',
+    isDefault: !row,
+  };
+}
+
+async function saveCampaignEmailTemplate(env, { subject, bodyText }) {
+  const db = await ensureDb(env);
+  await ensureCampaignEmailTemplatesTable(db);
+  const normalizedSubject = normalizeOutreachSubject(subject);
+  const normalizedBody = normalizeOutreachBody(bodyText);
+  const updatedAt = new Date().toISOString();
+  await db.prepare(`
+    insert into campaign_email_templates (campaign, subject, body_text, updated_at)
+    values (?, ?, ?, ?)
+    on conflict(campaign) do update set subject = excluded.subject, body_text = excluded.body_text, updated_at = excluded.updated_at
+  `).bind(MOVESCAN_OUTREACH_CAMPAIGN, normalizedSubject, normalizedBody, updatedAt).run();
+  return { subject: normalizedSubject, bodyText: normalizedBody, updatedAt, isDefault: false };
+}
+
 function getCookies(request) {
   const cookies = {};
   (request.headers.get('cookie') || '').split(';').forEach((part) => {
@@ -266,6 +301,8 @@ export {
   TRACKING_COOKIE_MAX_AGE,
   cleanHeaderText,
   ensureCampaignRecipientsTable,
+  loadCampaignEmailTemplate,
+  saveCampaignEmailTemplate,
   getRecipientByToken,
   getRecipientToken,
   buildTrackedProductUrl,
