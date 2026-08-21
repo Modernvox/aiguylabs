@@ -1931,153 +1931,299 @@ function MoveScanProductPage({ product }) {
       <section className="section-shell movescan-explainer-section" aria-labelledby="movescan-explainer-title">
         <div className="container movescan-explainer-inner">
           <div className="movescan-section-heading movescan-explainer-heading">
-            <p className="eyebrow">What Is MoveScan?</p>
             <h2 id="movescan-explainer-title">How MoveScan Works</h2>
-            <p>MoveScan turns the customer's phone into a guided, mostly tap-driven estimate walkthrough.</p>
-            <p>Instead of asking the customer to type out a long furniture list, guess from memory, or explain the whole move over the phone, MoveScan guides them through simple choices: tap, select, record, review, and confirm.</p>
-            <p>They still enter basic information where text is truly needed, such as contact details, ZIP codes, notes, or corrections. But the main experience is built around quick selections and short room recordings, not a traditional online form.</p>
+            <h3>Turn your website into a 24/7 AI-powered estimator</h3>
+            <p>MoveScan turns the customer&rsquo;s phone into a guided moving-estimate walkthrough&mdash;and turns your website into a place where customers can actually get an estimate instead of just requesting one.</p>
+            <p>A typical two- to three-bedroom home can complete the entire walkthrough in under five minutes.</p>
+            <p>There are no furniture lists to type. No app to download. No 20-minute phone conversation just to figure out what someone owns.</p>
+            <p>The customer simply shows MoveScan their home, room by room. Most room recordings take only a few seconds, with a maximum of 20 seconds per room. MoveScan&rsquo;s AI analyzes those quick recordings, builds the inventory, combines it with the customer&rsquo;s move details, and applies your company&rsquo;s pricing rules to produce an instant estimate.</p>
+            <p>That means your company can be generating estimates 24 hours a day&mdash;even while you&rsquo;re sleeping, working another move, or helping another customer.</p>
           </div>
 
           <div className="movescan-explainer-step-list" aria-label="How MoveScan works from customer walkthrough to company review">
             <article className="movescan-explainer-step">
               <span>1</span>
               <div>
-                <h3>The customer starts from their phone</h3>
-                <p>The customer taps your Get Instant Estimate button or opens a MoveScan invitation link from your company. MoveScan opens in the customer's mobile browser, so they do not need to download an app.</p>
-                <p>From there, the customer is guided through the estimate with buttons, selections, and short prompts instead of being dropped into a blank form and asked to describe the whole job from scratch.</p>
-                <p><strong>Why this helps your company:</strong> The estimate starts while the customer is already interested. You are not waiting on a long first phone call, a callback, or a scheduled in-home visit just to collect basic move details.</p>
+                <h3>Your website can give estimates 24/7</h3>
+                <p>The customer taps your <strong>Get Instant Estimate</strong> button on your website or opens a MoveScan invitation link from your company.</p>
+                <p>MoveScan launches directly in their mobile browser.</p>
+                <p>No app to download. No waiting for your office to open. No waiting for someone to call them back.</p>
+                <h4>Why it matters</h4>
+                <p>Your estimating process no longer has to stop when your office closes.</p>
+                <p>Someone can find your company at 10:00 at night, on Sunday morning, or while every employee you have is busy working a move&mdash;and still start getting an estimate immediately.</p>
+                <p>MoveScan can begin gathering their inventory, move details, access information, truck needs, and pricing inputs without anyone from your company having to answer the phone.</p>
+                <p>Your website starts working like an estimator that never clocks out.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>2</span>
               <div>
-                <h3>The customer chooses the type of job</h3>
-                <p>The customer selects the service they need, such as Full Move, Loading Only, Unloading Only, Packing Only, Packing + Loading, or a supported storage workflow.</p>
-                <p>MoveScan asks follow-up questions based on that service type. A full move, a loading-only job, a packing job, and a storage job do not all need the same questions, so the walkthrough adjusts to the job.</p>
-                <p>Most of these choices are taps or selections, which keeps the customer moving instead of forcing them to write a custom explanation for every scenario.</p>
-                <p><strong>Why this helps your company:</strong> Your staff gets cleaner information because the customer is not forced through questions that do not apply to their job.</p>
+                <h3>Every customer gets the right walkthrough automatically</h3>
+                <p>The customer tells MoveScan what kind of help they need.</p>
+                <p>Depending on what your company offers, that can include services such as:</p>
+                <ul className="movescan-explainer-detail-list">
+                  <li>Full Move</li>
+                  <li>Loading Only</li>
+                  <li>Unloading Only</li>
+                  <li>Packing Only</li>
+                  <li>Packing + Loading</li>
+                  <li>Supported storage workflows</li>
+                </ul>
+                <p>MoveScan then adapts the walkthrough to that job.</p>
+                <p>A packing customer doesn&rsquo;t need the same questions as a full-service moving customer. An unloading customer shouldn&rsquo;t have to work through questions designed for someone loading an entire house.</p>
+                <h4>Why it matters</h4>
+                <p>Your staff doesn&rsquo;t have to figure out which questions to ask every lead. MoveScan already knows.</p>
+                <p>Customers get a shorter, more relevant experience while your company receives information organized around the service they&rsquo;re actually requesting.</p>
+                <p>That means less confusion for customers and fewer incomplete leads for your staff to clean up later.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step movescan-explainer-step--wide">
               <span>3</span>
               <div>
-                <h3>The customer enters the important move details</h3>
-                <p>Depending on the service, the customer provides the details that shape the estimate. Many of these are selected from guided choices, while contact information, ZIP codes, and notes use normal text fields when needed:</p>
+                <h3>MoveScan asks the questions that affect the job</h3>
+                <p>MoveScan doesn&rsquo;t stop at asking how many bedrooms someone has.</p>
+                <p>Depending on the service, the walkthrough can gather important details such as:</p>
                 <ul className="movescan-explainer-detail-list">
-                  <li>Name, email, phone number, and service ZIP codes</li>
-                  <li>Pickup and/or delivery location details</li>
-                  <li>Property type, such as house, apartment, condo, townhouse, storage unit, commercial, or other</li>
-                  <li>Floor number, stair flights, elevator access, parking restrictions, narrow access, shuttle needs, and notes</li>
-                  <li>Truck information, such as customer-provided truck size, company-provided truck, or no truck yet</li>
-                  <li>Storage source, container or storage unit size, and how full it is when that applies</li>
-                  <li>Specialty or heavy items, such as a piano, safe, oversized furniture, exercise equipment, pool table, or another heavy item</li>
+                  <li>Pickup and delivery information</li>
+                  <li>Property type</li>
+                  <li>Floors and stair flights</li>
+                  <li>Elevator access</li>
+                  <li>Parking and access restrictions</li>
+                  <li>Truck availability</li>
+                  <li>Customer-provided or company-provided trucks</li>
+                  <li>Storage units and portable containers</li>
+                  <li>Specialty and heavy items</li>
+                  <li>Additional move notes</li>
                 </ul>
-                <p><strong>Why this helps your company:</strong> These are the details that usually create surprise labor time later. MoveScan collects them up front with a guided flow, so the estimate is based on more than two bedrooms and a couch without making the customer write a long explanation.</p>
+                <h4>Why it matters</h4>
+                <p>A two-bedroom apartment with an elevator and loading dock isn&rsquo;t the same move as a two-bedroom apartment on the third floor with street parking.</p>
+                <p>Those details affect labor, equipment, scheduling, and, ultimately, price.</p>
+                <p>MoveScan gathers them before the estimate is calculated, instead of discovering them after you&rsquo;ve already quoted the customer.</p>
+                <p>Fewer surprises for your crew. Better information for your estimator. A more informed price for your customer.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>4</span>
               <div>
-                <h3>The customer sets up the rooms or packing areas</h3>
-                <p>For moving services, MoveScan builds a room-by-room walkthrough. The customer taps the rooms or areas involved, such as bedrooms, bathrooms, living room, kitchen, dining room, garage, basement, attic, office, laundry, storage room, and other rooms.</p>
-                <p>For Packing Only, the customer selects the areas they want packed and can add custom packing areas when needed.</p>
-                <p><strong>Why this helps your company:</strong> Instead of one long, messy video or a vague written list, the job is organized by room through simple customer choices. That makes the inventory easier to review and easier to price.</p>
+                <h3>No more asking customers to build furniture lists</h3>
+                <p>MoveScan organizes the customer&rsquo;s home into a simple room-by-room walkthrough.</p>
+                <p>Bedrooms. Living room. Kitchen. Dining room. Garage. Office. Basement. Storage areas. And other areas involved in the move.</p>
+                <p>Instead of asking the customer:</p>
+                <p>&ldquo;How many dressers?&rdquo;</p>
+                <p>&ldquo;How many nightstands?&rdquo;</p>
+                <p>&ldquo;Any TVs?&rdquo;</p>
+                <p>&ldquo;What size is the bed?&rdquo;</p>
+                <p>&ldquo;Anything else in that room?&rdquo;</p>
+                <p>MoveScan lets them show you.</p>
+                <h4>Why it matters</h4>
+                <p>Customers aren&rsquo;t professional estimators.</p>
+                <p>They forget things. They don&rsquo;t know what matters. And most people don&rsquo;t want to spend their evening typing everything they own into a quote form.</p>
+                <p>MoveScan replaces that tedious process with something almost everyone already knows how to do:</p>
+                <p>Point their phone at the room.</p>
+                <p>MoveScan even asks, &ldquo;Is the refrigerator moving with you?&rdquo; The dryer? The washer? MoveScan knows questionable items such as these, especially for apartment moves.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>5</span>
               <div>
-                <h3>The customer records each room with their phone</h3>
-                <p>For each room or packing area, the customer taps the room, taps record, allows camera access, and uses the back camera to show the space. They can also upload an existing video when needed.</p>
-                <p>They walk slowly and show the items and contents that matter for the estimate, such as furniture, boxes, shelves, closets, wall-mounted items, large items, delicate items, and visible packing contents.</p>
-                <p>When they are done, they stop recording, review the video, and choose Use this video. They can retake the video, skip a room, rename a room, add another room, or remove a customer-added room when the workflow allows it.</p>
-                <p><strong>Why this helps your company:</strong> The customer is not trying to remember every item from memory or manually build a furniture list. MoveScan gets room-by-room information from the actual space.</p>
+                <h3>A few seconds of video can replace minutes of questioning</h3>
+                <p>The customer opens a room, taps record, and slowly shows the space.</p>
+                <p>That&rsquo;s it.</p>
+                <p>Most room recordings only need a few seconds, and MoveScan caps each recording at 20 seconds per room.</p>
+                <p>That gives MoveScan&rsquo;s advanced AI analysis engine enough visual information to identify the contents of the room without forcing the customer to record long videos.</p>
+                <p>A typical two- to three-bedroom home can complete the entire guided walkthrough in under five minutes at over 90% accuracy. That means small items, such as a book or magazine, may be missed. Items that don&rsquo;t affect the move fall into the missing 100% accuracy.</p>
+                <h4>Why it matters</h4>
+                <p>Think about how long it takes one of your employees to build the same inventory over the phone.</p>
+                <p>Now multiply that by every estimate your company receives.</p>
+                <p>MoveScan can gather much of that information from seconds of video instead.</p>
+                <p>The customer shows the room. MoveScan builds the inventory. Your staff gets the time back.</p>
+                <p>And because the process is fast, you&rsquo;re asking far less from the customer at the exact moment they&rsquo;re deciding whether getting an estimate from your company is worth the effort. Besides the fact that MoveScan is fun to use with its mostly tap-based interface.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>6</span>
               <div>
-                <h3>MoveScan reviews each room recording</h3>
-                <p>After a room video is submitted, MoveScan processes that room and identifies inventory and packing details from the recording.</p>
-                <p>The customer can keep going while another room is being reviewed. As each room becomes ready, MoveScan asks the customer to check what was found.</p>
-                <p><strong>Why this helps your company:</strong> Your team does not have to manually pause a video and type every item from scratch before an estimate can be started. MoveScan turns the room recording into organized review data.</p>
+                <h3>AI builds the inventory while the customer keeps moving</h3>
+                <p>Once a room is submitted, MoveScan&rsquo;s AI-powered analysis engine reviews the recording in the background and identifies the visible inventory and relevant details.</p>
+                <p>Furniture, boxes, beds, televisions, tables, shelving, appliances, and other visible items can be converted into structured estimate data.</p>
+                <p>The customer doesn&rsquo;t have to sit around waiting for every room to process before continuing.</p>
+                <p>They can move on to the next room while MoveScan works.</p>
+                <h4>Why it matters</h4>
+                <p>Your employees don&rsquo;t have to watch every customer video, view every photo, or manually type every couch, dresser, bed, television, and box into an estimate.</p>
+                <p>MoveScan does the first pass automatically.</p>
+                <p>Instead of paying staff to turn raw customer information into an inventory, your team receives structured information that&rsquo;s already much closer to being usable.</p>
+                <p>The AI isn&rsquo;t just there because AI sounds impressive.</p>
+                <p>It&rsquo;s there to eliminate work.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>7</span>
               <div>
-                <h3>The customer checks the room results</h3>
-                <p>The customer reviews the rooms and the inventory MoveScan found. Much of this review is tap-driven: they confirm items, answer questions, mark whether something is moving, and continue through the flow.</p>
-                <p>When something truly needs correction, they can still edit item names, adjust quantities, change categories, add notes, mark items that need disassembly, remove items, or add missing items.</p>
-                <p>If MoveScan finds something that needs confirmation, such as whether an appliance is moving or staying, the customer answers that directly.</p>
-                <p>For packing workflows, the customer can review packing contents, visible quantities, hidden or customer-declared contents, categories, notes, and packing details.</p>
-                <p><strong>Why this helps your company:</strong> The customer helps clean up the estimate before it reaches your staff, mostly by reviewing and confirming what MoveScan found. That reduces back-and-forth and gives your team a stronger starting point than a phone note or rough checklist.</p>
+                <h3>The customer helps verify the work before your staff sees it. Quick and painless (Tap and proceed)</h3>
+                <p>After MoveScan analyzes a room, the customer can review what was identified.</p>
+                <p>They can correct quantities, add missing items, remove something that isn&rsquo;t moving, add notes, and answer important follow-up questions such as, &ldquo;Does this bed need disassembly?&rdquo;</p>
+                <p>If something needs clarification&mdash;such as whether an appliance is moving or whether furniture requires disassembly&mdash;the customer can answer while they&rsquo;re still completing the walkthrough.</p>
+                <h4>Why it matters</h4>
+                <p>Your staff doesn&rsquo;t have to be the first person responsible for finding every mistake or missing detail.</p>
+                <p>The person who knows the home best gets a chance to verify the inventory first.</p>
+                <p>MoveScan combines AI speed with customer confirmation to give your team a stronger estimate file before anyone from your company has to review it.</p>
+                <p>That means less back-and-forth later:</p>
+                <p>&ldquo;Did you forget the dresser?&rdquo;</p>
+                <p>&ldquo;Is that refrigerator staying?&rdquo;</p>
+                <p>&ldquo;Does that wall-mounted TV need disassembly?&rdquo;</p>
+                <p>MoveScan can get those answers quickly before the estimate reaches your desk.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>8</span>
               <div>
-                <h3>MoveScan combines the rooms into the full job</h3>
-                <p>After the customer reviews the rooms, MoveScan combines the accepted room results into one overall move or packing estimate.</p>
-                <p>It uses the rooms, inventory, packing details, access details, storage information, specialty items, and truck information together.</p>
-                <p><strong>Why this helps your company:</strong> The estimate is based on the whole job, not disconnected pieces of information. Room inventory, stairs, access problems, storage fullness, and truck needs are considered together.</p>
+                <h3>Separate rooms become one complete picture of the move</h3>
+                <p>Once the walkthrough is complete, MoveScan combines the accepted room information with the rest of the job.</p>
+                <p>That can include:</p>
+                <ul className="movescan-explainer-detail-list">
+                  <li>Inventory</li>
+                  <li>Estimated volume</li>
+                  <li>Stairs</li>
+                  <li>Access conditions</li>
+                  <li>Specialty items</li>
+                  <li>Truck information</li>
+                  <li>Storage information</li>
+                  <li>Packing requirements</li>
+                  <li>Other move details</li>
+                </ul>
+                <p>Instead of treating each answer independently, MoveScan uses the information together to understand the overall job.</p>
+                <h4>Why it matters</h4>
+                <p>Your staff opens one organized estimate instead of piecing together a phone call, customer notes, text messages, furniture lists, and random videos.</p>
+                <p>The inventory and logistics live together.</p>
+                <p>That gives your company a much clearer picture of what you&rsquo;re actually being asked to move.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>9</span>
               <div>
-                <h3>MoveScan uses your company's own saved settings</h3>
-                <p>MoveScan does not price every mover the same way.</p>
-                <p>It uses the moving company's saved settings, such as labor pricing, minimums, productivity settings, access adjustments, stair settings, truck capacity settings, truck pricing, tax rate, packing material preferences, packing prices, and instant-estimate limits.</p>
-                <p><strong>Why this helps your company:</strong> The estimate reflects how your company actually charges and operates. MoveScan is not just giving a generic online quote; it is applying your company's own estimate settings.</p>
+                <h3>MoveScan uses your prices&mdash;not ours</h3>
+                <p>MoveScan isn&rsquo;t a marketplace deciding what your move should cost.</p>
+                <p>Your company configures how your company estimates jobs.</p>
+                <p>Depending on your configuration, that can include:</p>
+                <ul className="movescan-explainer-detail-list">
+                  <li>Labor rates</li>
+                  <li>Minimum billable hours</li>
+                  <li>Productivity settings</li>
+                  <li>Stair adjustments</li>
+                  <li>Truck capacities</li>
+                  <li>Company-provided truck pricing</li>
+                  <li>Taxes</li>
+                  <li>Packing materials</li>
+                  <li>Packing pricing</li>
+                  <li>Crew rules</li>
+                  <li>Other estimating settings</li>
+                </ul>
+                <p>MoveScan applies those rules to the information gathered during the walkthrough.</p>
+                <h4>Why it matters</h4>
+                <p>You get automation without giving up control of your business.</p>
+                <p>You&rsquo;re not sending the lead to a third-party marketplace.</p>
+                <p>You&rsquo;re not competing against other movers for your own customer.</p>
+                <p>And you&rsquo;re not letting someone else decide what your labor should cost.</p>
+                <p>MoveScan gives you the technology to automate estimating while your company keeps control of the customer, the pricing, and the job.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>10</span>
               <div>
-                <h3>Truck and crew recommendations are added where applicable</h3>
-                <p>For moving and loading workflows, MoveScan uses the estimated inventory size and the customer's truck selection to show the appropriate truck information.</p>
-                <p>If the customer provides their own truck, MoveScan can show that truck size without adding a company truck charge. If the customer needs the moving company to provide the truck, MoveScan can use the configured company truck pricing. If the customer does not have a truck yet, MoveScan can recommend a truck size without including a truck quote.</p>
-                <p>MoveScan also recommends a crew size based on the move details.</p>
-                <p><strong>Why this helps your company:</strong> Truck and crew planning are two of the biggest parts of a moving estimate. MoveScan helps set expectations early while preserving your company's pricing rules.</p>
+                <h3>Stop making customers guess what truck they need</h3>
+                <p>Most customers don&rsquo;t know how many cubic feet their belongings take up.</p>
+                <p>So why should they be expected to know whether they need a 16-foot, 20-foot, or 26-foot truck?</p>
+                <p>MoveScan can use the estimated inventory volume to help determine appropriate truck information.</p>
+                <p>If the customer already has a truck, MoveScan can account for that selection.</p>
+                <p>If your company is providing the truck, your configured truck pricing can be used.</p>
+                <p>If the customer doesn&rsquo;t have a truck yet, MoveScan recommends an appropriate truck size without treating the recommendation as a truck charge.</p>
+                <p>MoveScan can also recommend crew size based on the move details.</p>
+                <h4>Why it matters</h4>
+                <p>The customer doesn&rsquo;t have to guess&mdash;and your staff doesn&rsquo;t have to spend another phone call figuring it out.</p>
+                <p>Inventory becomes useful operational information.</p>
+                <p>You&rsquo;re not just learning what&rsquo;s in the house.</p>
+                <p>You&rsquo;re learning what it may take to move it.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>11</span>
               <div>
-                <h3>The customer receives an instant estimate</h3>
-                <p>When instant estimates are enabled and the walkthrough is complete, the customer submits their information and sees their estimate.</p>
-                <p>The estimate can include the estimated inventory size, item count, truck information, recommended crew, line-item estimate details, subtotal, taxes, and estimated total. The customer can also receive the estimate by email.</p>
-                <p>The estimate explains that the moving company may review it before confirming the final quote.</p>
-                <p><strong>Why this helps your company:</strong> The customer gets a fast answer while the lead is still warm, and your company still has the ability to review the estimate before treating it as final.</p>
+                <h3>Give the customer the answer they&rsquo;re actually looking for</h3>
+                <p>The customer didn&rsquo;t come to your website because they wanted to fill out a lead form.</p>
+                <p>They came because they want to know:</p>
+                <p>&ldquo;How much is my move going to cost?&rdquo;</p>
+                <p>MoveScan can give them an AI-powered instant estimate while they&rsquo;re still engaged with your company. Convenience is king here!</p>
+                <p>Depending on the job and your configuration, their estimate can include information such as:</p>
+                <ul className="movescan-explainer-detail-list">
+                  <li>Estimated price</li>
+                  <li>Estimated inventory</li>
+                  <li>Estimated volume</li>
+                  <li>Items identified</li>
+                  <li>Truck information or recommendation</li>
+                  <li>Recommended crew</li>
+                  <li>Billable labor</li>
+                  <li>Relevant estimate details</li>
+                </ul>
+                <h4>Why it matters</h4>
+                <p>Every hour between a customer asking for a price and receiving one is another opportunity for them to contact somebody else.</p>
+                <p>MoveScan dramatically shortens that window.</p>
+                <p>Instead of:</p>
+                <p>Submit form &rarr; wait &rarr; phone call &rarr; build inventory &rarr; ask questions &rarr; calculate &rarr; follow up</p>
+                <p>you can offer:</p>
+                <p>Walk through home &rarr; get estimate.</p>
+                <p>For a typical two- to three-bedroom home, that entire walkthrough can take under five minutes.</p>
+                <p>You can answer the customer&rsquo;s biggest buying question before they leave your website looking for someone else.</p>
               </div>
             </article>
 
             <article className="movescan-explainer-step">
               <span>12</span>
               <div>
-                <h3>The moving company receives the estimate for review</h3>
-                <p>Your company receives the completed MoveScan estimate and can review it inside the staff dashboard.</p>
-                <p>Staff can see the customer, service type, estimated total, submitted estimate information, inventory, truck and crew recommendation, and related estimate details. From there, the company can review, adjust where appropriate, approve, and follow up with the customer.</p>
-                <p><strong>Why this helps your company:</strong> Your staff starts with a structured estimate instead of a blank page. The customer has already provided room inventory, move details, access information, truck information, and contact details, which can save time compared with traditional phone estimating or scheduling an in-home estimate for every lead.</p>
+                <h3>Your staff starts with an estimate&mdash;not a blank page</h3>
+                <p>Once the customer finishes, your company receives the completed MoveScan estimate in the staff dashboard.</p>
+                <p>Your team can review the customer information, service type, quoted amount, inventory, move details, operational requirements, truck and crew information, and other relevant estimate details.</p>
+                <p>From there, staff can review the estimate, make appropriate adjustments, approve it, and follow up with the customer. MoveScan automatically sends an approval email once your staff hits <strong>Approve Estimate</strong>.</p>
+                <h4>Why it matters</h4>
+                <p>Without MoveScan, your estimator may start a new lead with almost nothing:</p>
+                <p>&ldquo;Okay, tell me what you&rsquo;re moving.&rdquo;</p>
+                <p>With MoveScan, they can start with:</p>
+                <p>&ldquo;Here&rsquo;s the customer. Here&rsquo;s the move. Here&rsquo;s the inventory. Here&rsquo;s the logistics. Here&rsquo;s the estimate.&rdquo;</p>
+                <p>Your staff spends less time gathering information and more time reviewing estimates, communicating with customers, and booking jobs.</p>
               </div>
             </article>
           </div>
 
           <div className="movescan-explainer-summary">
-            <p>MoveScan does not just digitize the old estimate form. It changes how the customer provides the information in the first place: tap, select, record, review, and confirm, with typing reserved for the details that actually need it.</p>
-            <p>MoveScan gives customers a simple guided walkthrough and gives moving companies a clearer estimate file to work from. The result is less guessing, less manual list-building, and a faster path from interested customer to usable estimate.</p>
-            <p>It does not remove your team's judgment. It helps collect and organize the job so your company can review the estimate with more context and less back-and-forth.</p>
+            <h2>One walkthrough. Minutes for the customer. Hours saved for your company.</h2>
+            <p>MoveScan combines the customer&rsquo;s phone camera, MoveScan&rsquo;s AI-powered inventory analysis, guided move questions, truck and crew recommendations, and your company&rsquo;s own pricing rules into one estimating workflow.</p>
+            <p>For a typical two- to three-bedroom home:</p>
+            <p>The entire walkthrough can be completed in under five minutes.</p>
+            <p>Individual room recordings usually take only a few seconds and are capped at 20 seconds.</p>
+            <p>And because MoveScan is available through your website, customers can start an estimate 24 hours a day, 7 days a week&mdash;even when nobody from your company is available.</p>
+            <p>That means:</p>
+            <ul className="movescan-explainer-detail-list">
+              <li>Generate estimates while you&rsquo;re sleeping.</li>
+              <li>Replace long furniture-list phone calls with seconds of video.</li>
+              <li>Stop asking customers to guess what truck they need.</li>
+              <li>Collect stairs, access, specialty items, and other important details before they become surprises.</li>
+              <li>Let AI build the initial inventory instead of paying staff to start from scratch.</li>
+              <li>Apply your own rates and estimating rules automatically.</li>
+              <li>Give customers an answer while they&rsquo;re still interested in your company.</li>
+              <li>Give your staff an organized estimate instead of another lead they have to build from the ground up.</li>
+            </ul>
+            <p>MoveScan doesn&rsquo;t just digitize the old estimating process.</p>
+            <p>It changes what the estimating process can be.</p>
+            <p>And for a limited time, we are onboarding your company&mdash;<strong>absolutely free</strong>. Participating companies will receive a complete onboarding call where we set up your company&rsquo;s default pricing and estimate settings.</p>
           </div>
         </div>
       </section>
