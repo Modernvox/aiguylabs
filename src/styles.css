@@ -1195,13 +1195,14 @@ p {
 
 
 .movescan-explainer-section {
-  background: #030509;
+  background: #f7f9fc;
+  color: #07111f;
   padding-top: clamp(70px, 9vw, 122px);
   padding-bottom: clamp(62px, 8vw, 110px);
 }
 
 .movescan-explainer-inner {
-  border-top: 1px solid rgba(135, 176, 255, 0.16);
+  border-top: 1px solid rgba(15, 23, 42, 0.12);
   padding-top: clamp(34px, 5vw, 64px);
 }
 
@@ -1220,12 +1221,18 @@ p {
 
 .movescan-explainer-heading h2 {
   max-width: 860px;
+  color: #07111f;
   font-size: clamp(2.55rem, 4.1vw, 4.8rem);
+}
+
+.movescan-explainer-heading h3 {
+  color: #111827;
 }
 
 .movescan-explainer-heading p:not(.eyebrow) {
   max-width: 780px;
   margin-top: 18px;
+  color: #263548;
   font-size: clamp(1.04rem, 1.28vw, 1.18rem);
   line-height: 1.68;
 }
@@ -1262,9 +1269,9 @@ p {
 .movescan-explainer-step,
 .movescan-explainer-summary {
   min-width: 0;
-  border: 1px solid rgba(135, 176, 255, 0.16);
+  border: 1px solid rgba(15, 23, 42, 0.12);
   border-radius: 18px;
-  background: rgba(5, 9, 17, 0.78);
+  background: #ffffff;
 }
 
 .movescan-explainer-step {
@@ -1281,17 +1288,26 @@ p {
 
 .movescan-explainer-step h3 {
   margin: 0 0 14px;
-  color: #fff;
+  color: #07111f;
   font-size: clamp(1.18rem, 1.5vw, 1.46rem);
   line-height: 1.18;
   letter-spacing: -0.02em;
+}
+
+.movescan-explainer-step h4 {
+  margin: 22px 0 10px;
+  color: #0f172a;
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .movescan-explainer-step p,
 .movescan-explainer-summary p,
 .movescan-explainer-detail-list {
   margin: 0;
-  color: #cdd8e8;
+  color: #263548;
   font-size: clamp(1rem, 1.12vw, 1.08rem);
   line-height: 1.7;
 }
@@ -1301,8 +1317,9 @@ p {
   margin-top: 15px;
 }
 
-.movescan-explainer-step strong {
-  color: #eff6ff;
+.movescan-explainer-step strong,
+.movescan-explainer-summary strong {
+  color: #07111f;
   font-weight: 850;
 }
 
@@ -1312,10 +1329,10 @@ p {
   justify-content: center;
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(84, 164, 255, 0.44);
+  border: 1px solid rgba(37, 99, 235, 0.28);
   border-radius: 999px;
-  background: rgba(84, 164, 255, 0.1);
-  color: #8ed7ff;
+  background: rgba(84, 164, 255, 0.12);
+  color: #1264d8;
   font-size: 0.78rem;
   font-weight: 900;
   line-height: 1;
