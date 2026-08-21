@@ -5054,3 +5054,35 @@ img {
   border-radius: 10px;
   background: #02050a;
 }
+
+/* Mobile MoveScan hero: let the supplied artwork stand on its own. */
+@media (max-width: 767px) {
+  .movescan-detail-page .product-detail-hero {
+    padding-top: 42px;
+  }
+
+  .movescan-detail-page .movescan-product-heading {
+    gap: 0;
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .movescan-detail-page .movescan-product-heading .product-detail-logo,
+  .movescan-detail-page .product-detail-subheading {
+    display: none;
+  }
+
+  .movescan-detail-page .movescan-hero-visual {
+    width: 100%;
+    margin: 0;
+  }
+
+  .movescan-detail-page .movescan-hero-visual img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
