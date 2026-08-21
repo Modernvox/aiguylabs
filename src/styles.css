@@ -1192,6 +1192,118 @@ p {
 }
 
 
+.movescan-explainer-section {
+  background: #030509;
+  padding-top: clamp(56px, 8vw, 104px);
+  padding-bottom: clamp(44px, 7vw, 86px);
+}
+
+.movescan-explainer-inner {
+  border-top: 1px solid rgba(135, 176, 255, 0.16);
+  padding-top: clamp(28px, 5vw, 58px);
+}
+
+.movescan-explainer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.movescan-explainer-card,
+.movescan-explainer-flow {
+  min-width: 0;
+  border: 1px solid rgba(135, 176, 255, 0.16);
+  border-radius: 16px;
+  background: rgba(5, 9, 17, 0.74);
+}
+
+.movescan-explainer-card {
+  padding: clamp(18px, 2.6vw, 24px);
+}
+
+.movescan-explainer-card h3,
+.movescan-explainer-flow h3 {
+  margin: 0 0 10px;
+  color: #fff;
+  font-size: clamp(1.08rem, 1.5vw, 1.32rem);
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+}
+
+.movescan-explainer-card p,
+.movescan-explainer-flow p,
+.movescan-explainer-note {
+  margin: 0;
+  color: #cdd8e8;
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+  line-height: 1.62;
+}
+
+.movescan-explainer-flow {
+  margin-top: 14px;
+  padding: clamp(18px, 3vw, 26px);
+}
+
+.movescan-explainer-flow ol {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.movescan-explainer-flow li {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.movescan-explainer-flow span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(84, 164, 255, 0.42);
+  border-radius: 999px;
+  color: #8ed7ff;
+  font-size: 0.76rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.movescan-explainer-note {
+  max-width: 860px;
+  margin-top: 18px;
+  color: #eff6ff;
+}
+
+@media (max-width: 1180px) {
+  .movescan-explainer-flow ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .movescan-explainer-grid,
+  .movescan-explainer-flow ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .movescan-explainer-section {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .movescan-explainer-card,
+  .movescan-explainer-flow {
+    border-radius: 14px;
+  }
+}
+
 .movescan-integration-section {
   padding-top: clamp(52px, 8vw, 100px);
   padding-bottom: clamp(52px, 8vw, 104px);

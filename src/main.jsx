@@ -1928,6 +1928,41 @@ function MoveScanProductPage({ product }) {
         </div>
       </section>
 
+      <section className="section-shell movescan-explainer-section" aria-labelledby="movescan-explainer-title">
+        <div className="container movescan-explainer-inner">
+          <div className="movescan-section-heading">
+            <p className="eyebrow">What Is MoveScan?</p>
+            <h2 id="movescan-explainer-title">MoveScan turns a customer walkthrough into a moving estimate your team can review.</h2>
+            <p>It is estimating software for moving companies. Instead of making every customer type a long furniture list or wait for an appointment, MoveScan gives them a guided way to share the move from their phone.</p>
+          </div>
+          <div className="movescan-explainer-grid">
+            <article className="movescan-explainer-card">
+              <h3>What the customer does</h3>
+              <p>The customer opens your MoveScan link, enters the move details, chooses the service they need, and completes the guided room walkthrough when the job calls for one.</p>
+            </article>
+            <article className="movescan-explainer-card">
+              <h3>What MoveScan does</h3>
+              <p>MoveScan organizes the rooms and inventory, estimates the size of the move, and uses your saved company settings for things like trucks, crew, labor, stairs, travel, and packing when it applies.</p>
+            </article>
+            <article className="movescan-explainer-card">
+              <h3>What your company receives</h3>
+              <p>Your team gets the customer information, move details, inventory, estimate details, and review status in MoveScan so staff can follow up, adjust, approve, or continue the quote process.</p>
+            </article>
+          </div>
+          <div className="movescan-explainer-flow">
+            <h3>The simple version</h3>
+            <ol>
+              <li><span>1</span><p>Customer starts your MoveScan experience from your link or website button.</p></li>
+              <li><span>2</span><p>They provide their move details and complete the guided walkthrough where it is needed.</p></li>
+              <li><span>3</span><p>MoveScan identifies the moving inventory and applies your company's saved rules and pricing settings.</p></li>
+              <li><span>4</span><p>The customer can receive an instant estimate when that option is enabled for the job.</p></li>
+              <li><span>5</span><p>Your moving company receives a structured job record for review and follow-up instead of a vague quote request.</p></li>
+            </ol>
+          </div>
+          <p className="movescan-explainer-note">For an independent moving company, that means more of the first estimate can happen while the customer is still interested, while your staff still keeps control of review, follow-up, and final decisions.</p>
+        </div>
+      </section>
+
       <section className="section-shell movescan-integration-section" aria-labelledby="movescan-integration-title">
         <div className="container movescan-integration-inner">
           <div className="movescan-section-heading">
