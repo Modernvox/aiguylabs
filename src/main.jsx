@@ -1881,8 +1881,8 @@ function MoveScanProductPage({ product }) {
           </div>
           <div className="movescan-hero-visual">
             <picture>
-              <source media="(max-width: 767px)" srcSet="/images/landing_page_mobile.png" />
-              <img src="/images/landing_page_desktop.png" alt="MoveScan moving estimate platform" />
+              <source media="(max-width: 767px)" srcSet="/images/landing_page_mobile.png?v=2f7ea73" />
+              <img src="/images/landing_page_desktop.png?v=2f7ea73" alt="MoveScan moving estimate platform" />
             </picture>
           </div>
         </div>
