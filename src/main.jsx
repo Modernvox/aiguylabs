@@ -1875,7 +1875,6 @@ function MoveScanProductPage({ product }) {
             <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
             <button className="button button-secondary movescan-demo-cta" type="button" onClick={() => { void trackMoveScanEngagement('demo_click'); void trackMoveScanEngagement('demo_opened'); setIsDemoModalOpen(true); }}><Play aria-hidden="true" size={17} strokeWidth={2.2} /> <span>See It in Action</span></button>
           </div>
-          <p className="movescan-hero-description">Give customers an instant moving estimate from a quick video walkthrough. MoveScan identifies inventory, estimates move size, recommends the truck and crew, and calculates pricing using your company's settings.</p>
         </div>
       </section>
 

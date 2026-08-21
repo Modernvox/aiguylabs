@@ -4616,7 +4616,6 @@ img {
     "eyebrow visual"
     "heading visual"
     "subheading visual"
-    "description visual"
     "actions visual";
 }
 
@@ -4636,9 +4635,6 @@ img {
   grid-area: subheading;
 }
 
-.movescan-hero-inner .movescan-hero-description {
-  grid-area: description;
-}
 
 .movescan-hero-inner .movescan-hero-actions {
   grid-area: actions;
@@ -5118,9 +5114,6 @@ img {
     justify-content: center;
   }
 
-  .movescan-detail-page .movescan-hero-description {
-    margin: 0;
-  }
 }
 
 /* Desktop MoveScan hero: the supplied artwork is the complete hero. */
@@ -5140,8 +5133,7 @@ img {
   }
 
   .movescan-detail-page .movescan-product-heading,
-  .movescan-detail-page .product-detail-subheading,
-  .movescan-detail-page .movescan-hero-description {
+  .movescan-detail-page .product-detail-subheading {
     display: none;
   }
 
