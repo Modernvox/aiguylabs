@@ -5086,3 +5086,47 @@ img {
     box-shadow: none;
   }
 }
+
+/* Desktop MoveScan hero: the supplied artwork is the complete hero. */
+@media (min-width: 768px) {
+  .movescan-detail-page .product-detail-hero {
+    padding-top: 28px;
+    padding-bottom: 48px;
+  }
+
+  .movescan-detail-page .movescan-hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "eyebrow"
+      "visual"
+      "actions";
+    gap: 22px;
+  }
+
+  .movescan-detail-page .movescan-product-heading,
+  .movescan-detail-page .product-detail-subheading,
+  .movescan-detail-page .movescan-hero-description {
+    display: none;
+  }
+
+  .movescan-detail-page .movescan-hero-visual {
+    width: 100%;
+    margin: 0;
+  }
+
+  .movescan-detail-page .movescan-hero-visual img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .movescan-detail-page .movescan-hero-actions {
+    justify-content: center;
+    margin-top: 0;
+  }
+}
