@@ -1783,6 +1783,8 @@ function MoveScanProductPage({ product }) {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const demoCloseRef = useRef(null);
   const demoVideoRef = useRef(null);
+  const workflowCarouselRef = useRef(null);
+  const [activeWorkflowStep, setActiveWorkflowStep] = useState(0);
   const workflowSteps = [
     {
       title: 'Customer records the move',
@@ -1815,6 +1817,26 @@ function MoveScanProductPage({ product }) {
       description: 'Staff can review the inventory, estimate, move details, and Final Quote Requested status from MoveScan.',
     },
   ];
+  const handleWorkflowScroll = () => {
+    const carousel = workflowCarouselRef.current;
+    if (!carousel) return;
+
+    const cardWidth = carousel.firstElementChild?.getBoundingClientRect().width || carousel.clientWidth;
+    const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap || '0') || 0;
+    if (!cardWidth) return;
+
+    const nextStep = Math.round(carousel.scrollLeft / (cardWidth + gap));
+    setActiveWorkflowStep(Math.max(0, Math.min(workflowSteps.length - 1, nextStep)));
+  };
+
+  const scrollToWorkflowStep = (index) => {
+    const carousel = workflowCarouselRef.current;
+    const card = carousel?.children[index];
+    if (!carousel || !card) return;
+
+    carousel.scrollTo({ left: card.offsetLeft - carousel.offsetLeft, behavior: 'smooth' });
+    setActiveWorkflowStep(index);
+  };
 
   useEffect(() => {
     void trackMoveScanEngagement('product_page_view');
@@ -1885,8 +1907,8 @@ function MoveScanProductPage({ product }) {
             <p className="eyebrow">Workflow</p>
             <h2 id="movescan-workflow-title">How MoveScan works</h2>
           </div>
-          <div className="movescan-workflow-grid">
-            {workflowSteps.map((step, index) => (
+          <div className="movescan-workflow-grid" ref={workflowCarouselRef} onScroll={handleWorkflowScroll}>
+            {workflowSteps.map((step) => (
               <article className="movescan-workflow-card" key={step.title}>
                 <div className="movescan-workflow-card-heading">
                   <span aria-hidden="true"><step.icon size={19} strokeWidth={1.8} /></span>
@@ -1897,9 +1919,20 @@ function MoveScanProductPage({ product }) {
               </article>
             ))}
           </div>
+          <div className="movescan-workflow-pagination" aria-label="MoveScan workflow steps">
+            {workflowSteps.map((step, index) => (
+              <button
+                className={index === activeWorkflowStep ? 'is-active' : ''}
+                type="button"
+                key={step.title}
+                aria-label={'Show workflow step ' + (index + 1)}
+                aria-current={index === activeWorkflowStep ? 'step' : undefined}
+                onClick={() => scrollToWorkflowStep(index)}
+              />
+            ))}
+          </div>
         </div>
       </section>
-
 
       <section className="section-shell movescan-integration-section" aria-labelledby="movescan-integration-title">
         <div className="container movescan-integration-inner">
