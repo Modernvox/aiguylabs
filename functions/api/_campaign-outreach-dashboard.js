@@ -7,7 +7,7 @@ async function loadOutreachRecipients(env) {
   const recipientResult = await db.prepare(`
     select id, company_name as companyName, recipient_email as recipientEmail, status, delivery_status as deliveryStatus, created_at as createdAt, sent_at as sentAt
     from campaign_recipients
-    where campaign = ? and lower(recipient_email) <> 'admin@movescan.com'
+    where campaign = ?
     order by created_at desc
     limit 200
   `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
