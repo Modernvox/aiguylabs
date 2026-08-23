@@ -13,9 +13,9 @@ import {
   isEmail,
 } from '../functions/api/_campaign-outreach.js';
 
-const OUTREACH_FROM = 'mike@aiguylabs.com';
+const OUTREACH_FROM = 'Mike from MoveScan <mike@aiguylabs.com>';
 const OUTREACH_REPLY_TO = 'mike@aiguylabs.com';
-const ONBOARDING_FROM = 'website@aiguylabs.com';
+const ONBOARDING_FROM = 'MoveScan Website <website@aiguylabs.com>';
 const ONBOARDING_TO = 'contact@aiguylabs.com';
 const ONBOARDING_SUBJECT = 'New MoveScan Free Onboarding Request';
 

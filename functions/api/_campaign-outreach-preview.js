@@ -19,7 +19,7 @@ function buildOutreachPreview(request, options = {}) {
   });
   return {
     ...email,
-    from: 'mike@aiguylabs.com',
+    from: 'Mike from MoveScan <mike@aiguylabs.com>',
     replyTo: OUTREACH_TEST_EMAIL,
   };
 }
