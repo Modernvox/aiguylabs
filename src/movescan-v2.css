@@ -3662,99 +3662,33 @@
 .movescan-v2-page .onboarding-modal[hidden]{display:none!important;}
 .movescan-v2-page.modal-open{overflow:hidden;}
 
-/* Production integration fixes: keep the imported page clear of the fixed AI Guy Labs
-   mobile header and make section contrast explicit inside this scoped page only. */
-@media (max-width: 860px){
-  .movescan-v2-shell{
-    padding-top: calc(var(--mobile-header-height, 72px) + 10px);
+/* Surgical production integration fixes for the imported MoveScan page. */
+@media (max-width: 680px){
+  .movescan-v2-page .hero-image-only{
+    margin-top: calc(var(--mobile-header-height, 72px) + 8px);
   }
 }
 
-.movescan-v2-page .section-white,
-.movescan-v2-page .section-light,
-.movescan-v2-page .section-tint,
-.movescan-v2-page .problem,
-.movescan-v2-page .workflow,
-.movescan-v2-page .details,
-.movescan-v2-page .pricing,
-.movescan-v2-page .truck,
-.movescan-v2-page .estimate,
-.movescan-v2-page .benefits,
-.movescan-v2-page .pricing-options,
-.movescan-v2-page .section-cta-band{
-  color: #00152e;
-}
-
-.movescan-v2-page .section-white h1,
-.movescan-v2-page .section-white h2,
-.movescan-v2-page .section-white h3,
-.movescan-v2-page .section-light h1,
-.movescan-v2-page .section-light h2,
-.movescan-v2-page .section-light h3,
-.movescan-v2-page .section-tint h1,
-.movescan-v2-page .section-tint h2,
-.movescan-v2-page .section-tint h3,
-.movescan-v2-page .problem h1,
-.movescan-v2-page .problem h2,
-.movescan-v2-page .problem h3,
-.movescan-v2-page .workflow h1,
-.movescan-v2-page .workflow h2,
-.movescan-v2-page .workflow h3,
-.movescan-v2-page .details h1,
+.movescan-v2-page .workflow .center-head h2,
+.movescan-v2-page .workflow .feature-copy h3,
 .movescan-v2-page .details h2,
-.movescan-v2-page .details h3,
-.movescan-v2-page .pricing h1,
 .movescan-v2-page .pricing h2,
-.movescan-v2-page .pricing h3,
-.movescan-v2-page .truck h1,
 .movescan-v2-page .truck h2,
-.movescan-v2-page .truck h3,
-.movescan-v2-page .estimate h1,
 .movescan-v2-page .estimate h2,
-.movescan-v2-page .estimate h3,
-.movescan-v2-page .benefits h1,
 .movescan-v2-page .benefits h2,
-.movescan-v2-page .benefits h3,
-.movescan-v2-page .pricing-options h1,
-.movescan-v2-page .pricing-options h2,
-.movescan-v2-page .pricing-options h3{
+.movescan-v2-page .pricing-options .center-head h2,
+.movescan-v2-page .final-panel h2{
   color: #00152e;
 }
 
-.movescan-v2-page .section-white p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .section-light p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .section-tint p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .problem p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .workflow p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .details p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .pricing p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .truck p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .estimate p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .benefits p:not(.eyebrow):not(.marketplace):not(.takeaway),
-.movescan-v2-page .pricing-options p:not(.eyebrow):not(.marketplace):not(.takeaway){
-  color: #5c6b7a;
+.movescan-v2-page .quote-bottleneck-overlay > p{
+  color: #d8e8f7;
 }
 
-.movescan-v2-page .section-dark,
-.movescan-v2-page .inventory,
-.movescan-v2-page .staff{
-  color: #ffffff;
+.movescan-v2-page .quote-bottleneck-overlay .quote-bottleneck-value{
+  color: #66a3ff;
 }
 
-.movescan-v2-page .section-dark h1,
-.movescan-v2-page .section-dark h2,
-.movescan-v2-page .section-dark h3,
-.movescan-v2-page .inventory h1,
-.movescan-v2-page .inventory h2,
-.movescan-v2-page .inventory h3,
-.movescan-v2-page .staff h1,
-.movescan-v2-page .staff h2,
-.movescan-v2-page .staff h3{
-  color: #ffffff;
-}
-
-.movescan-v2-page .section-dark p:not(.eyebrow),
-.movescan-v2-page .inventory p:not(.eyebrow),
-.movescan-v2-page .staff p:not(.eyebrow){
+.movescan-v2-page .staff .center-head p{
   color: #c6d8ea;
 }
