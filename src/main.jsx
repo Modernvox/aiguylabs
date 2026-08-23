@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Calculator, ClipboardCheck, FileCheck2, Play, ScanLine, Video } from 'lucide-react';
 import './styles.css';
+import './movescan-v2.css';
+import { MOVESCAN_V2_HTML } from './movescan-v2-content.js';
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -1780,61 +1782,98 @@ async function trackMoveScanEngagement(eventName) {
   }
 }
 
-function MoveScanProductPage({ product }) {
+function MoveScanProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const [isMoveScanSplashVisible, setIsMoveScanSplashVisible] = useState(false);
   const demoCloseRef = useRef(null);
   const demoVideoRef = useRef(null);
-  const workflowSteps = [
-    {
-      title: 'Customer records the move',
-      icon: Video,
-      image: '/images/scan_kitchen.png',
-      description: 'The customer completes a guided room-by-room video walkthrough from their phone.',
-    },
-    {
-      title: 'MoveScan analyzes the inventory',
-      icon: ScanLine,
-      image: '/images/scanned_items.png',
-      description: 'MoveScan identifies the items being moved and estimates total cubic feet.',
-    },
-    {
-      title: 'MoveScan builds the estimate',
-      icon: Calculator,
-      image: '/images/estimate1.png',
-      description: 'MoveScan applies company settings for truck, crew, loading and unloading time, stairs, charges, and estimated total.',
-    },
-    {
-      title: 'Customer gets the estimate instantly',
-      icon: FileCheck2,
-      image: '/images/instant_estimate.png',
-      description: 'The estimate is displayed immediately and a copy is sent to the customer.',
-    },
-    {
-      title: 'Moving company reviews the request',
-      icon: ClipboardCheck,
-      image: '/images/estimate2.png',
-      description: 'Staff can review the inventory, estimate, move details, and Final Quote Requested status from MoveScan.',
-    },
-  ];
 
   useEffect(() => {
     void trackMoveScanEngagement('product_page_view');
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
+    const root = document.querySelector('.movescan-v2-page');
+    if (!root) return undefined;
 
-    try {
-      if (window.localStorage.getItem(MOVESCAN_SPLASH_STORAGE_KEY) === '1') return undefined;
-      window.localStorage.setItem(MOVESCAN_SPLASH_STORAGE_KEY, '1');
-    } catch {
-      // If storage is blocked, still show the intro for this page view.
-    }
+    const onboardingModal = root.querySelector('#onboarding-modal');
+    const onboardingForm = root.querySelector('#onboarding-form');
+    const onboardingStatus = root.querySelector('#onboarding-status');
+    const onboardingTriggers = Array.from(root.querySelectorAll('.onboarding-trigger'));
+    const onboardingCloseControls = onboardingModal ? Array.from(onboardingModal.querySelectorAll('[data-modal-close]')) : [];
+    const demoLinks = Array.from(root.querySelectorAll('a[href="#demo"]'));
 
-    setIsMoveScanSplashVisible(true);
-    const timer = window.setTimeout(() => setIsMoveScanSplashVisible(false), 3200);
-    return () => window.clearTimeout(timer);
+    const closeOnboarding = () => {
+      if (!onboardingModal) return;
+      onboardingModal.hidden = true;
+      root.classList.remove('modal-open');
+    };
+
+    const openOnboarding = () => {
+      if (!onboardingModal) return;
+      onboardingModal.hidden = false;
+      root.classList.add('modal-open');
+      root.querySelector('#onboarding-company')?.focus();
+    };
+
+    const openDemo = (event) => {
+      event.preventDefault();
+      void trackMoveScanEngagement('demo_click');
+      void trackMoveScanEngagement('demo_opened');
+      setIsDemoModalOpen(true);
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') closeOnboarding();
+    };
+
+    const onOnboardingSubmit = async (event) => {
+      event.preventDefault();
+      if (!onboardingForm) return;
+      const submit = onboardingForm.querySelector('button[type="submit"]');
+      const data = Object.fromEntries(new FormData(onboardingForm).entries());
+      if (submit) submit.disabled = true;
+      if (onboardingStatus) {
+        onboardingStatus.textContent = 'Sending your request...';
+        onboardingStatus.className = 'form-status is-pending';
+      }
+
+      try {
+        const response = await fetch('/api/free-onboarding', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || result.ok === false) throw new Error(result.error || 'We could not send your request.');
+        if (onboardingStatus) {
+          onboardingStatus.textContent = 'Thanks. We will reach out shortly.';
+          onboardingStatus.className = 'form-status is-success';
+        }
+        onboardingForm.reset();
+      } catch (error) {
+        if (onboardingStatus) {
+          onboardingStatus.textContent = error.message || 'We could not send your request. Please try again.';
+          onboardingStatus.className = 'form-status is-error';
+        }
+      } finally {
+        if (submit) submit.disabled = false;
+      }
+    };
+
+    onboardingTriggers.forEach((trigger) => trigger.addEventListener('click', openOnboarding));
+    onboardingCloseControls.forEach((control) => control.addEventListener('click', closeOnboarding));
+    demoLinks.forEach((link) => link.addEventListener('click', openDemo));
+    onboardingForm?.addEventListener('submit', onOnboardingSubmit);
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      onboardingTriggers.forEach((trigger) => trigger.removeEventListener('click', openOnboarding));
+      onboardingCloseControls.forEach((control) => control.removeEventListener('click', closeOnboarding));
+      demoLinks.forEach((link) => link.removeEventListener('click', openDemo));
+      onboardingForm?.removeEventListener('submit', onOnboardingSubmit);
+      document.removeEventListener('keydown', onKeyDown);
+      root.classList.remove('modal-open');
+    };
   }, []);
 
   useEffect(() => {
@@ -1879,393 +1918,8 @@ function MoveScanProductPage({ product }) {
   }, [isDemoModalOpen]);
 
   return (
-    <main className="product-detail-page movescan-detail-page">
-      {isMoveScanSplashVisible ? (
-        <div className="movescan-product-splash" aria-hidden="true">
-          <div className="movescan-product-splash__brain">
-            <img src="/images/icon.png" alt="" />
-          </div>
-          <div className="movescan-product-splash__brand">
-            <p>BROUGHT TO YOU BY</p>
-            <img src="/images/aiguy_logo.PNG" alt="" />
-          </div>
-        </div>
-      ) : null}
-      <section className="section-shell product-detail-hero product-detail-hero--after-showcase" aria-label="MoveScan product hero">
-        <div className="container product-detail-hero-inner movescan-hero-inner" style={{ '--accent': product.accent }}>
-          <div className="movescan-hero-visual">
-            <picture>
-              <source media="(max-width: 767px)" type="image/webp" srcSet="/images/landing_page_mobile.webp?v=2f7ea73" />
-              <source media="(max-width: 767px)" srcSet="/images/landing_page_mobile.png?v=2f7ea73" />
-              <source type="image/webp" srcSet="/images/landing_page_desktop.webp?v=2f7ea73" />
-              <img src="/images/landing_page_desktop.png?v=2f7ea73" alt="MoveScan moving estimate platform" width="1535" height="1024" loading="eager" fetchPriority="high" decoding="async" />
-            </picture>
-          </div>
-          <div className="product-detail-actions movescan-hero-actions">
-            <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
-            <button className="button button-secondary movescan-demo-cta" type="button" onClick={() => { void trackMoveScanEngagement('demo_click'); void trackMoveScanEngagement('demo_opened'); setIsDemoModalOpen(true); }}><Play aria-hidden="true" size={17} strokeWidth={2.2} /> <span>See It in Action</span></button>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-shell product-detail-story movescan-workflow-section" aria-labelledby="movescan-workflow-title">
-        <div className="container movescan-workflow-inner">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Workflow</p>
-            <h2 id="movescan-workflow-title">How MoveScan works</h2>
-          </div>
-          <div className="movescan-workflow-grid">
-            {workflowSteps.map((step) => (
-              <article className="movescan-workflow-card" key={step.title}>
-                <div className="movescan-workflow-card-heading">
-                  <span aria-hidden="true"><step.icon size={19} strokeWidth={1.8} /></span>
-                  <h3>{step.title}</h3>
-                </div>
-                <img className='movescan-workflow-card-image' src={step.image} alt={step.title + ' screenshot'} />
-                <p>{step.description}</p>
-              </article>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      <section className="section-shell movescan-explainer-section" aria-labelledby="movescan-explainer-title">
-        <div className="container movescan-explainer-inner">
-          <div className="movescan-section-heading movescan-explainer-heading">
-            <div className="movescan-explainer-heading-copy">
-              <h2 id="movescan-explainer-title">How MoveScan Works</h2>
-              <h3>Turn your website into a 24/7 AI-powered estimator</h3>
-              <p>MoveScan turns the customer&rsquo;s phone into a guided moving-estimate walkthrough&mdash;and turns your website into a place where customers can actually get an estimate instead of just requesting one.</p>
-              <p>A typical two- to three-bedroom home can complete the entire walkthrough in under five minutes.</p>
-              <p>There are no furniture lists to type. No app to download. No 20-minute phone conversation just to figure out what someone owns.</p>
-              <p>The customer simply shows MoveScan their home, room by room. Most room recordings take only a few seconds, with a maximum of 20 seconds per room. MoveScan&rsquo;s AI analyzes those quick recordings, builds the inventory, combines it with the customer&rsquo;s move details, and applies your company&rsquo;s pricing rules to produce an instant estimate.</p>
-              <p>That means your company can be generating estimates 24 hours a day&mdash;even while you&rsquo;re sleeping, working another move, or helping another customer.</p>
-            </div>
-            <picture className="movescan-explainer-heading-media" aria-hidden="true">
-              <source media="(min-width: 768px)" srcSet="/images/how_movescan_works_hweo.png" />
-              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" />
-            </picture>
-          </div>
-
-          <div className="movescan-explainer-step-list" aria-label="How MoveScan works from customer walkthrough to company review">
-            <article className="movescan-explainer-step">
-              <span>1</span>
-              <div>
-                <h3>Your website can give estimates 24/7</h3>
-                <p>The customer taps your <strong>Get Instant Estimate</strong> button on your website or opens a MoveScan invitation link from your company.</p>
-                <p>MoveScan launches directly in their mobile browser.</p>
-                <p>No app to download. No waiting for your office to open. No waiting for someone to call them back.</p>
-                <h4>Why it matters</h4>
-                <p>Your estimating process no longer has to stop when your office closes.</p>
-                <p>Someone can find your company at 10:00 at night, on Sunday morning, or while every employee you have is busy working a move&mdash;and still start getting an estimate immediately.</p>
-                <p>MoveScan can begin gathering their inventory, move details, access information, truck needs, and pricing inputs without anyone from your company having to answer the phone.</p>
-                <p>Your website starts working like an estimator that never clocks out.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>2</span>
-              <div>
-                <h3>Every customer gets the right walkthrough automatically</h3>
-                <p>The customer tells MoveScan what kind of help they need.</p>
-                <p>Depending on what your company offers, that can include services such as:</p>
-                <ul className="movescan-explainer-detail-list">
-                  <li>Full Move</li>
-                  <li>Loading Only</li>
-                  <li>Unloading Only</li>
-                  <li>Packing Only</li>
-                  <li>Packing + Loading</li>
-                  <li>Supported storage workflows</li>
-                </ul>
-                <p>MoveScan then adapts the walkthrough to that job.</p>
-                <p>A packing customer doesn&rsquo;t need the same questions as a full-service moving customer. An unloading customer shouldn&rsquo;t have to work through questions designed for someone loading an entire house.</p>
-                <h4>Why it matters</h4>
-                <p>Your staff doesn&rsquo;t have to figure out which questions to ask every lead. MoveScan already knows.</p>
-                <p>Customers get a shorter, more relevant experience while your company receives information organized around the service they&rsquo;re actually requesting.</p>
-                <p>That means less confusion for customers and fewer incomplete leads for your staff to clean up later.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step movescan-explainer-step--wide">
-              <span>3</span>
-              <div>
-                <h3>MoveScan asks the questions that affect the job</h3>
-                <p>MoveScan doesn&rsquo;t stop at asking how many bedrooms someone has.</p>
-                <p>Depending on the service, the walkthrough can gather important details such as:</p>
-                <ul className="movescan-explainer-detail-list">
-                  <li>Pickup and delivery information</li>
-                  <li>Property type</li>
-                  <li>Floors and stair flights</li>
-                  <li>Elevator access</li>
-                  <li>Parking and access restrictions</li>
-                  <li>Truck availability</li>
-                  <li>Customer-provided or company-provided trucks</li>
-                  <li>Storage units and portable containers</li>
-                  <li>Specialty and heavy items</li>
-                  <li>Additional move notes</li>
-                </ul>
-                <h4>Why it matters</h4>
-                <p>A two-bedroom apartment with an elevator and loading dock isn&rsquo;t the same move as a two-bedroom apartment on the third floor with street parking.</p>
-                <p>Those details affect labor, equipment, scheduling, and, ultimately, price.</p>
-                <p>MoveScan gathers them before the estimate is calculated, instead of discovering them after you&rsquo;ve already quoted the customer.</p>
-                <p>Fewer surprises for your crew. Better information for your estimator. A more informed price for your customer.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>4</span>
-              <div>
-                <h3>No more asking customers to build furniture lists</h3>
-                <p>MoveScan organizes the customer&rsquo;s home into a simple room-by-room walkthrough.</p>
-                <p>Bedrooms. Living room. Kitchen. Dining room. Garage. Office. Basement. Storage areas. And other areas involved in the move.</p>
-                <p>Instead of asking the customer:</p>
-                <p>&ldquo;How many dressers?&rdquo;</p>
-                <p>&ldquo;How many nightstands?&rdquo;</p>
-                <p>&ldquo;Any TVs?&rdquo;</p>
-                <p>&ldquo;What size is the bed?&rdquo;</p>
-                <p>&ldquo;Anything else in that room?&rdquo;</p>
-                <p>MoveScan lets them show you.</p>
-                <h4>Why it matters</h4>
-                <p>Customers aren&rsquo;t professional estimators.</p>
-                <p>They forget things. They don&rsquo;t know what matters. And most people don&rsquo;t want to spend their evening typing everything they own into a quote form.</p>
-                <p>MoveScan replaces that tedious process with something almost everyone already knows how to do:</p>
-                <p>Point their phone at the room.</p>
-                <p>MoveScan even asks, &ldquo;Is the refrigerator moving with you?&rdquo; The dryer? The washer? MoveScan knows questionable items such as these, especially for apartment moves.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>5</span>
-              <div>
-                <h3>A few seconds of video can replace minutes of questioning</h3>
-                <p>The customer opens a room, taps record, and slowly shows the space.</p>
-                <p>That&rsquo;s it.</p>
-                <p>Most room recordings only need a few seconds, and MoveScan caps each recording at 20 seconds per room.</p>
-                <p>That gives MoveScan&rsquo;s advanced AI analysis engine enough visual information to identify the contents of the room without forcing the customer to record long videos.</p>
-                <p>A typical two- to three-bedroom home can complete the entire guided walkthrough in under five minutes at over 90% accuracy. That means small items, such as a book or magazine, may be missed. Items that don&rsquo;t affect the move fall into the missing 100% accuracy.</p>
-                <h4>Why it matters</h4>
-                <p>Think about how long it takes one of your employees to build the same inventory over the phone.</p>
-                <p>Now multiply that by every estimate your company receives.</p>
-                <p>MoveScan can gather much of that information from seconds of video instead.</p>
-                <p>The customer shows the room. MoveScan builds the inventory. Your staff gets the time back.</p>
-                <p>And because the process is fast, you&rsquo;re asking far less from the customer at the exact moment they&rsquo;re deciding whether getting an estimate from your company is worth the effort. Besides the fact that MoveScan is fun to use with its mostly tap-based interface.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>6</span>
-              <div>
-                <h3>AI builds the inventory while the customer keeps moving</h3>
-                <p>Once a room is submitted, MoveScan&rsquo;s AI-powered analysis engine reviews the recording in the background and identifies the visible inventory and relevant details.</p>
-                <p>Furniture, boxes, beds, televisions, tables, shelving, appliances, and other visible items can be converted into structured estimate data.</p>
-                <p>The customer doesn&rsquo;t have to sit around waiting for every room to process before continuing.</p>
-                <p>They can move on to the next room while MoveScan works.</p>
-                <h4>Why it matters</h4>
-                <p>Your employees don&rsquo;t have to watch every customer video, view every photo, or manually type every couch, dresser, bed, television, and box into an estimate.</p>
-                <p>MoveScan does the first pass automatically.</p>
-                <p>Instead of paying staff to turn raw customer information into an inventory, your team receives structured information that&rsquo;s already much closer to being usable.</p>
-                <p>The AI isn&rsquo;t just there because AI sounds impressive.</p>
-                <p>It&rsquo;s there to eliminate work.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>7</span>
-              <div>
-                <h3>The customer helps verify the work before your staff sees it. Quick and painless (Tap and proceed)</h3>
-                <p>After MoveScan analyzes a room, the customer can review what was identified.</p>
-                <p>They can correct quantities, add missing items, remove something that isn&rsquo;t moving, add notes, and answer important follow-up questions such as, &ldquo;Does this bed need disassembly?&rdquo;</p>
-                <p>If something needs clarification&mdash;such as whether an appliance is moving or whether furniture requires disassembly&mdash;the customer can answer while they&rsquo;re still completing the walkthrough.</p>
-                <h4>Why it matters</h4>
-                <p>Your staff doesn&rsquo;t have to be the first person responsible for finding every mistake or missing detail.</p>
-                <p>The person who knows the home best gets a chance to verify the inventory first.</p>
-                <p>MoveScan combines AI speed with customer confirmation to give your team a stronger estimate file before anyone from your company has to review it.</p>
-                <p>That means less back-and-forth later:</p>
-                <p>&ldquo;Did you forget the dresser?&rdquo;</p>
-                <p>&ldquo;Is that refrigerator staying?&rdquo;</p>
-                <p>&ldquo;Does that wall-mounted TV need disassembly?&rdquo;</p>
-                <p>MoveScan can get those answers quickly before the estimate reaches your desk.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>8</span>
-              <div>
-                <h3>Separate rooms become one complete picture of the move</h3>
-                <p>Once the walkthrough is complete, MoveScan combines the accepted room information with the rest of the job.</p>
-                <p>That can include:</p>
-                <ul className="movescan-explainer-detail-list">
-                  <li>Inventory</li>
-                  <li>Estimated volume</li>
-                  <li>Stairs</li>
-                  <li>Access conditions</li>
-                  <li>Specialty items</li>
-                  <li>Truck information</li>
-                  <li>Storage information</li>
-                  <li>Packing requirements</li>
-                  <li>Other move details</li>
-                </ul>
-                <p>Instead of treating each answer independently, MoveScan uses the information together to understand the overall job.</p>
-                <h4>Why it matters</h4>
-                <p>Your staff opens one organized estimate instead of piecing together a phone call, customer notes, text messages, furniture lists, and random videos.</p>
-                <p>The inventory and logistics live together.</p>
-                <p>That gives your company a much clearer picture of what you&rsquo;re actually being asked to move.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>9</span>
-              <div>
-                <h3>MoveScan uses your prices&mdash;not ours</h3>
-                <p>MoveScan isn&rsquo;t a marketplace deciding what your move should cost.</p>
-                <p>Your company configures how your company estimates jobs.</p>
-                <p>Depending on your configuration, that can include:</p>
-                <ul className="movescan-explainer-detail-list">
-                  <li>Labor rates</li>
-                  <li>Minimum billable hours</li>
-                  <li>Productivity settings</li>
-                  <li>Stair adjustments</li>
-                  <li>Truck capacities</li>
-                  <li>Company-provided truck pricing</li>
-                  <li>Taxes</li>
-                  <li>Packing materials</li>
-                  <li>Packing pricing</li>
-                  <li>Crew rules</li>
-                  <li>Other estimating settings</li>
-                </ul>
-                <p>MoveScan applies those rules to the information gathered during the walkthrough.</p>
-                <h4>Why it matters</h4>
-                <p>You get automation without giving up control of your business.</p>
-                <p>You&rsquo;re not sending the lead to a third-party marketplace.</p>
-                <p>You&rsquo;re not competing against other movers for your own customer.</p>
-                <p>And you&rsquo;re not letting someone else decide what your labor should cost.</p>
-                <p>MoveScan gives you the technology to automate estimating while your company keeps control of the customer, the pricing, and the job.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>10</span>
-              <div>
-                <h3>Stop making customers guess what truck they need</h3>
-                <p>Most customers don&rsquo;t know how many cubic feet their belongings take up.</p>
-                <p>So why should they be expected to know whether they need a 16-foot, 20-foot, or 26-foot truck?</p>
-                <p>MoveScan can use the estimated inventory volume to help determine appropriate truck information.</p>
-                <p>If the customer already has a truck, MoveScan can account for that selection.</p>
-                <p>If your company is providing the truck, your configured truck pricing can be used.</p>
-                <p>If the customer doesn&rsquo;t have a truck yet, MoveScan recommends an appropriate truck size without treating the recommendation as a truck charge.</p>
-                <p>MoveScan can also recommend crew size based on the move details.</p>
-                <h4>Why it matters</h4>
-                <p>The customer doesn&rsquo;t have to guess&mdash;and your staff doesn&rsquo;t have to spend another phone call figuring it out.</p>
-                <p>Inventory becomes useful operational information.</p>
-                <p>You&rsquo;re not just learning what&rsquo;s in the house.</p>
-                <p>You&rsquo;re learning what it may take to move it.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>11</span>
-              <div>
-                <h3>Give the customer the answer they&rsquo;re actually looking for</h3>
-                <p>The customer didn&rsquo;t come to your website because they wanted to fill out a lead form.</p>
-                <p>They came because they want to know:</p>
-                <p>&ldquo;How much is my move going to cost?&rdquo;</p>
-                <p>MoveScan can give them an AI-powered instant estimate while they&rsquo;re still engaged with your company. Convenience is king here!</p>
-                <p>Depending on the job and your configuration, their estimate can include information such as:</p>
-                <ul className="movescan-explainer-detail-list">
-                  <li>Estimated price</li>
-                  <li>Estimated inventory</li>
-                  <li>Estimated volume</li>
-                  <li>Items identified</li>
-                  <li>Truck information or recommendation</li>
-                  <li>Recommended crew</li>
-                  <li>Billable labor</li>
-                  <li>Relevant estimate details</li>
-                </ul>
-                <h4>Why it matters</h4>
-                <p>Every hour between a customer asking for a price and receiving one is another opportunity for them to contact somebody else.</p>
-                <p>MoveScan dramatically shortens that window.</p>
-                <p>Instead of:</p>
-                <p>Submit form &rarr; wait &rarr; phone call &rarr; build inventory &rarr; ask questions &rarr; calculate &rarr; follow up</p>
-                <p>you can offer:</p>
-                <p>Walk through home &rarr; get estimate.</p>
-                <p>For a typical two- to three-bedroom home, that entire walkthrough can take under five minutes.</p>
-                <p>You can answer the customer&rsquo;s biggest buying question before they leave your website looking for someone else.</p>
-              </div>
-            </article>
-
-            <article className="movescan-explainer-step">
-              <span>12</span>
-              <div>
-                <h3>Your staff starts with an estimate&mdash;not a blank page</h3>
-                <p>Once the customer finishes, your company receives the completed MoveScan estimate in the staff dashboard.</p>
-                <p>Your team can review the customer information, service type, quoted amount, inventory, move details, operational requirements, truck and crew information, and other relevant estimate details.</p>
-                <p>From there, staff can review the estimate, make appropriate adjustments, approve it, and follow up with the customer. MoveScan automatically sends an approval email once your staff hits <strong>Approve Estimate</strong>.</p>
-                <h4>Why it matters</h4>
-                <p>Without MoveScan, your estimator may start a new lead with almost nothing:</p>
-                <p>&ldquo;Okay, tell me what you&rsquo;re moving.&rdquo;</p>
-                <p>With MoveScan, they can start with:</p>
-                <p>&ldquo;Here&rsquo;s the customer. Here&rsquo;s the move. Here&rsquo;s the inventory. Here&rsquo;s the logistics. Here&rsquo;s the estimate.&rdquo;</p>
-                <p>Your staff spends less time gathering information and more time reviewing estimates, communicating with customers, and booking jobs.</p>
-              </div>
-            </article>
-          </div>
-
-          <div className="movescan-explainer-summary">
-            <h2>One walkthrough. Minutes for the customer. Hours saved for your company.</h2>
-            <p>MoveScan combines the customer&rsquo;s phone camera, MoveScan&rsquo;s AI-powered inventory analysis, guided move questions, truck and crew recommendations, and your company&rsquo;s own pricing rules into one estimating workflow.</p>
-            <p>For a typical two- to three-bedroom home:</p>
-            <p>The entire walkthrough can be completed in under five minutes.</p>
-            <p>Individual room recordings usually take only a few seconds and are capped at 20 seconds.</p>
-            <p>And because MoveScan is available through your website, customers can start an estimate 24 hours a day, 7 days a week&mdash;even when nobody from your company is available.</p>
-            <p>That means:</p>
-            <ul className="movescan-explainer-detail-list">
-              <li>Generate estimates while you&rsquo;re sleeping.</li>
-              <li>Replace long furniture-list phone calls with seconds of video.</li>
-              <li>Stop asking customers to guess what truck they need.</li>
-              <li>Collect stairs, access, specialty items, and other important details before they become surprises.</li>
-              <li>Let AI build the initial inventory instead of paying staff to start from scratch.</li>
-              <li>Apply your own rates and estimating rules automatically.</li>
-              <li>Give customers an answer while they&rsquo;re still interested in your company.</li>
-              <li>Give your staff an organized estimate instead of another lead they have to build from the ground up.</li>
-            </ul>
-            <p>MoveScan doesn&rsquo;t just digitize the old estimating process.</p>
-            <p>It changes what the estimating process can be.</p>
-            <p>And for a limited time, we are onboarding your company&mdash;<strong>absolutely free</strong>. Participating companies will receive a complete onboarding call where we set up your company&rsquo;s default pricing and estimate settings.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-shell movescan-integration-section" aria-labelledby="movescan-integration-title">
-        <div className="container movescan-integration-inner">
-          <div className="movescan-section-heading">
-            <p className="eyebrow">Website Integration</p>
-            <h2 id="movescan-integration-title">Add MoveScan to your website</h2>
-          </div>
-          <div className="movescan-integration-visual">
-            <img src="/images/getinstantestimatelink.png" alt="MoveScan Get Instant Estimate website button" />
-          </div>
-          <p className="movescan-integration-description">Give customers a Get Instant Estimate button that launches your company-specific MoveScan experience. Your pricing, truck settings, crew rules, and estimate settings stay connected to your account.</p>
-          <ul className="movescan-feature-list" aria-label="MoveScan company setup includes">
-            <li>Company-specific MoveScan estimate link</li>
-            <li>Website button code</li>
-            <li>Staff/admin dashboard</li>
-            <li>Company-specific pricing and settings</li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="section-shell product-detail-closing" aria-labelledby="movescan-closing-title">
-        <div className="container product-detail-closing-inner movescan-closing-inner">
-          <p className="eyebrow">Free Trial</p>
-          <h2 id="movescan-closing-title">Try MoveScan with your first five estimates free.</h2>
-          <p>Request trial access and AI Guy Labs™ will provision your moving-company account for the current MoveScan onboarding flow.</p>
-          <div className="product-detail-actions movescan-closing-actions">
-            <a className="button button-primary" href={MOVESCAN_FREE_TRIAL_URL}>Start Free Trial <Icon /></a>
-            <a className="button button-secondary" href={MOVESCAN_LOGIN_URL} target="_blank" rel="noopener noreferrer">Sign In to MoveScan <Icon /></a>
-          </div>
-        </div>
-      </section>
+    <main className="movescan-v2-shell" aria-label="MoveScan marketing page">
+      <div className="movescan-v2-page" dangerouslySetInnerHTML={{ __html: MOVESCAN_V2_HTML }} />
 
       {isDemoModalOpen ? (
         <div className="movescan-demo-modal" role="dialog" aria-modal="true" aria-label="MoveScan demo video" onClick={() => setIsDemoModalOpen(false)}>
@@ -2287,7 +1941,6 @@ function MoveScanProductPage({ product }) {
           </div>
         </div>
       ) : null}
-
     </main>
   );
 }
