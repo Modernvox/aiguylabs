@@ -15,6 +15,9 @@ import {
 
 const OUTREACH_FROM = 'mike@aiguylabs.com';
 const OUTREACH_REPLY_TO = 'mike@aiguylabs.com';
+const ONBOARDING_FROM = 'website@aiguylabs.com';
+const ONBOARDING_TO = 'contact@aiguylabs.com';
+const ONBOARDING_SUBJECT = 'New MoveScan Free Onboarding Request';
 
 function json(data, init = {}) {
   return new Response(JSON.stringify(data), {
@@ -27,6 +30,107 @@ function json(data, init = {}) {
   });
 }
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[character]));
+}
+
+function buildOnboardingTextEmail(values) {
+  return [
+    'New MoveScan free onboarding request',
+    '',
+    'Company name:',
+    values.companyName,
+    '',
+    'Phone number:',
+    values.phone,
+    '',
+    'Source:',
+    'MoveScan Product Page',
+    '',
+    'Timestamp:',
+    values.timestamp,
+  ].join('\n');
+}
+
+function buildOnboardingHtmlEmail(values) {
+  const rows = [
+    ['Company name', values.companyName],
+    ['Phone number', values.phone],
+    ['Source', 'MoveScan Product Page'],
+    ['Timestamp', values.timestamp],
+  ].map(([label, value]) => `
+    <tr>
+      <th style="padding:8px 12px;text-align:left;vertical-align:top;background:#f4f7fb;border:1px solid #dbe3ef;font-family:Arial,sans-serif;font-size:14px;color:#111827;">${escapeHtml(label)}</th>
+      <td style="padding:8px 12px;border:1px solid #dbe3ef;font-family:Arial,sans-serif;font-size:14px;color:#111827;">${escapeHtml(value)}</td>
+    </tr>`).join('');
+
+  return `<!doctype html>
+<html lang="en">
+  <body style="margin:0;padding:24px;background:#f8fafc;color:#111827;font-family:Arial,sans-serif;">
+    <main style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #dbe3ef;border-radius:8px;overflow:hidden;">
+      <div style="padding:20px 24px;background:#05070b;color:#ffffff;">
+        <h1 style="margin:0;font-size:22px;line-height:1.3;">New MoveScan free onboarding request</h1>
+      </div>
+      <div style="padding:24px;">
+        <table role="presentation" style="width:100%;border-collapse:collapse;">${rows}</table>
+      </div>
+    </main>
+  </body>
+</html>`;
+}
+
+async function handleFreeOnboardingSend(request, env) {
+  if (request.method !== 'POST') {
+    return json({ ok: false, error: 'Method not allowed.' }, { status: 405, headers: { allow: 'POST' } });
+  }
+
+  const expectedToken = env.OUTREACH_INTERNAL_TOKEN || '';
+  const providedToken = request.headers.get('x-outreach-token') || '';
+  if (!expectedToken || providedToken !== expectedToken) {
+    return json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ ok: false, error: 'Invalid request.' }, { status: 400 });
+  }
+
+  const companyName = cleanHeaderText(body?.companyName, 180);
+  const phone = cleanHeaderText(body?.phone, 80);
+  const timestamp = cleanHeaderText(body?.timestamp, 80) || new Date().toISOString();
+  if (!companyName || !phone) {
+    return json({ ok: false, error: 'Invalid onboarding request.' }, { status: 400 });
+  }
+
+  if (!env.EMAIL || typeof env.EMAIL.send !== 'function') {
+    console.error('EMAIL binding is not configured for onboarding requests.');
+    return json({ ok: false, error: 'Onboarding email is not configured.' }, { status: 502 });
+  }
+
+  try {
+    const values = { companyName, phone, timestamp };
+    const result = await env.EMAIL.send({
+      from: ONBOARDING_FROM,
+      to: ONBOARDING_TO,
+      replyTo: ONBOARDING_TO,
+      subject: ONBOARDING_SUBJECT,
+      text: buildOnboardingTextEmail(values),
+      html: buildOnboardingHtmlEmail(values),
+    });
+    return json({ ok: true, messageId: result?.messageId || '' }, { status: 202 });
+  } catch (error) {
+    console.error('MoveScan onboarding email send failed', { code: error?.code || 'UNKNOWN' });
+    return json({ ok: false, error: 'Unable to send onboarding request.' }, { status: 502 });
+  }
+}
 async function handleOutreachSend(request, env) {
   if (request.method !== 'POST') {
     return json({ ok: false, error: 'Method not allowed.' }, { status: 405, headers: { allow: 'POST' } });
@@ -191,6 +295,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === '/api/movescan-outreach/send') return handleOutreachSend(request, env);
+    if (url.pathname === '/api/free-onboarding/send') return handleFreeOnboardingSend(request, env);
     if (url.pathname !== '/api/contact-requests') return new Response('Not found', { status: 404 });
 
     const context = { request, env, ctx, params: {} };
