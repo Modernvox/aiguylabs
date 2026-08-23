@@ -3665,7 +3665,7 @@
 /* Surgical production integration fixes for the imported MoveScan page. */
 @media (max-width: 680px){
   .movescan-v2-page .hero-image-only{
-    margin-top: calc(var(--mobile-header-height, 72px) + 8px);
+    margin-top: calc(var(--mobile-header-height, 72px) + 1px);
   }
 }
 
