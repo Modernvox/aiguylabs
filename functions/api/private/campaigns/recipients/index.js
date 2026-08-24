@@ -12,7 +12,7 @@ import {
 
 async function loadRecipient(db, id) {
   return db.prepare(`
-    select id, tracking_token as trackingToken, company_name as companyName, recipient_email as recipientEmail, coalesce(nullif(trim(state), ''), 'TN') as state, campaign, status
+    select id, tracking_token as trackingToken, company_name as companyName, recipient_email as recipientEmail, coalesce(nullif(trim(state), ''), 'TN') as state, campaign, status, delivery_status as deliveryStatus
     from campaign_recipients
     where id = ? and campaign = ?
     limit 1
@@ -47,6 +47,7 @@ export async function onRequestPost({ request, env }) {
   if (body.recipientId) {
     recipient = await loadRecipient(db, cleanHeaderText(body.recipientId, 80));
     if (!recipient) return json({ ok: false, error: 'Recipient was not found.' }, { status: 404, headers: { 'cache-control': 'no-store' } });
+    if (recipient.deliveryStatus && recipient.deliveryStatus !== 'pending' && recipient.deliveryStatus !== 'deferred') return json({ ok: false, error: 'This recipient is suppressed or has a final delivery status and cannot be sent again.' }, { status: 409, headers: { 'cache-control': 'no-store' } });
     if (recipient.status === 'sent' && body.retry !== true) return json({ ok: false, error: 'This recipient has already been sent. Use the explicit retry action for a failed delivery.' }, { status: 409, headers: { 'cache-control': 'no-store' } });
   } else {
     const companyName = cleanHeaderText(body.companyName || body.company_name, 180);

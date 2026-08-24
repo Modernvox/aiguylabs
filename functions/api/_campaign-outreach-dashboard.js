@@ -1,8 +1,8 @@
 import { ensureDb } from './_lead-utils.js';
 import { MOVESCAN_OUTREACH_CAMPAIGN, MOVESCAN_OUTREACH_PROSPECTS, ensureCampaignRecipientsTable } from './_campaign-outreach.js';
 
-const UNSUCCESSFUL_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'bounced_suppressed', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
-const FINAL_FAILURE_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'bounced_suppressed', 'rejected', 'complained', 'doesnt_exist']);
+const UNSUCCESSFUL_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'bounced_suppressed', 'suppressed', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
+const FINAL_FAILURE_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'bounced_suppressed', 'suppressed', 'rejected', 'complained', 'doesnt_exist']);
 
 async function loadOutreachRecipients(env) {
   const db = await ensureDb(env);

@@ -2529,7 +2529,7 @@ function formatCampaignState(value) {
   return campaignStateNames[state] || state;
 }
 
-const unsuccessfulDeliveryStatuses = new Set(['failed', 'bounced', 'bounced_suppressed', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
+const unsuccessfulDeliveryStatuses = new Set(['failed', 'bounced', 'bounced_suppressed', 'suppressed', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
 
 function isSuccessfulOutreachSend(recipient) {
   if (!recipient.funnel?.sent) return false;
@@ -2580,6 +2580,7 @@ const deliveryStatusLabels = {
   failed: 'Delivery Failed',
   bounced: 'Bounced',
   bounced_suppressed: 'Bounced \u2014 Suppressed',
+  suppressed: 'Suppressed',
   rejected: 'Rejected',
   deferred: 'Deferred',
   complained: 'Complaint',
@@ -2592,6 +2593,11 @@ function getDeliveryStatusLabel(status) {
 
 function canRetryDelivery(status) {
   return status === 'deferred';
+}
+
+function isSuppressedRecipient(recipient) {
+  const status = recipient?.delivery?.status;
+  return Boolean(status && status !== 'pending' && !canRetryDelivery(status) && !recipient?.funnel?.sent);
 }
 
 function getRecipientStatusClass(recipient) {
@@ -3059,8 +3065,8 @@ function PrivateCampaignsPage() {
                               <span className={'private-outreach-status ' + getRecipientStatusClass(recipient)}>
                                 {getRecipientStatusLabel(recipient)}
                               </span>
-                              <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={(Boolean(recipient.funnel?.sent) && !canRetryDelivery(recipient.delivery?.status)) || Boolean(sendingRecipientId)}>
-                                {sendingRecipientId === recipient.id ? 'Sending...' : canRetryDelivery(recipient.delivery?.status) ? 'Retry' : recipient.funnel?.sent ? 'Sent' : 'Send'}
+                              <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={(Boolean(recipient.funnel?.sent) && !canRetryDelivery(recipient.delivery?.status)) || isSuppressedRecipient(recipient) || Boolean(sendingRecipientId)}>
+                                {sendingRecipientId === recipient.id ? 'Sending...' : canRetryDelivery(recipient.delivery?.status) ? 'Retry' : isSuppressedRecipient(recipient) ? 'Suppressed' : recipient.funnel?.sent ? 'Sent' : 'Send'}
                               </button>
                             </div>
                           </article>

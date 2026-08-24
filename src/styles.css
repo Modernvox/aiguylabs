@@ -5351,6 +5351,7 @@ body:has(.movescan-v2-shell) .site-header {
 
 .private-outreach-status.is-delivery-bounced,
 .private-outreach-status.is-delivery-bounced_suppressed,
+.private-outreach-status.is-delivery-suppressed,
 .private-outreach-status.is-delivery-rejected,
 .private-outreach-status.is-delivery-complained {
   color: #ff9a9a;
