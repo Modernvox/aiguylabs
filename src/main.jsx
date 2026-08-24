@@ -2499,6 +2499,35 @@ function sortOutreachRecipients(recipients, sortKey) {
     .map(({ recipient }) => recipient);
 }
 
+const campaignStateNames = {
+  AL: 'Alabama',
+  GA: 'Georgia',
+  KY: 'Kentucky',
+  NC: 'North Carolina',
+  TN: 'Tennessee',
+};
+
+function normalizeCampaignState(value) {
+  return String(value || 'TN').trim().toUpperCase() || 'TN';
+}
+
+function formatCampaignState(value) {
+  const state = normalizeCampaignState(value);
+  return campaignStateNames[state] || state;
+}
+
+function groupOutreachRecipientsByState(recipients) {
+  const groups = new Map();
+  recipients.forEach((recipient) => {
+    const state = normalizeCampaignState(recipient.state);
+    if (!groups.has(state)) groups.set(state, []);
+    groups.get(state).push(recipient);
+  });
+  return Array.from(groups.entries())
+    .map(([state, stateRecipients]) => ({ state, label: formatCampaignState(state), recipients: stateRecipients }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
 const deliveryStatusLabels = {
   delivered: 'Delivered',
   failed: 'Delivery Failed',
@@ -2585,11 +2614,12 @@ function PrivateCampaignsPage() {
   const [pageState, setPageState] = useState({ status: 'checking', message: 'Checking access...' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [recipients, setRecipients] = useState([]);
-  const [outreachForm, setOutreachForm] = useState({ companyName: '', recipientEmail: '' });
+  const [outreachForm, setOutreachForm] = useState({ companyName: '', recipientEmail: '', state: 'TN' });
   const [outreachEmail, setOutreachEmail] = useState({ subject: DEFAULT_MOVESCAN_OUTREACH_SUBJECT, bodyText: DEFAULT_MOVESCAN_OUTREACH_BODY });
   const [outreachState, setOutreachState] = useState({ status: 'idle', message: '' });
   const [sendingRecipientId, setSendingRecipientId] = useState('');
   const [outreachSort, setOutreachSort] = useState('default');
+  const [openOutreachState, setOpenOutreachState] = useState('');
   const [isOutreachPreviewOpen, setIsOutreachPreviewOpen] = useState(false);
   const [outreachPreview, setOutreachPreview] = useState(null);
   const [outreachPreviewState, setOutreachPreviewState] = useState({ status: 'idle', message: '' });
@@ -2683,6 +2713,7 @@ function PrivateCampaignsPage() {
 
     const companyName = outreachForm.companyName.trim();
     const recipientEmail = outreachForm.recipientEmail.trim();
+    const state = normalizeCampaignState(outreachForm.state);
     if (!companyName || !recipientEmail) {
       setOutreachState({ status: 'error', message: 'Company name and recipient email are required for a real outreach send.' });
       return;
@@ -2696,11 +2727,11 @@ function PrivateCampaignsPage() {
         method: 'POST',
         credentials: 'include',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ companyName, recipientEmail, subject: outreachEmail.subject, bodyText: outreachEmail.bodyText }),
+        body: JSON.stringify({ companyName, recipientEmail, state, subject: outreachEmail.subject, bodyText: outreachEmail.bodyText }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) throw new Error(data.error || 'Unable to send the outreach email.');
-      setOutreachForm({ companyName: '', recipientEmail: '' });
+      setOutreachForm({ companyName: '', recipientEmail: '', state });
       setOutreachState({ status: 'success', message: 'Tracked MoveScan email sent.' });
       await loadAnalytics(appliedRange, { loadTemplate: false });
     } catch (error) {
@@ -2837,6 +2868,7 @@ function PrivateCampaignsPage() {
 
   const leads = recipients.filter((recipient) => recipient.lead);
   const sortedRecipients = sortOutreachRecipients(recipients, outreachSort);
+  const outreachStateGroups = groupOutreachRecipientsByState(sortedRecipients);
 
   if (pageState.status === 'locked') {
     return (
@@ -2905,6 +2937,10 @@ function PrivateCampaignsPage() {
                   <span>Recipient email</span>
                   <input type="email" value={outreachForm.recipientEmail} onChange={(event) => setOutreachForm((current) => ({ ...current, recipientEmail: event.target.value }))} required />
                 </label>
+                <label>
+                  <span>State</span>
+                  <input value={outreachForm.state} onChange={(event) => setOutreachForm((current) => ({ ...current, state: event.target.value }))} placeholder="TN" />
+                </label>
                 <label className="private-outreach-subject-field">
                   <span>Email subject</span>
                   <input value={outreachEmail.subject} onChange={(event) => { setOutreachEmail((current) => ({ ...current, subject: event.target.value })); setTemplateSaveState({ status: 'idle', message: '' }); }} />
@@ -2939,28 +2975,44 @@ function PrivateCampaignsPage() {
                   </select>
                 </label>
               </div>
-              {sortedRecipients.length ? sortedRecipients.map((recipient) => (
-                <article className="private-outreach-row" key={recipient.id}>
-                  <div className="private-outreach-recipient">
-                    <strong>{recipient.companyName}</strong>
-                    <span>{recipient.recipientEmail}</span>
-                  </div>
-                  <div className="private-outreach-funnel" aria-label={recipient.companyName + ' funnel status'}>
-                    {['sent', 'delivered', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage === 'demo' ? 'Demo Opened' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
-                  </div>
-                  <div className="private-outreach-engagement" aria-label={recipient.companyName + ' demo engagement'}>
-                    {['opened', 'started', 'watched25', 'watched50', 'completed'].map((stage) => <span className={recipient.demoEngagement?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'opened' ? 'Demo Opened' : stage === 'started' ? 'Video Started' : stage === 'watched25' ? '25% Watched' : stage === 'watched50' ? '50% Watched' : 'Completed'}</span>)}
-                  </div>
-                  <div className="private-outreach-action">
-                    <span className={'private-outreach-status ' + getRecipientStatusClass(recipient)}>
-                      {getRecipientStatusLabel(recipient)}
-                    </span>
-                    <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={(Boolean(recipient.funnel?.sent) && !canRetryDelivery(recipient.delivery?.status)) || Boolean(sendingRecipientId)}>
-                      {sendingRecipientId === recipient.id ? 'Sending...' : canRetryDelivery(recipient.delivery?.status) ? 'Retry' : recipient.funnel?.sent ? 'Sent' : 'Send'}
+              {outreachStateGroups.length ? outreachStateGroups.map((group) => {
+                const isOpen = openOutreachState === group.state;
+                return (
+                  <section className="private-outreach-state" key={group.state}>
+                    <button className="private-outreach-state-toggle" type="button" aria-expanded={isOpen} onClick={() => setOpenOutreachState((current) => current === group.state ? '' : group.state)}>
+                      <span className="private-outreach-state-title">{group.label}</span>
+                      <span className="private-outreach-state-count">{group.recipients.length} contacts</span>
+                      <span className="private-outreach-state-chevron" aria-hidden="true">{isOpen ? 'v' : '>'}</span>
                     </button>
-                  </div>
-                </article>
-              )) : <p className="private-empty">No outreach recipients yet.</p>}
+                    {isOpen ? (
+                      <div className="private-outreach-state-body">
+                        {group.recipients.map((recipient) => (
+                          <article className="private-outreach-row" key={recipient.id}>
+                            <div className="private-outreach-recipient">
+                              <strong>{recipient.companyName}</strong>
+                              <span>{recipient.recipientEmail}</span>
+                            </div>
+                            <div className="private-outreach-funnel" aria-label={recipient.companyName + ' funnel status'}>
+                              {['sent', 'delivered', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage === 'demo' ? 'Demo Opened' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
+                            </div>
+                            <div className="private-outreach-engagement" aria-label={recipient.companyName + ' demo engagement'}>
+                              {['opened', 'started', 'watched25', 'watched50', 'completed'].map((stage) => <span className={recipient.demoEngagement?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'opened' ? 'Demo Opened' : stage === 'started' ? 'Video Started' : stage === 'watched25' ? '25% Watched' : stage === 'watched50' ? '50% Watched' : 'Completed'}</span>)}
+                            </div>
+                            <div className="private-outreach-action">
+                              <span className={'private-outreach-status ' + getRecipientStatusClass(recipient)}>
+                                {getRecipientStatusLabel(recipient)}
+                              </span>
+                              <button className="button button-primary button-small" type="button" onClick={() => sendRecipient(recipient)} disabled={(Boolean(recipient.funnel?.sent) && !canRetryDelivery(recipient.delivery?.status)) || Boolean(sendingRecipientId)}>
+                                {sendingRecipientId === recipient.id ? 'Sending...' : canRetryDelivery(recipient.delivery?.status) ? 'Retry' : recipient.funnel?.sent ? 'Sent' : 'Send'}
+                              </button>
+                            </div>
+                          </article>
+                        ))}
+                      </div>
+                    ) : null}
+                  </section>
+                );
+              }) : <p className="private-empty">No outreach recipients yet.</p>}
             </section>
 
             <section className="private-leads-list" aria-labelledby="private-leads-title">

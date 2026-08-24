@@ -12,7 +12,7 @@ import {
 
 async function loadRecipient(db, id) {
   return db.prepare(`
-    select id, tracking_token as trackingToken, company_name as companyName, recipient_email as recipientEmail, campaign, status
+    select id, tracking_token as trackingToken, company_name as companyName, recipient_email as recipientEmail, coalesce(nullif(trim(state), ''), 'TN') as state, campaign, status
     from campaign_recipients
     where id = ? and campaign = ?
     limit 1
@@ -51,6 +51,7 @@ export async function onRequestPost({ request, env }) {
   } else {
     const companyName = cleanHeaderText(body.companyName || body.company_name, 180);
     const recipientEmail = cleanHeaderText(body.recipientEmail || body.recipient_email, 240).toLowerCase();
+    const state = cleanHeaderText(body.state || 'TN', 40).toUpperCase() || 'TN';
     const errors = {};
     if (!companyName) errors.companyName = 'Company name is required.';
     if (!recipientEmail || !isEmail(recipientEmail)) errors.recipientEmail = 'A valid recipient email is required.';
@@ -62,10 +63,10 @@ export async function onRequestPost({ request, env }) {
     const id = crypto.randomUUID();
     const token = crypto.randomUUID();
     await db.prepare(`
-      insert into campaign_recipients (id, tracking_token, company_name, recipient_email, campaign, status, created_at, sent_at)
-      values (?, ?, ?, ?, ?, 'pending', ?, null)
-    `).bind(id, token, companyName, recipientEmail, MOVESCAN_OUTREACH_CAMPAIGN, new Date().toISOString()).run();
-    recipient = { id, trackingToken: token, companyName, recipientEmail, status: 'pending' };
+      insert into campaign_recipients (id, tracking_token, company_name, recipient_email, campaign, status, state, created_at, sent_at)
+      values (?, ?, ?, ?, ?, 'pending', ?, ?, null)
+    `).bind(id, token, companyName, recipientEmail, MOVESCAN_OUTREACH_CAMPAIGN, state, new Date().toISOString()).run();
+    recipient = { id, trackingToken: token, companyName, recipientEmail, state, status: 'pending' };
   }
 
   const productUrl = buildTrackedOutreachUrl(request, recipient.trackingToken);
@@ -106,7 +107,7 @@ export async function onRequestPost({ request, env }) {
     } catch (eventError) {
       console.error('MoveScan outreach email sent but event recording failed', { code: eventError?.code || 'UNKNOWN', recipientId: recipient.id });
     }
-    return json({ ok: true, recipient: { id: recipient.id, companyName: recipient.companyName, recipientEmail: recipient.recipientEmail, status: 'sent', sentAt } }, { status: 201, headers: { 'cache-control': 'no-store' } });
+    return json({ ok: true, recipient: { id: recipient.id, companyName: recipient.companyName, recipientEmail: recipient.recipientEmail, state: recipient.state || 'TN', status: 'sent', sentAt } }, { status: 201, headers: { 'cache-control': 'no-store' } });
   } catch (error) {
     await db.prepare('update campaign_recipients set status = ? where id = ?').bind('failed', recipient.id).run();
     console.error('Unable to send MoveScan outreach email', { code: error?.code || 'UNKNOWN', recipientId: recipient.id });

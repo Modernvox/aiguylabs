@@ -4781,6 +4781,61 @@ body:has(.movescan-v2-shell) .site-header {
   gap: 14px;
 }
 
+.private-outreach-state {
+  display: grid;
+  gap: 10px;
+}
+
+.private-outreach-state-toggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid rgba(135, 176, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  color: #fff;
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.private-outreach-state-toggle:hover,
+.private-outreach-state-toggle:focus-visible {
+  border-color: rgba(82, 183, 255, 0.45);
+  background: rgba(45, 125, 255, 0.1);
+  outline: none;
+}
+
+.private-outreach-state-title {
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.private-outreach-state-count {
+  color: #8ed7ff;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.private-outreach-state-chevron {
+  color: #cdd8e8;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.private-outreach-state-body {
+  display: grid;
+  gap: 10px;
+}
+
 .private-outreach-row {
   display: grid;
   grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.2fr) auto;
@@ -4878,6 +4933,15 @@ body:has(.movescan-v2-shell) .site-header {
   .private-outreach-sort {
     flex-basis: auto;
     width: 100%;
+  }
+
+  .private-outreach-state-toggle {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .private-outreach-state-count {
+    grid-column: 1 / -1;
+    order: 3;
   }
 
   .private-outreach-funnel {

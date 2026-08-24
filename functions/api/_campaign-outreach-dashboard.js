@@ -5,7 +5,7 @@ async function loadOutreachRecipients(env) {
   const db = await ensureDb(env);
   await ensureCampaignRecipientsTable(db);
   const recipientResult = await db.prepare(`
-    select id, company_name as companyName, recipient_email as recipientEmail, status, delivery_status as deliveryStatus, created_at as createdAt, sent_at as sentAt
+    select id, company_name as companyName, recipient_email as recipientEmail, status, delivery_status as deliveryStatus, coalesce(nullif(trim(state), ''), 'TN') as state, created_at as createdAt, sent_at as sentAt
     from campaign_recipients
     where campaign = ?
     order by created_at desc
@@ -46,6 +46,7 @@ async function loadOutreachRecipients(env) {
       companyName: row.companyName,
       recipientEmail: row.recipientEmail,
       status: row.status,
+      state: row.state || 'TN',
       createdAt: row.createdAt,
       sentAt: row.sentAt || '',
       funnel: {
@@ -84,7 +85,7 @@ async function seedOutreachRecipients(env) {
   let added = 0;
   let existing = 0;
 
-  for (const [companyName, recipientEmail] of MOVESCAN_OUTREACH_PROSPECTS) {
+  for (const [companyName, recipientEmail, state = 'TN'] of MOVESCAN_OUTREACH_PROSPECTS) {
     const normalizedEmail = recipientEmail.toLowerCase();
     const match = await db.prepare(`
       select id
@@ -99,14 +100,15 @@ async function seedOutreachRecipients(env) {
     }
 
     await db.prepare(`
-      insert into campaign_recipients (id, tracking_token, company_name, recipient_email, campaign, status, created_at, sent_at)
-      values (?, ?, ?, ?, ?, 'unsent', ?, null)
+      insert into campaign_recipients (id, tracking_token, company_name, recipient_email, campaign, status, state, created_at, sent_at)
+      values (?, ?, ?, ?, ?, 'unsent', ?, ?, null)
     `).bind(
       crypto.randomUUID(),
       crypto.randomUUID(),
       companyName,
       recipientEmail,
       MOVESCAN_OUTREACH_CAMPAIGN,
+      state,
       new Date().toISOString(),
     ).run();
     added += 1;
