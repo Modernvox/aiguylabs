@@ -2647,6 +2647,33 @@
 }
 
 
+.movescan-v2-page .hero-pricing-overlay{
+  position: absolute;
+  right: clamp(18px, 3.2vw, 54px);
+  bottom: clamp(18px, 4.2vw, 70px);
+  z-index: 4;
+  display: grid;
+  gap: 3px;
+  color: #ffffff;
+  text-align: right;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.42);
+  pointer-events: none;
+}
+
+.movescan-v2-page .hero-pricing-overlay span{
+  font-size: clamp(0.58rem, 0.72vw, 0.78rem);
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+}
+
+.movescan-v2-page .hero-pricing-overlay strong{
+  font-size: clamp(0.82rem, 1.1vw, 1.15rem);
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
 .movescan-v2-page .hero-mobile-headline{
   display: none;
 }
@@ -2687,6 +2714,22 @@
 
   .movescan-v2-page .hero-overlay-simple{
     display: none;
+  }
+
+  .movescan-v2-page .hero-pricing-overlay{
+    right: clamp(10px, 3.8vw, 16px);
+    bottom: clamp(10px, 3.8vw, 16px);
+    gap: 2px;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.48);
+  }
+
+  .movescan-v2-page .hero-pricing-overlay span{
+    font-size: clamp(0.38rem, 1.8vw, 0.48rem);
+    letter-spacing: 0.1em;
+  }
+
+  .movescan-v2-page .hero-pricing-overlay strong{
+    font-size: clamp(0.52rem, 2.35vw, 0.66rem);
   }
 }
 
