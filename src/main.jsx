@@ -2543,15 +2543,22 @@ function getOutreachStateMetrics(stateRecipients) {
   };
 }
 
-function groupOutreachRecipientsByState(recipients) {
+function groupOutreachRecipientsByState(recipients, stateMetrics = []) {
   const groups = new Map();
   recipients.forEach((recipient) => {
     const state = normalizeCampaignState(recipient.state);
     if (!groups.has(state)) groups.set(state, []);
     groups.get(state).push(recipient);
   });
+  const metricsByState = new Map(stateMetrics.map((metric) => [normalizeCampaignState(metric.state), {
+    sentCount: Number(metric.sentCount || 0),
+    openedCount: Number(metric.openedCount || 0),
+    productPageCount: Number(metric.productPageCount || 0),
+    openRate: formatStateRate(Number(metric.openedCount || 0), Number(metric.sentCount || 0)),
+    productPageRate: formatStateRate(Number(metric.productPageCount || 0), Number(metric.sentCount || 0)),
+  }]));
   return Array.from(groups.entries())
-    .map(([state, stateRecipients]) => ({ state, label: formatCampaignState(state), metrics: getOutreachStateMetrics(stateRecipients), recipients: stateRecipients }))
+    .map(([state, stateRecipients]) => ({ state, label: formatCampaignState(state), metrics: metricsByState.get(state) || getOutreachStateMetrics(stateRecipients), recipients: stateRecipients }))
     .sort((a, b) => a.label.localeCompare(b.label));
 }
 
@@ -2641,6 +2648,7 @@ function PrivateCampaignsPage() {
   const [pageState, setPageState] = useState({ status: 'checking', message: 'Checking access...' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [recipients, setRecipients] = useState([]);
+  const [stateMetrics, setStateMetrics] = useState([]);
   const [outreachForm, setOutreachForm] = useState({ companyName: '', recipientEmail: '', state: 'TN' });
   const [outreachEmail, setOutreachEmail] = useState({ subject: DEFAULT_MOVESCAN_OUTREACH_SUBJECT, bodyText: DEFAULT_MOVESCAN_OUTREACH_BODY });
   const [outreachState, setOutreachState] = useState({ status: 'idle', message: '' });
@@ -2664,6 +2672,7 @@ function PrivateCampaignsPage() {
 
     if (response.status === 401) {
       setDashboard(null);
+      setStateMetrics([]);
       setPageState({ status: 'locked', message: '' });
       return false;
     }
@@ -2690,6 +2699,7 @@ function PrivateCampaignsPage() {
 
     setDashboard(data);
     setRecipients(outreachData.recipients || []);
+    setStateMetrics(outreachData.stateMetrics || []);
     setAppliedRange(nextRange);
     setDraftRange(nextRange);
     setPageState({ status: 'ready', message: '' });
@@ -2895,7 +2905,7 @@ function PrivateCampaignsPage() {
 
   const leads = recipients.filter((recipient) => recipient.lead);
   const sortedRecipients = sortOutreachRecipients(recipients, outreachSort);
-  const outreachStateGroups = groupOutreachRecipientsByState(sortedRecipients);
+  const outreachStateGroups = groupOutreachRecipientsByState(sortedRecipients, stateMetrics);
 
   if (pageState.status === 'locked') {
     return (

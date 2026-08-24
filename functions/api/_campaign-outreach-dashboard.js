@@ -1,6 +1,8 @@
 import { ensureDb } from './_lead-utils.js';
 import { MOVESCAN_OUTREACH_CAMPAIGN, MOVESCAN_OUTREACH_PROSPECTS, ensureCampaignRecipientsTable } from './_campaign-outreach.js';
 
+const UNSUCCESSFUL_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
+
 async function loadOutreachRecipients(env) {
   const db = await ensureDb(env);
   await ensureCampaignRecipientsTable(db);
@@ -79,6 +81,66 @@ async function loadOutreachRecipients(env) {
     };
   });
 }
+function emptyStateMetric(state) {
+  return { state, sentCount: 0, openedCount: 0, productPageCount: 0 };
+}
+
+async function loadOutreachStateMetrics(env) {
+  const db = await ensureDb(env);
+  await ensureCampaignRecipientsTable(db);
+  const recipientResult = await db.prepare(`
+    select id, lower(trim(recipient_email)) as recipientEmail, coalesce(nullif(trim(state), ''), 'TN') as state, status, delivery_status as deliveryStatus, sent_at as sentAt
+    from campaign_recipients
+    where campaign = ?
+  `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
+  const recipients = recipientResult?.results || [];
+  const recipientsById = new Map();
+  const recipientsByEmail = new Map();
+  const metricsByState = new Map();
+
+  for (const recipient of recipients) {
+    const state = recipient.state || 'TN';
+    if (!metricsByState.has(state)) metricsByState.set(state, emptyStateMetric(state));
+    recipientsById.set(recipient.id, recipient);
+    if (recipient.recipientEmail) recipientsByEmail.set(recipient.recipientEmail, recipient);
+  }
+
+  const openedRecipientIds = new Set();
+  const productPageRecipientIds = new Set();
+  const eventResult = await db.prepare(`
+    select event_name as eventName, metadata
+    from campaign_events
+    where campaign = ? and event_name in ('email_open', 'product_page_view')
+  `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
+
+  for (const event of eventResult?.results || []) {
+    try {
+      const metadata = JSON.parse(event.metadata || '{}');
+      const recipientId = metadata.recipientId || '';
+      const recipientEmail = String(metadata.recipientEmail || metadata.email || '').trim().toLowerCase();
+      const recipient = recipientsById.get(recipientId) || (recipientEmail ? recipientsByEmail.get(recipientEmail) : null);
+      if (!recipient) continue;
+      if (event.eventName === 'email_open') openedRecipientIds.add(recipient.id);
+      if (event.eventName === 'product_page_view') productPageRecipientIds.add(recipient.id);
+    } catch {}
+  }
+
+  for (const recipient of recipients) {
+    const state = recipient.state || 'TN';
+    const metric = metricsByState.get(state) || emptyStateMetric(state);
+    const deliveryStatus = recipient.deliveryStatus || 'pending';
+    const successfulSend = recipient.status === 'sent' && Boolean(recipient.sentAt) && !UNSUCCESSFUL_DELIVERY_STATUSES.has(deliveryStatus);
+    if (successfulSend) {
+      metric.sentCount += 1;
+      if (openedRecipientIds.has(recipient.id)) metric.openedCount += 1;
+      if (productPageRecipientIds.has(recipient.id)) metric.productPageCount += 1;
+    }
+    metricsByState.set(state, metric);
+  }
+
+  return Array.from(metricsByState.values()).sort((a, b) => a.state.localeCompare(b.state));
+}
+
 async function seedOutreachRecipients(env) {
   const db = await ensureDb(env);
   await ensureCampaignRecipientsTable(db);
@@ -117,4 +179,4 @@ async function seedOutreachRecipients(env) {
   return { added, existing, total: MOVESCAN_OUTREACH_PROSPECTS.length };
 }
 
-export { loadOutreachRecipients, seedOutreachRecipients };
+export { loadOutreachRecipients, loadOutreachStateMetrics, seedOutreachRecipients };
