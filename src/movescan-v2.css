@@ -2650,7 +2650,7 @@
 .movescan-v2-page .hero-pricing-overlay{
   position: absolute;
   right: clamp(18px, 3.2vw, 54px);
-  bottom: calc(clamp(18px, 4.2vw, 70px) + 20px);
+  bottom: calc(clamp(18px, 4.2vw, 70px) + 35px);
   z-index: 4;
   display: grid;
   gap: 3px;
@@ -2718,7 +2718,7 @@
 
   .movescan-v2-page .hero-pricing-overlay{
     right: clamp(10px, 3.8vw, 16px);
-    bottom: calc(clamp(10px, 3.8vw, 16px) + 20px);
+    bottom: calc(clamp(10px, 3.8vw, 16px) + 35px);
     gap: 2px;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.48);
   }
