@@ -1,7 +1,8 @@
 import { ensureDb } from './_lead-utils.js';
 import { MOVESCAN_OUTREACH_CAMPAIGN, MOVESCAN_OUTREACH_PROSPECTS, ensureCampaignRecipientsTable } from './_campaign-outreach.js';
 
-const UNSUCCESSFUL_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
+const UNSUCCESSFUL_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'bounced_suppressed', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
+const FINAL_FAILURE_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'bounced_suppressed', 'rejected', 'complained', 'doesnt_exist']);
 
 async function loadOutreachRecipients(env) {
   const db = await ensureDb(env);
@@ -31,8 +32,11 @@ async function loadOutreachRecipients(env) {
       const current = eventsByRecipient.get(metadata.recipientId) || {};
       if (event.eventName.startsWith('email_') && ['email_delivered', 'email_deferred', 'email_bounced', 'email_rejected', 'email_complained', 'email_failed'].includes(event.eventName)) {
         const providerDetails = [metadata.providerStatus, metadata.smtpStatusCode, metadata.smtpEnhancedStatusCode, metadata.reason, metadata.message].filter(Boolean).join(' ');
-        const explicitlyInvalidMailbox = /(?:5\.1\.1|5\.1\.10|mailbox|recipient|user).*(?:invalid|unknown|does not exist|not found|unavailable)/i.test(providerDetails);
-        const candidate = { status: explicitlyInvalidMailbox ? 'doesnt_exist' : event.eventName.replace('email_', ''), at: event.createdAt };
+        const providerStatus = event.eventName.replace('email_', '');
+        const permanentFailure = /(?:\b55[0-9]\b|\b554\b|5\.1\.1|5\.1\.10|permanent|mailbox disabled|user unknown|account does not exist)/i.test(providerDetails);
+        const explicitlyInvalidMailbox = /(?:mailbox|recipient|user|account).*(?:invalid|does not exist|not found|unavailable)/i.test(providerDetails);
+        const deliveryStatus = (providerStatus === 'bounced' || providerStatus === 'failed') && permanentFailure ? 'bounced_suppressed' : explicitlyInvalidMailbox && providerStatus !== 'bounced' ? 'doesnt_exist' : providerStatus;
+        const candidate = { status: deliveryStatus, at: event.createdAt };
         if (!current.delivery || candidate.at > current.delivery.at) current.delivery = candidate;
       } else if (!current[event.eventName]) {
         current[event.eventName] = event.createdAt;
@@ -43,6 +47,8 @@ async function loadOutreachRecipients(env) {
 
   return rows.map((row) => {
     const events = eventsByRecipient.get(row.id) || {};
+    const delivery = row.deliveryStatus ? { status: row.deliveryStatus, at: events.delivery?.at || '' } : events.delivery || { status: 'pending', at: '' };
+    const suppressEngagement = FINAL_FAILURE_DELIVERY_STATUSES.has(delivery.status);
     return {
       id: row.id,
       companyName: row.companyName,
@@ -53,30 +59,30 @@ async function loadOutreachRecipients(env) {
       sentAt: row.sentAt || '',
       funnel: {
         sent: Boolean(events.email_sent),
-        delivered: events.delivery?.status === 'delivered',
-        opened: Boolean(events.email_open),
-        productPage: Boolean(events.product_page_view),
-        demo: Boolean(events.demo_click || events.demo_opened),
+        delivered: !suppressEngagement && delivery.status === 'delivered',
+        opened: !suppressEngagement && Boolean(events.email_open),
+        productPage: !suppressEngagement && Boolean(events.product_page_view),
+        demo: !suppressEngagement && Boolean(events.demo_click || events.demo_opened),
       },
-      delivery: row.deliveryStatus ? { status: row.deliveryStatus, at: events.delivery?.at || '' } : events.delivery || { status: 'pending', at: '' },
+      delivery,
       productPageClick: events.product_page_click || '',
       demoEngagement: {
-        opened: events.demo_opened || '',
-        started: events.video_started || '',
-        watched25: events.video_25_watched || '',
-        watched50: events.video_50_watched || '',
-        completed: events.video_completed || '',
+        opened: !suppressEngagement && events.demo_opened || '',
+        started: !suppressEngagement && events.video_started || '',
+        watched25: !suppressEngagement && events.video_25_watched || '',
+        watched50: !suppressEngagement && events.video_50_watched || '',
+        completed: !suppressEngagement && events.video_completed || '',
       },
-      lead: Boolean(events.video_started),
-      hotLead: Boolean(events.video_50_watched),
-      leadAt: events.video_started || '',
-      hotLeadAt: events.video_50_watched || '',
+      lead: !suppressEngagement && Boolean(events.video_started),
+      hotLead: !suppressEngagement && Boolean(events.video_50_watched),
+      leadAt: !suppressEngagement && events.video_started || '',
+      hotLeadAt: !suppressEngagement && events.video_50_watched || '',
       latestActivity: Object.entries(events).flatMap(([key, value]) => key === 'delivery' ? [value.at] : [value]).filter((value) => typeof value === 'string' && value).sort().at(-1) || '',
       dates: {
         sent: events.email_sent || '',
-        opened: events.email_open || '',
-        productPage: events.product_page_view || '',
-        demo: events.demo_click || events.demo_opened || '',
+        opened: !suppressEngagement && events.email_open || '',
+        productPage: !suppressEngagement && events.product_page_view || '',
+        demo: !suppressEngagement && (events.demo_click || events.demo_opened) || '',
       },
     };
   });

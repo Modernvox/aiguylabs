@@ -2516,7 +2516,7 @@ function formatCampaignState(value) {
   return campaignStateNames[state] || state;
 }
 
-const unsuccessfulDeliveryStatuses = new Set(['failed', 'bounced', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
+const unsuccessfulDeliveryStatuses = new Set(['failed', 'bounced', 'bounced_suppressed', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
 
 function isSuccessfulOutreachSend(recipient) {
   if (!recipient.funnel?.sent) return false;
@@ -2566,6 +2566,7 @@ const deliveryStatusLabels = {
   delivered: 'Delivered',
   failed: 'Delivery Failed',
   bounced: 'Bounced',
+  bounced_suppressed: 'Bounced \u2014 Suppressed',
   rejected: 'Rejected',
   deferred: 'Deferred',
   complained: 'Complaint',
@@ -2577,7 +2578,7 @@ function getDeliveryStatusLabel(status) {
 }
 
 function canRetryDelivery(status) {
-  return ['failed', 'bounced', 'rejected', 'deferred'].includes(status);
+  return status === 'deferred';
 }
 
 function getRecipientStatusClass(recipient) {

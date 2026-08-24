@@ -248,8 +248,10 @@ async function recordEmailDeliveryEvent(env, body) {
   const createdAt = event?.metadata?.eventTimestamp || new Date().toISOString();
   const delivery = payload.delivery || {};
   const providerDetails = [delivery.status, delivery.smtpStatusCode, delivery.smtpEnhancedStatusCode, payload.reason, payload.message].filter(Boolean).join(' ');
-  const explicitlyInvalidMailbox = /(?:5\.1\.1|5\.1\.10|mailbox|recipient|user).*(?:invalid|unknown|does not exist|not found|unavailable)/i.test(providerDetails);
-  const deliveryStatus = explicitlyInvalidMailbox ? 'doesnt_exist' : eventName.replace('email_', '');
+  const providerStatus = eventName.replace('email_', '');
+  const permanentFailure = /(?:\b55[0-9]\b|\b554\b|5\.1\.1|5\.1\.10|permanent|mailbox disabled|user unknown|account does not exist)/i.test(providerDetails);
+  const explicitlyInvalidMailbox = /(?:mailbox|recipient|user|account).*(?:invalid|does not exist|not found|unavailable)/i.test(providerDetails);
+  const deliveryStatus = (providerStatus === 'bounced' || providerStatus === 'failed') && permanentFailure ? 'bounced_suppressed' : explicitlyInvalidMailbox && providerStatus !== 'bounced' ? 'doesnt_exist' : providerStatus;
   try {
     await recordCampaignEvent(env, new Request('https://aiguylabs.com/api/email-events', {
       headers: { 'user-agent': 'cloudflare-email-service-event' },
