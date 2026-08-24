@@ -4259,6 +4259,13 @@ img {
 
 
 
+
+@media (max-width: 860px) {
+  body:has(.movescan-v2-shell) .site-header {
+    background: #101722;
+  }
+}
+
 /* Authoritative shared mobile header behavior. */
 @media (max-width: 860px) {
   .site-header {
