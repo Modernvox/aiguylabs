@@ -817,9 +817,13 @@ function Icon({ type }) {
 }
 
 function Logo() {
+  const isMoveScanProductPage = typeof window !== 'undefined' && window.location.pathname === '/products/movescan';
+  const logoSrc = isMoveScanProductPage ? '/images/movescan-v2/movescanlogo.png' : '/images/aiguy_print.png';
+  const logoAlt = isMoveScanProductPage ? 'MoveScan' : 'AI Guy Labs™';
+
   return (
-    <a className="logo" href="/" aria-label="AI Guy Labs™ home">
-      <img src="/images/aiguy_print.png" alt="AI Guy Labs™" />
+    <a className={isMoveScanProductPage ? 'logo logo--movescan' : 'logo'} href="/" aria-label="AI Guy Labs™ home">
+      <img src={logoSrc} alt={logoAlt} />
     </a>
   );
 }
