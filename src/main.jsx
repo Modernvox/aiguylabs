@@ -2516,6 +2516,33 @@ function formatCampaignState(value) {
   return campaignStateNames[state] || state;
 }
 
+const unsuccessfulDeliveryStatuses = new Set(['failed', 'bounced', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
+
+function isSuccessfulOutreachSend(recipient) {
+  if (!recipient.funnel?.sent) return false;
+  const deliveryStatus = recipient.delivery?.status;
+  return !unsuccessfulDeliveryStatuses.has(deliveryStatus);
+}
+
+function formatStateRate(value, denominator) {
+  if (!denominator) return '\u2014';
+  return String(Math.round((value / denominator) * 100)) + '%';
+}
+
+function getOutreachStateMetrics(stateRecipients) {
+  const sentRecipients = stateRecipients.filter(isSuccessfulOutreachSend);
+  const sentCount = sentRecipients.length;
+  const openedCount = sentRecipients.filter((recipient) => recipient.funnel?.opened).length;
+  const productPageCount = sentRecipients.filter((recipient) => recipient.funnel?.productPage).length;
+  return {
+    sentCount,
+    openedCount,
+    productPageCount,
+    openRate: formatStateRate(openedCount, sentCount),
+    productPageRate: formatStateRate(productPageCount, sentCount),
+  };
+}
+
 function groupOutreachRecipientsByState(recipients) {
   const groups = new Map();
   recipients.forEach((recipient) => {
@@ -2524,7 +2551,7 @@ function groupOutreachRecipientsByState(recipients) {
     groups.get(state).push(recipient);
   });
   return Array.from(groups.entries())
-    .map(([state, stateRecipients]) => ({ state, label: formatCampaignState(state), recipients: stateRecipients }))
+    .map(([state, stateRecipients]) => ({ state, label: formatCampaignState(state), metrics: getOutreachStateMetrics(stateRecipients), recipients: stateRecipients }))
     .sort((a, b) => a.label.localeCompare(b.label));
 }
 
@@ -2980,7 +3007,10 @@ function PrivateCampaignsPage() {
                 return (
                   <section className="private-outreach-state" key={group.state}>
                     <button className="private-outreach-state-toggle" type="button" aria-expanded={isOpen} onClick={() => setOpenOutreachState((current) => current === group.state ? '' : group.state)}>
-                      <span className="private-outreach-state-title">{group.label}</span>
+                      <span className="private-outreach-state-summary">
+                        <span className="private-outreach-state-title">{group.label}</span>
+                        <span className="private-outreach-state-rates">{group.metrics.openRate} open rate{' \u00b7 '}{group.metrics.productPageRate} product page rate</span>
+                      </span>
                       <span className="private-outreach-state-count">{group.recipients.length} contacts</span>
                       <span className="private-outreach-state-chevron" aria-hidden="true">{isOpen ? 'v' : '>'}</span>
                     </button>

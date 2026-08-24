@@ -4810,10 +4810,23 @@ body:has(.movescan-v2-shell) .site-header {
   outline: none;
 }
 
+.private-outreach-state-summary {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
 .private-outreach-state-title {
   min-width: 0;
   font-size: 1rem;
   font-weight: 900;
+}
+
+.private-outreach-state-rates {
+  color: #cdd8e8;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .private-outreach-state-count {
