@@ -1766,6 +1766,8 @@ async function trackMoveScanEngagement(eventName) {
   try {
     const payload = { eventName, sourcePath: '/products/movescan' };
     if (eventName === 'product_page_view' && typeof window !== 'undefined') {
+      payload.clientActivity = 'react-page-rendered';
+      payload.visibilityState = document.visibilityState || '';
       const pageUrl = new URL(window.location.href);
       const trackingToken = pageUrl.searchParams.get('ms_recipient') || '';
       if (trackingToken) {
@@ -1792,7 +1794,18 @@ function MoveScanProductPage() {
   const demoVideoRef = useRef(null);
 
   useEffect(() => {
-    void trackMoveScanEngagement('product_page_view');
+    if (typeof window === 'undefined' || typeof window.requestAnimationFrame !== 'function') {
+      void trackMoveScanEngagement('product_page_view');
+      return undefined;
+    }
+    let cancelled = false;
+    const frameId = window.requestAnimationFrame(() => {
+      if (!cancelled) void trackMoveScanEngagement('product_page_view');
+    });
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   useEffect(() => {
@@ -2967,7 +2980,7 @@ function PrivateCampaignsPage() {
               <div>
                 <p className="private-dashboard-kicker">MoveScan outreach</p>
                 <h2 id="private-outreach-title">Send a tracked introduction</h2>
-                <p className="private-dashboard-note">Each send creates its own secure recipient link, open pixel, and funnel record. Email opens are approximate because mail clients may preload images.</p>
+                <p className="private-dashboard-note">Each send creates its own secure recipient link, open pixel, and funnel record. Email opens are approximate because mail clients, image proxies, and scanners may preload images. Product Page counts only JavaScript-confirmed visits to /products/movescan, not the redirect GET.</p>
               </div>
               <form className="private-outreach-form" onSubmit={sendOutreach} noValidate>
                 <label>
@@ -3007,7 +3020,7 @@ function PrivateCampaignsPage() {
               <div className="private-range-head private-outreach-list-head">
                 <div>
                   <h2 id="private-outreach-list-title">Outreach funnel</h2>
-                  <p>Sent &rarr; Delivered &rarr; Opened &rarr; Product Page &rarr; Demo Opened &rarr; Video Started &rarr; 50% Watched</p>
+                  <p>Sent &rarr; Delivered &rarr; Opened (approx.) &rarr; Product Page (JS-confirmed) &rarr; Demo Opened &rarr; Video Started &rarr; 50% Watched</p>
                 </div>
                 <label className="private-outreach-sort">
                   <span>Sort</span>

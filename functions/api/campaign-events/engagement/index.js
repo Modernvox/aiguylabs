@@ -12,13 +12,21 @@ export async function onRequestPost({ request, env }) {
   try {
     const cookieToken = getRecipientToken(request);
     const queryToken = safeString(body?.trackingToken || body?.tracking_token, 100);
+    const clientActivity = safeString(body?.clientActivity || body?.client_activity, 80);
+    if (eventName === 'product_page_view' && clientActivity !== 'react-page-rendered') {
+      return json({ ok: true, tracked: false }, { status: 202, headers: { 'cache-control': 'no-store' } });
+    }
     const token = cookieToken || (eventName === 'product_page_view' && isTrackingToken(queryToken) ? queryToken : '');
     const result = await recordRecipientEvent(env, request, {
       token,
       eventName,
       sourcePath: safeString(body?.sourcePath || body?.source_path || '/products/movescan', 200),
       destinationPath: eventName === 'product_page_view' ? '/products/movescan' : '/products/movescan#demo',
-      metadata: { source: eventName === 'product_page_view' ? 'movescan-product-page' : 'movescan-demo-video' },
+      metadata: {
+        source: eventName === 'product_page_view' ? 'movescan-product-page' : 'movescan-demo-video',
+        clientActivity: eventName === 'product_page_view' ? clientActivity : '',
+        visibilityState: eventName === 'product_page_view' ? safeString(body?.visibilityState || body?.visibility_state, 40) : '',
+      },
       once: eventName !== 'demo_click',
     });
     const headers = { 'cache-control': 'no-store' };
