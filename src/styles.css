@@ -4260,10 +4260,8 @@ img {
 
 
 
-@media (max-width: 860px) {
-  body:has(.movescan-v2-shell) .site-header {
-    background: #101722;
-  }
+body:has(.movescan-v2-shell) .site-header {
+  background: #000000;
 }
 
 .site-header .logo.logo--movescan {
