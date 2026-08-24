@@ -2570,7 +2570,7 @@ function getRecipientStatusLabel(recipient) {
   return 'Not Sent';
 }
 
-const DEFAULT_MOVESCAN_OUTREACH_SUBJECT = 'Early MoveScan Network Opportunity';
+const DEFAULT_MOVESCAN_OUTREACH_SUBJECT = 'Can your website quote a move?';
 const DEFAULT_MOVESCAN_OUTREACH_BODY = `Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.
 
 A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.

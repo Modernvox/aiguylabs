@@ -257,7 +257,8 @@ async function recordRecipientEvent(env, request, { token, eventName, sourcePath
   });
 }
 
-const DEFAULT_OUTREACH_SUBJECT = 'Turn your moving website into a 24/7 AI-powered instant estimator';
+const DEFAULT_OUTREACH_SUBJECT = 'Can your website quote a move?';
+const OUTREACH_PREHEADER = 'Phone scan \u2192 instant moving estimate.';
 const DEFAULT_OUTREACH_BODY = `Turn your moving website into a 24/7 AI-powered instant estimator
 
 MoveScan turns the customer’s phone into a guided moving-estimate walkthrough—and turns your website into a place where customers can actually get an estimate instead of just requesting one.
@@ -293,6 +294,7 @@ function buildOutreachEmail({ productUrl, pixelUrl, subject, bodyText }) {
   const safePixelUrl = escapeHtml(pixelUrl.toString());
   const normalizedSubject = normalizeOutreachSubject(subject);
   const normalizedBody = normalizeOutreachBody(bodyText);
+  const safePreheader = escapeHtml(OUTREACH_PREHEADER);
   const paragraphs = normalizedBody.split(/\n{2,}/).map((part) => part.trim()).filter(Boolean);
   const textParts = paragraphs.length ? [...paragraphs] : [DEFAULT_OUTREACH_BODY];
   textParts.push('See MoveScan in Action: ' + trackedProductUrl);
@@ -305,6 +307,8 @@ function buildOutreachEmail({ productUrl, pixelUrl, subject, bodyText }) {
   const html = `<!doctype html>
 <html lang="en">
   <body style="margin:0;padding:24px;background:#f4f7fb;color:#111827;font-family:Arial,sans-serif;">
+    <div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;color:transparent;">${safePreheader}</div>
+    <div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;color:transparent;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
     <main style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #dbe3ef;border-radius:8px;overflow:hidden;">
       <div style="padding:28px 30px;">
         ${htmlParts.join('\n        ')}
@@ -319,6 +323,7 @@ function buildOutreachEmail({ productUrl, pixelUrl, subject, bodyText }) {
 export {
   DEFAULT_OUTREACH_BODY,
   DEFAULT_OUTREACH_SUBJECT,
+  OUTREACH_PREHEADER,
   MOVESCAN_OUTREACH_CAMPAIGN,
   MOVESCAN_OUTREACH_PROSPECTS,
   MOVESCAN_RECIPIENT_COOKIE,
