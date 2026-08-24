@@ -2604,42 +2604,45 @@ function getRecipientStatusLabel(recipient) {
   return 'Not Sent';
 }
 
-const DEFAULT_MOVESCAN_OUTREACH_SUBJECT = 'Can your website quote a move?';
-const DEFAULT_MOVESCAN_OUTREACH_BODY = `Hi, I’m Mike. I’m an actual mover here in Nashville and an independent full-stack software developer. I operate AI Guy Labs, where I build software around real-world problems I encounter firsthand.
+const DEFAULT_MOVESCAN_OUTREACH_SUBJECT = 'Does this estimate look correct to you?';
+const DEFAULT_MOVESCAN_OUTREACH_BODY = `Hi,
 
-A lot of moving companies are still asking customers for furniture lists, stairs, pickup and delivery details, truck information, and other move details just to figure out a price.
+Quick question — **does this estimate look reasonable to you?**
 
-That process made sense years ago.
+**Example MoveScan Instant Estimate**
 
-Today, customers are used to doing almost everything from their phones with a few swipes and taps. They don’t want to sit there typing out every couch, bed, dresser, TV, box, and table they own — and they definitely shouldn’t have to guess what size moving truck they need.
+**Job:** Unload Only
+**Source:** 5' × 12' storage unit — 100% full
+**Estimated Volume:** 480 cu. ft.
 
-And when nearly every moving company uses the same slow quote process, customers start looking for easier alternatives — including third-party marketplaces that promise a faster, simpler way to book moving help, often at the moving company’s expense through fees, commissions, and tighter control over how the job is priced or handled.
+**Recommended Truck:** 15 ft. truck — approx. 70% full
+**Recommended Crew:** 2 movers
+**Billable Labor:** 2-hour minimum
 
-MoveScan gives independent moving companies a way to offer that same kind of convenience directly, without sending the customer somewhere else first.
+**Moving Labor:** $250.00
+**Tax:** $20.63
 
-The customer opens your MoveScan estimate link on their phone and completes a short, guided room-by-room walkthrough. MoveScan identifies the inventory, calculates estimated cubic feet, determines truck and crew needs, accounts for the move details, applies your company’s own pricing and operating rules, and produces the customer’s instant estimate.
+**Estimated Total: $270.63**
 
-This isn’t just an AI inventory scanner that gives your staff a list to quote later. MoveScan is a complete end-to-end instant estimating system. The estimate is already built for you, leaving your staff primarily with a review-and-approve step.
+*Truck recommendation only — truck charges are not included.*
 
-A customer can walk through a full three-bedroom home and receive their instant moving estimate in under five minutes.
+What makes this different is how the estimate was created.
 
-I’m looking for a small group of moving companies interested in getting involved early. I’ll personally set MoveScan up around your company’s operation and pricing at no cost, and your first 5 estimates are free.
+**MoveScan generated it automatically from the customer's move details.**
 
-There’s also a bigger goal behind this. As more moving companies begin using MoveScan, I want to build a network of MoveScan-enabled movers and dedicate a portion of subscription revenue toward advertising that network to consumers — creating new customer demand for the same movers using the technology.
+MoveScan lets moving companies give customers instant estimates from their phone while using **the moving company's own pricing rules**.
 
-I built MoveScan while actually working in the field as a mover, so it was designed around the problems we deal with on real jobs — not around what someone outside the industry thinks moving software should look like.
+For full-service moves, customers can quickly scan their rooms and MoveScan's AI builds the inventory. For jobs like this unload, it collects the truck/storage and access details needed to produce the estimate without requiring a walkthrough.
 
-You don’t need to schedule a call or wait for me to send anything. You can see the customer experience for yourself here:
+Instead of spending 20 minutes on the phone figuring out what someone has, your website can be generating estimates **24/7**.
 
+**See MoveScan in action:**
 https://aiguylabs.com/products/movescan
 
-Click See It in Action to watch the demo.
+You can start with **5 free estimates**.
 
-Best,
-Michael Pierre
-Nashville Mover / Independent Full-Stack Software Developer
-MoveScan / AI Guy Labs
-mike@aiguylabs.com`;
+**Mike St. Pierre**
+**MoveScan Founder**`;
 function PrivateCampaignsPage() {
   const [password, setPassword] = useState('');
   const [draftRange, setDraftRange] = useState(() => getDefaultCampaignRange());

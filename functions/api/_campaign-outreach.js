@@ -257,19 +257,46 @@ async function recordRecipientEvent(env, request, { token, eventName, sourcePath
   });
 }
 
-const DEFAULT_OUTREACH_SUBJECT = 'Can your website quote a move?';
+const DEFAULT_OUTREACH_SUBJECT = 'Does this estimate look correct to you?';
 const OUTREACH_PREHEADER = 'Phone scan \u2192 instant moving estimate.';
-const DEFAULT_OUTREACH_BODY = `Turn your moving website into a 24/7 AI-powered instant estimator
+const DEFAULT_OUTREACH_BODY = `Hi,
 
-MoveScan turns the customer’s phone into a guided moving-estimate walkthrough—and turns your website into a place where customers can actually get an estimate instead of just requesting one.
+Quick question — **does this estimate look reasonable to you?**
 
-A typical two- to three-bedroom home can complete the entire walkthrough in under five minutes.
+**Example MoveScan Instant Estimate**
 
-There are no furniture lists to type. No app to download. No 20-minute phone conversation just to figure out what someone owns.
+**Job:** Unload Only
+**Source:** 5' × 12' storage unit — 100% full
+**Estimated Volume:** 480 cu. ft.
 
-The customer simply shows MoveScan their home, room by room. Most room recordings take only a few seconds, with a maximum of 20 seconds per room. MoveScan’s AI analyzes those quick recordings, builds the inventory, combines it with the customer’s move details, and applies your company’s pricing rules to produce an instant estimate.
+**Recommended Truck:** 15 ft. truck — approx. 70% full
+**Recommended Crew:** 2 movers
+**Billable Labor:** 2-hour minimum
 
-That means your company can be generating estimates 24 hours a day—even while you’re sleeping, working another move, or helping another customer.`;
+**Moving Labor:** $250.00
+**Tax:** $20.63
+
+**Estimated Total: $270.63**
+
+*Truck recommendation only — truck charges are not included.*
+
+What makes this different is how the estimate was created.
+
+**MoveScan generated it automatically from the customer's move details.**
+
+MoveScan lets moving companies give customers instant estimates from their phone while using **the moving company's own pricing rules**.
+
+For full-service moves, customers can quickly scan their rooms and MoveScan's AI builds the inventory. For jobs like this unload, it collects the truck/storage and access details needed to produce the estimate without requiring a walkthrough.
+
+Instead of spending 20 minutes on the phone figuring out what someone has, your website can be generating estimates **24/7**.
+
+**See MoveScan in action:**
+https://aiguylabs.com/products/movescan
+
+You can start with **5 free estimates**.
+
+**Mike St. Pierre**
+**MoveScan Founder**`;
 
 function normalizeOutreachSubject(value) {
   return cleanHeaderText(value || DEFAULT_OUTREACH_SUBJECT, 180) || DEFAULT_OUTREACH_SUBJECT;
@@ -301,6 +328,7 @@ function buildOutreachEmail({ productUrl, pixelUrl, subject, bodyText }) {
   const text = textWithTrackedLinks(textParts.join('\n\n'), trackedProductUrl);
   const htmlParts = [];
   paragraphs.forEach((paragraph) => {
+    if (/^(\*\*See MoveScan in action:\*\*\s*)?https:\/\/aiguylabs\.com\/products\/movescan\/?$/i.test(paragraph.trim())) return;
     htmlParts.push(renderEmailParagraph(paragraph, safeUrl));
   });
   htmlParts.push('<p style="margin:28px 0 0;text-align:center;"><a href="' + safeUrl + '" style="display:inline-block;background:#1264d8;color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;line-height:1.2;padding:14px 22px;border-radius:6px;">See MoveScan in Action</a></p>');
