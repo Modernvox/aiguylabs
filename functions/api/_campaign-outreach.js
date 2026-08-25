@@ -324,15 +324,15 @@ const DEFAULT_OUTREACH_SUBJECT = 'Does this estimate look correct to you?';
 const OUTREACH_PREHEADER = 'Phone scan \u2192 instant moving estimate.';
 const DEFAULT_OUTREACH_BODY = `Hi,
 
-Quick question — **does this estimate look reasonable to you?**
+Quick question \u2014 **does this estimate look reasonable to you?**
 
 **Example MoveScan Instant Estimate**
 
 **Job:** Unload Only
-**Source:** 5' × 12' storage unit — 100% full
+**Source:** 5' \u00d7 12' storage unit \u2014 100% full
 **Estimated Volume:** 480 cu. ft.
 
-**Recommended Truck:** 15 ft. truck — approx. 70% full
+**Recommended Truck:** 15 ft. truck \u2014 approx. 70% full
 **Recommended Crew:** 2 movers
 **Billable Labor:** 2-hour minimum
 
@@ -341,7 +341,7 @@ Quick question — **does this estimate look reasonable to you?**
 
 **Estimated Total: $270.63**
 
-*Truck recommendation only — truck charges are not included.*
+*Truck recommendation only \u2014 truck charges are not included.*
 
 What makes this different is how the estimate was created.
 
@@ -365,17 +365,46 @@ function normalizeOutreachSubject(value) {
   return cleanHeaderText(value || DEFAULT_OUTREACH_SUBJECT, 180) || DEFAULT_OUTREACH_SUBJECT;
 }
 
+function repairOutreachText(value) {
+  return String(value || '')
+    .replace(new RegExp('\u00e2\u20ac\u201d', 'g'), '\u2014')
+    .replace(new RegExp('\u00e2\u20ac\u201c', 'g'), '\u2013')
+    .replace(new RegExp('\u00e2\u20ac\u2122', 'g'), '\u2019')
+    .replace(new RegExp('\u00e2\u20ac\u0153', 'g'), '\u201c')
+    .replace(new RegExp('\u00e2\u20ac\u009d', 'g'), '\u201d')
+    .replace(new RegExp('\u00c3\u2014', 'g'), '\u00d7');
+}
+
 function normalizeOutreachBody(value) {
-  return safeString(value || DEFAULT_OUTREACH_BODY, 12000).replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim() || DEFAULT_OUTREACH_BODY;
+  return repairOutreachText(safeString(value || DEFAULT_OUTREACH_BODY, 12000)).replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim() || DEFAULT_OUTREACH_BODY;
 }
 
 function textWithTrackedLinks(bodyText, trackedProductUrl) {
   return bodyText.replace(/https:\/\/aiguylabs\.com\/products\/movescan/g, trackedProductUrl);
 }
 
+function stripEmailMarkdown(value) {
+  return String(value || '')
+    .replace(/\*\*([^*]+?)\*\*/g, '$1')
+    .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1$2');
+}
+
+function renderEmailInline(value, safeUrl) {
+  return escapeHtml(value)
+    .replace(/\*\*([^*]+?)\*\*/g, '<strong style="font-weight:700;color:#111827;">$1</strong>')
+    .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em style="font-style:italic;color:#4b5563;">$2</em>')
+    .replace(/https:\/\/aiguylabs\.com\/products\/movescan/g, '<a href="' + safeUrl + '" style="color:#1264d8;text-decoration:underline;">https://aiguylabs.com/products/movescan</a>');
+}
+
 function renderEmailParagraph(paragraph, safeUrl) {
-  const escaped = escapeHtml(paragraph).replace(/https:\/\/aiguylabs\.com\/products\/movescan/g, '<a href="' + safeUrl + '" style="color:#1264d8;">https://aiguylabs.com/products/movescan</a>');
-  return '<p style="margin:0 0 18px;font-size:16px;line-height:1.65;white-space:pre-wrap;">' + escaped + '</p>';
+  const trimmed = paragraph.trim();
+  const isEstimateTitle = /^\*\*Example MoveScan Instant Estimate\*\*$/i.test(trimmed);
+  const isEstimateTotal = /^\*\*Estimated Total:/i.test(trimmed);
+  const isFinePrint = /^\*Truck recommendation only/i.test(trimmed);
+  const fontSize = isEstimateTotal ? '18px' : '16px';
+  const margin = isEstimateTitle ? '4px 0 12px' : isFinePrint ? '0 0 22px' : '0 0 18px';
+  const color = isFinePrint ? '#4b5563' : '#111827';
+  return '<p style="margin:' + margin + ';font-size:' + fontSize + ';line-height:1.65;color:' + color + ';white-space:pre-wrap;">' + renderEmailInline(paragraph, safeUrl) + '</p>';
 }
 
 function buildOutreachEmail({ productUrl, pixelUrl, subject, bodyText }) {
@@ -386,7 +415,7 @@ function buildOutreachEmail({ productUrl, pixelUrl, subject, bodyText }) {
   const normalizedBody = normalizeOutreachBody(bodyText);
   const safePreheader = escapeHtml(OUTREACH_PREHEADER);
   const paragraphs = normalizedBody.split(/\n{2,}/).map((part) => part.trim()).filter(Boolean);
-  const textParts = paragraphs.length ? [...paragraphs] : [DEFAULT_OUTREACH_BODY];
+  const textParts = paragraphs.length ? paragraphs.map(stripEmailMarkdown) : [stripEmailMarkdown(DEFAULT_OUTREACH_BODY)];
   textParts.push('See MoveScan in Action: ' + trackedProductUrl);
   const text = textWithTrackedLinks(textParts.join('\n\n'), trackedProductUrl);
   const htmlParts = [];
