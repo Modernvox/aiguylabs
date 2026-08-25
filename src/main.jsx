@@ -2638,6 +2638,7 @@ function sortOutreachRecipients(recipients, sortKey) {
 const campaignStateNames = {
   AL: 'Alabama',
   GA: 'Georgia',
+  IL: 'Illinois',
   KY: 'Kentucky',
   NC: 'North Carolina',
   TN: 'Tennessee',
