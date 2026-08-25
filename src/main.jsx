@@ -730,6 +730,7 @@ const MOVESCAN_FREE_TRIAL_URL = 'https://movescan.app/register';
 const MOVESCAN_POSTCARD_REDIRECT_URL = '/products/movescan?utm_source=postcard&utm_medium=direct_mail&utm_campaign=movescan_local_launch';
 const MOVESCAN_POSTCARD_TRACKING_ENDPOINT = '/api/campaign-events';
 const MOVESCAN_OUTREACH_TRACKING_ENDPOINT = '/api/campaign-events/engagement';
+const MOVESCAN_OUTREACH_TOKEN_STORAGE_KEY = 'aigl_movescan_recipient_token';
 const MOVESCAN_DEMO_VIDEO_URL = typeof window !== 'undefined' && (window.__MOVESCAN_DEMO_VIDEO_URL__ || import.meta.env.VITE_MOVESCAN_DEMO_VIDEO_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/videos/movescan-demo.mp4' : 'https://media.aiguylabs.com/movescan-demo.mp4'));
 const MOVESCAN_SPLASH_STORAGE_KEY = 'aigl_movescan_product_splash_seen';
 
@@ -1762,18 +1763,47 @@ function HomePage() {
     </main>
   );
 }
+function isMoveScanTrackingToken(value) {
+  return typeof value === 'string' && /^[a-f0-9-]{20,80}$/i.test(value.trim());
+}
+
+function readStoredMoveScanTrackingToken() {
+  if (typeof window === 'undefined') return '';
+  try {
+    const token = window.sessionStorage.getItem(MOVESCAN_OUTREACH_TOKEN_STORAGE_KEY) || '';
+    return isMoveScanTrackingToken(token) ? token : '';
+  } catch {
+    return '';
+  }
+}
+
+function storeMoveScanTrackingToken(token) {
+  if (typeof window === 'undefined' || !isMoveScanTrackingToken(token)) return;
+  try {
+    window.sessionStorage.setItem(MOVESCAN_OUTREACH_TOKEN_STORAGE_KEY, token.trim());
+  } catch {
+    // Cookie attribution remains the primary server-side path when storage is unavailable.
+  }
+}
+
 async function trackMoveScanEngagement(eventName) {
   try {
     const payload = { eventName, sourcePath: '/products/movescan' };
-    if (eventName === 'product_page_view' && typeof window !== 'undefined') {
-      payload.clientActivity = 'react-page-rendered';
-      payload.visibilityState = document.visibilityState || '';
+    if (typeof window !== 'undefined') {
       const pageUrl = new URL(window.location.href);
-      const trackingToken = pageUrl.searchParams.get('ms_recipient') || '';
+      const queryTrackingToken = pageUrl.searchParams.get('ms_recipient') || '';
+      const trackingToken = isMoveScanTrackingToken(queryTrackingToken) ? queryTrackingToken.trim() : readStoredMoveScanTrackingToken();
       if (trackingToken) {
         payload.trackingToken = trackingToken;
-        pageUrl.searchParams.delete('ms_recipient');
-        window.history.replaceState({}, '', pageUrl.pathname + pageUrl.search + pageUrl.hash);
+        storeMoveScanTrackingToken(trackingToken);
+      }
+      if (eventName === 'product_page_view') {
+        payload.clientActivity = 'react-page-rendered';
+        payload.visibilityState = document.visibilityState || '';
+        if (queryTrackingToken) {
+          pageUrl.searchParams.delete('ms_recipient');
+          window.history.replaceState({}, '', pageUrl.pathname + pageUrl.search + pageUrl.hash);
+        }
       }
     }
     await fetch(MOVESCAN_OUTREACH_TRACKING_ENDPOINT, {

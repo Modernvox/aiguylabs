@@ -16,7 +16,7 @@ export async function onRequestPost({ request, env }) {
     if (eventName === 'product_page_view' && clientActivity !== 'react-page-rendered') {
       return json({ ok: true, tracked: false }, { status: 202, headers: { 'cache-control': 'no-store' } });
     }
-    const token = cookieToken || (eventName === 'product_page_view' && isTrackingToken(queryToken) ? queryToken : '');
+    const token = cookieToken || (isTrackingToken(queryToken) ? queryToken : '');
     const result = await recordRecipientEvent(env, request, {
       token,
       eventName,
