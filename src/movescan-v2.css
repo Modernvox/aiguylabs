@@ -219,7 +219,9 @@
   border: 1px solid rgba(217, 228, 239, 0.18);
   border-radius: 14px;
   background: #ffffff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.10),
+    0 14px 32px rgba(0, 0, 0, 0.16);
 }
 
 .movescan-v2-page .shot-card img, .movescan-v2-page .product-frame img{
@@ -1350,7 +1352,7 @@
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: max(20px, calc((100vw - 1280px) / 2));
-  padding: 4px max(20px, calc((100vw - 1280px) / 2)) 20px;
+  padding: 6px max(20px, calc((100vw - 1280px) / 2)) 46px;
   scrollbar-color: rgba(0, 102, 255, 0.72) rgba(255, 255, 255, 0.14);
   scrollbar-width: thin;
 }
@@ -1376,7 +1378,9 @@
   border-radius: 22px;
   border: 1px solid rgba(217, 228, 239, 0.18);
   background: #00152e;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.10),
+    0 14px 32px rgba(0, 0, 0, 0.16);
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
@@ -1478,7 +1482,7 @@
     grid-auto-columns: calc(100vw - 28px);
     gap: 14px;
     scroll-padding-inline: 14px;
-    padding: 2px 14px 18px;
+    padding: 6px 14px 46px;
   }
 
   .movescan-v2-page .story-panel{
