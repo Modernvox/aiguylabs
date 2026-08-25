@@ -2674,6 +2674,10 @@
   line-height: 1.15;
 }
 
+.movescan-v2-page .hero-instant-overlay{
+  display: none;
+}
+
 .movescan-v2-page .hero-mobile-headline{
   display: none;
 }
@@ -2714,6 +2718,35 @@
 
   .movescan-v2-page .hero-overlay-simple{
     display: none;
+  }
+
+  .movescan-v2-page .hero-instant-overlay{
+    position: absolute;
+    top: 36%;
+    right: 7.5%;
+    z-index: 4;
+    display: grid;
+    gap: 2px;
+    color: #ffffff;
+    text-align: right;
+    pointer-events: none;
+  }
+
+  .movescan-v2-page .hero-instant-overlay span{
+    font-size: 0.54rem;
+    font-weight: 850;
+    letter-spacing: 0.14em;
+    line-height: 1.05;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .movescan-v2-page .hero-instant-overlay strong{
+    font-size: 2.35rem;
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 0.88;
+    white-space: nowrap;
   }
 
   .movescan-v2-page .hero-pricing-overlay{
@@ -3869,4 +3902,34 @@
 
 .movescan-v2-page .staff .center-head p{
   color: #c6d8ea;
+}
+
+@media (max-width: 360px){
+  .movescan-v2-page .hero-instant-overlay{
+    top: 37%;
+    right: 6.5%;
+  }
+
+  .movescan-v2-page .hero-instant-overlay span{
+    font-size: 0.48rem;
+  }
+
+  .movescan-v2-page .hero-instant-overlay strong{
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 431px) and (max-width: 680px){
+  .movescan-v2-page .hero-instant-overlay{
+    top: 35.5%;
+    right: 8%;
+  }
+
+  .movescan-v2-page .hero-instant-overlay span{
+    font-size: 0.6rem;
+  }
+
+  .movescan-v2-page .hero-instant-overlay strong{
+    font-size: 2.7rem;
+  }
 }
