@@ -143,6 +143,14 @@ async function ensureCampaignEmailTemplatesTable(db) {
   await db.prepare(`create table if not exists campaign_email_templates (campaign text primary key, subject text not null, body_text text not null, updated_at text not null)`).run();
 }
 
+async function ensureCampaignRecipientEngagementTables(db) {
+  await db.prepare(`create table if not exists campaign_recipient_engagement (recipient_id text not null, campaign text not null, product_page_engaged_ms integer not null default 0, last_seen_at text, updated_at text not null, primary key (recipient_id, campaign))`).run();
+  await db.prepare(`create table if not exists campaign_recipient_engagement_flushes (flush_id text not null, recipient_id text not null, campaign text not null, delta_ms integer not null, created_at text not null, primary key (flush_id, recipient_id, campaign))`).run();
+  await db.prepare('create index if not exists campaign_recipient_engagement_campaign_idx on campaign_recipient_engagement(campaign)').run();
+  await db.prepare('create index if not exists campaign_recipient_engagement_updated_idx on campaign_recipient_engagement(campaign, updated_at desc)').run();
+  await db.prepare('create index if not exists campaign_recipient_engagement_flushes_campaign_idx on campaign_recipient_engagement_flushes(campaign, created_at desc)').run();
+}
+
 async function loadCampaignEmailTemplate(env) {
   const db = await ensureDb(env);
   await ensureCampaignEmailTemplatesTable(db);
@@ -363,6 +371,7 @@ export {
   TRACKING_COOKIE_MAX_AGE,
   cleanHeaderText,
   ensureCampaignRecipientsTable,
+  ensureCampaignRecipientEngagementTables,
   loadCampaignEmailTemplate,
   saveCampaignEmailTemplate,
   getRecipientByToken,

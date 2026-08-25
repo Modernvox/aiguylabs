@@ -1,5 +1,5 @@
 import { ensureDb } from './_lead-utils.js';
-import { MOVESCAN_OUTREACH_CAMPAIGN, MOVESCAN_OUTREACH_PROSPECTS, ensureCampaignRecipientsTable } from './_campaign-outreach.js';
+import { MOVESCAN_OUTREACH_CAMPAIGN, MOVESCAN_OUTREACH_PROSPECTS, ensureCampaignRecipientsTable, ensureCampaignRecipientEngagementTables } from './_campaign-outreach.js';
 
 const UNSUCCESSFUL_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'bounced_suppressed', 'suppressed', 'rejected', 'deferred', 'complained', 'doesnt_exist']);
 const FINAL_FAILURE_DELIVERY_STATUSES = new Set(['failed', 'bounced', 'bounced_suppressed', 'suppressed', 'rejected', 'complained', 'doesnt_exist']);
@@ -16,6 +16,14 @@ async function loadOutreachRecipients(env) {
   `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
   const rows = recipientResult?.results || [];
   if (!rows.length) return [];
+
+  await ensureCampaignRecipientEngagementTables(db);
+  const engagementResult = await db.prepare(`
+    select recipient_id as recipientId, product_page_engaged_ms as productPageEngagedMs, last_seen_at as lastSeenAt
+    from campaign_recipient_engagement
+    where campaign = ?
+  `).bind(MOVESCAN_OUTREACH_CAMPAIGN).all();
+  const engagementByRecipient = new Map((engagementResult?.results || []).map((row) => [row.recipientId, row]));
 
   const eventResult = await db.prepare(`
     select event_name as eventName, created_at as createdAt, metadata
@@ -47,6 +55,7 @@ async function loadOutreachRecipients(env) {
 
   return rows.map((row) => {
     const events = eventsByRecipient.get(row.id) || {};
+    const engagement = engagementByRecipient.get(row.id) || {};
     const delivery = row.deliveryStatus ? { status: row.deliveryStatus, at: events.delivery?.at || '' } : events.delivery || { status: 'pending', at: '' };
     const suppressEngagement = FINAL_FAILURE_DELIVERY_STATUSES.has(delivery.status);
     return {
@@ -65,6 +74,8 @@ async function loadOutreachRecipients(env) {
         demo: !suppressEngagement && Boolean(events.demo_click || events.demo_opened),
       },
       delivery,
+      productPageEngagedMs: !suppressEngagement ? Number(engagement.productPageEngagedMs || 0) : 0,
+      productPageEngagedLastSeenAt: !suppressEngagement ? engagement.lastSeenAt || '' : '',
       productPageClick: events.product_page_click || '',
       demoEngagement: {
         opened: !suppressEngagement && events.demo_opened || '',
@@ -77,7 +88,7 @@ async function loadOutreachRecipients(env) {
       hotLead: !suppressEngagement && Boolean(events.video_50_watched),
       leadAt: !suppressEngagement && events.video_started || '',
       hotLeadAt: !suppressEngagement && events.video_50_watched || '',
-      latestActivity: Object.entries(events).flatMap(([key, value]) => key === 'delivery' ? [value.at] : [value]).filter((value) => typeof value === 'string' && value).sort().at(-1) || '',
+      latestActivity: [...Object.entries(events).flatMap(([key, value]) => key === 'delivery' ? [value.at] : [value]), !suppressEngagement ? engagement.lastSeenAt || '' : ''].filter((value) => typeof value === 'string' && value).sort().at(-1) || '',
       dates: {
         sent: events.email_sent || '',
         opened: !suppressEngagement && events.email_open || '',

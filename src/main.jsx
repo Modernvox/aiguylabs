@@ -730,6 +730,10 @@ const MOVESCAN_FREE_TRIAL_URL = 'https://movescan.app/register';
 const MOVESCAN_POSTCARD_REDIRECT_URL = '/products/movescan?utm_source=postcard&utm_medium=direct_mail&utm_campaign=movescan_local_launch';
 const MOVESCAN_POSTCARD_TRACKING_ENDPOINT = '/api/campaign-events';
 const MOVESCAN_OUTREACH_TRACKING_ENDPOINT = '/api/campaign-events/engagement';
+const MOVESCAN_ENGAGEMENT_TIME_ENDPOINT = '/api/campaign-events/engagement-time';
+const MOVESCAN_ENGAGEMENT_FLUSH_INTERVAL_MS = 12000;
+const MOVESCAN_ENGAGEMENT_MIN_DELTA_MS = 1000;
+const MOVESCAN_ENGAGEMENT_MAX_DELTA_MS = 60000;
 const MOVESCAN_OUTREACH_TOKEN_STORAGE_KEY = 'aigl_movescan_recipient_token';
 const MOVESCAN_DEMO_VIDEO_URL = typeof window !== 'undefined' && (window.__MOVESCAN_DEMO_VIDEO_URL__ || import.meta.env.VITE_MOVESCAN_DEMO_VIDEO_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/videos/movescan-demo.mp4' : 'https://media.aiguylabs.com/movescan-demo.mp4'));
 const MOVESCAN_SPLASH_STORAGE_KEY = 'aigl_movescan_product_splash_seen';
@@ -1786,24 +1790,28 @@ function storeMoveScanTrackingToken(token) {
   }
 }
 
+function getMoveScanAttributionToken({ removeQuery = false } = {}) {
+  if (typeof window === 'undefined') return '';
+  const pageUrl = new URL(window.location.href);
+  const queryTrackingToken = pageUrl.searchParams.get('ms_recipient') || '';
+  const trackingToken = isMoveScanTrackingToken(queryTrackingToken) ? queryTrackingToken.trim() : readStoredMoveScanTrackingToken();
+  if (trackingToken) storeMoveScanTrackingToken(trackingToken);
+  if (removeQuery && queryTrackingToken) {
+    pageUrl.searchParams.delete('ms_recipient');
+    window.history.replaceState({}, '', pageUrl.pathname + pageUrl.search + pageUrl.hash);
+  }
+  return trackingToken;
+}
+
 async function trackMoveScanEngagement(eventName) {
   try {
     const payload = { eventName, sourcePath: '/products/movescan' };
     if (typeof window !== 'undefined') {
-      const pageUrl = new URL(window.location.href);
-      const queryTrackingToken = pageUrl.searchParams.get('ms_recipient') || '';
-      const trackingToken = isMoveScanTrackingToken(queryTrackingToken) ? queryTrackingToken.trim() : readStoredMoveScanTrackingToken();
-      if (trackingToken) {
-        payload.trackingToken = trackingToken;
-        storeMoveScanTrackingToken(trackingToken);
-      }
+      const trackingToken = getMoveScanAttributionToken({ removeQuery: eventName === 'product_page_view' });
+      if (trackingToken) payload.trackingToken = trackingToken;
       if (eventName === 'product_page_view') {
         payload.clientActivity = 'react-page-rendered';
         payload.visibilityState = document.visibilityState || '';
-        if (queryTrackingToken) {
-          pageUrl.searchParams.delete('ms_recipient');
-          window.history.replaceState({}, '', pageUrl.pathname + pageUrl.search + pageUrl.hash);
-        }
       }
     }
     await fetch(MOVESCAN_OUTREACH_TRACKING_ENDPOINT, {
@@ -1815,6 +1823,39 @@ async function trackMoveScanEngagement(eventName) {
     });
   } catch {
     // Tracking must never interfere with the demo experience.
+  }
+}
+
+function flushMoveScanEngagedTime(deltaMs, flushId, preferBeacon = false) {
+  try {
+    const clampedDelta = Math.min(Math.max(Math.round(Number(deltaMs) || 0), 0), MOVESCAN_ENGAGEMENT_MAX_DELTA_MS);
+    if (clampedDelta < MOVESCAN_ENGAGEMENT_MIN_DELTA_MS || !flushId) return;
+    const payload = {
+      eventName: 'product_page_engaged_time',
+      deltaMs: clampedDelta,
+      flushId,
+      sourcePath: '/products/movescan',
+    };
+    const trackingToken = getMoveScanAttributionToken();
+    if (trackingToken) payload.trackingToken = trackingToken;
+    const body = JSON.stringify(payload);
+    if (preferBeacon && typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+      try {
+        const blob = new Blob([body], { type: 'application/json' });
+        if (navigator.sendBeacon(MOVESCAN_ENGAGEMENT_TIME_ENDPOINT, blob)) return;
+      } catch {
+        // Fall back to keepalive fetch below.
+      }
+    }
+    void fetch(MOVESCAN_ENGAGEMENT_TIME_ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body,
+      credentials: 'include',
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    // Engagement timing must never interfere with the page experience.
   }
 }
 
@@ -1835,6 +1876,58 @@ function MoveScanProductPage() {
     return () => {
       cancelled = true;
       window.cancelAnimationFrame(frameId);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return undefined;
+    const engagementSessionId = (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') ? crypto.randomUUID() : String(Date.now()) + '-' + Math.random().toString(16).slice(2);
+    let flushSequence = 0;
+    let pendingMs = 0;
+    let visibleSince = document.visibilityState === 'visible' ? performance.now() : 0;
+    let stopped = false;
+
+    const accumulateVisibleTime = () => {
+      if (!visibleSince) return;
+      const now = performance.now();
+      if (now > visibleSince) pendingMs += now - visibleSince;
+      visibleSince = document.visibilityState === 'visible' && !stopped ? now : 0;
+    };
+
+    const flush = (preferBeacon = false) => {
+      accumulateVisibleTime();
+      const delta = Math.min(Math.round(pendingMs), MOVESCAN_ENGAGEMENT_MAX_DELTA_MS);
+      if (delta < MOVESCAN_ENGAGEMENT_MIN_DELTA_MS) return;
+      pendingMs = Math.max(0, pendingMs - delta);
+      flushSequence += 1;
+      flushMoveScanEngagedTime(delta, engagementSessionId + ':' + flushSequence, preferBeacon);
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flush(true);
+        visibleSince = 0;
+        return;
+      }
+      if (!visibleSince) visibleSince = performance.now();
+    };
+
+    const onPageExit = () => {
+      flush(true);
+    };
+
+    const intervalId = window.setInterval(() => flush(false), MOVESCAN_ENGAGEMENT_FLUSH_INTERVAL_MS);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('pagehide', onPageExit);
+    window.addEventListener('beforeunload', onPageExit);
+
+    return () => {
+      stopped = true;
+      flush(true);
+      window.clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('pagehide', onPageExit);
+      window.removeEventListener('beforeunload', onPageExit);
     };
   }, []);
 
@@ -2642,6 +2735,15 @@ function getRecipientStatusClass(recipient) {
   return '';
 }
 
+function formatEngagedDuration(ms) {
+  const totalSeconds = Math.floor(Number(ms || 0) / 1000);
+  if (!totalSeconds) return '—';
+  if (totalSeconds < 60) return totalSeconds + 's';
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return minutes + 'm ' + String(seconds).padStart(2, '0') + 's';
+}
+
 function getRecipientStatusLabel(recipient) {
   const deliveryStatus = recipient.delivery?.status;
   if (deliveryStatus && deliveryStatus !== 'pending') return getDeliveryStatusLabel(deliveryStatus);
@@ -3056,7 +3158,7 @@ function PrivateCampaignsPage() {
               <div className="private-range-head private-outreach-list-head">
                 <div>
                   <h2 id="private-outreach-list-title">Outreach funnel</h2>
-                  <p>Sent &rarr; Delivered &rarr; Opened (approx.) &rarr; Product Page (JS-confirmed) &rarr; Demo Opened &rarr; Video Started &rarr; 50% Watched</p>
+                  <p>Sent &rarr; Delivered &rarr; Opened (approx.) &rarr; Product Page (JS-confirmed) &rarr; Engaged Time &rarr; Demo Opened &rarr; Video Started &rarr; 50% Watched</p>
                 </div>
                 <label className="private-outreach-sort">
                   <span>Sort</span>
@@ -3087,6 +3189,10 @@ function PrivateCampaignsPage() {
                             </div>
                             <div className="private-outreach-funnel" aria-label={recipient.companyName + ' funnel status'}>
                               {['sent', 'delivered', 'opened', 'productPage', 'demo'].map((stage) => <span className={recipient.funnel?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'productPage' ? 'Product Page' : stage === 'demo' ? 'Demo Opened' : stage.charAt(0).toUpperCase() + stage.slice(1)}</span>)}
+                            </div>
+                            <div className="private-outreach-engaged-time" aria-label={recipient.companyName + ' product page engaged time'}>
+                              <span>Engaged Time</span>
+                              <strong>{formatEngagedDuration(recipient.productPageEngagedMs)}</strong>
                             </div>
                             <div className="private-outreach-engagement" aria-label={recipient.companyName + ' demo engagement'}>
                               {['opened', 'started', 'watched25', 'watched50', 'completed'].map((stage) => <span className={recipient.demoEngagement?.[stage] ? 'is-complete' : ''} key={stage}>{stage === 'opened' ? 'Demo Opened' : stage === 'started' ? 'Video Started' : stage === 'watched25' ? '25% Watched' : stage === 'watched50' ? '50% Watched' : 'Completed'}</span>)}
