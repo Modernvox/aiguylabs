@@ -1376,7 +1376,7 @@
   border-radius: 22px;
   border: 1px solid rgba(217, 228, 239, 0.18);
   background: #00152e;
-  box-shadow: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
