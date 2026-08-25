@@ -3417,7 +3417,7 @@
 
 .movescan-v2-page .demo-preview-card{
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+  grid-template-columns: 1fr;
   gap: clamp(18px, 3vw, 34px);
   align-items: center;
   padding: 18px;
