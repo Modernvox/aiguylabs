@@ -735,7 +735,7 @@ const MOVESCAN_ENGAGEMENT_FLUSH_INTERVAL_MS = 12000;
 const MOVESCAN_ENGAGEMENT_MIN_DELTA_MS = 1000;
 const MOVESCAN_ENGAGEMENT_MAX_DELTA_MS = 60000;
 const MOVESCAN_OUTREACH_TOKEN_STORAGE_KEY = 'aigl_movescan_recipient_token';
-const MOVESCAN_DEMO_VIDEO_URL = typeof window !== 'undefined' && (window.__MOVESCAN_DEMO_VIDEO_URL__ || import.meta.env.VITE_MOVESCAN_DEMO_VIDEO_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/videos/movescan-demo.mp4' : 'https://media.aiguylabs.com/movescan-demo.mp4'));
+const MOVESCAN_DEMO_VIDEO_URL = typeof window !== 'undefined' && (window.__MOVESCAN_DEMO_VIDEO_URL__ || '/videos/movescandemo.mp4');
 const MOVESCAN_SPLASH_STORAGE_KEY = 'aigl_movescan_product_splash_seen';
 
 function Icon({ type }) {
