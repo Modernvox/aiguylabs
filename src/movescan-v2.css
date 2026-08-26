@@ -3972,3 +3972,70 @@
     font-size: 2.7rem;
   }
 }
+
+.movescan-v2-shell .movescan-social-section{
+  padding: 28px 20px 34px;
+  background: #ffffff;
+  color: #00152e;
+}
+
+.movescan-v2-shell .movescan-social-inner{
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.movescan-v2-shell .movescan-social-inner p{
+  margin: 0;
+  color: #5c6b7a;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.movescan-v2-shell .movescan-social-links{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.movescan-v2-shell .movescan-social-links a{
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #0066ff;
+  background: #eaf3ff;
+  transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.movescan-v2-shell .movescan-social-links a:hover,
+.movescan-v2-shell .movescan-social-links a:focus-visible{
+  color: #ffffff;
+  background: #0066ff;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.movescan-v2-shell .movescan-social-links svg{
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+@media (max-width: 680px){
+  .movescan-v2-shell .movescan-social-section{
+    padding: 24px 20px 30px;
+  }
+
+  .movescan-v2-shell .movescan-social-inner{
+    flex-direction: column;
+    gap: 12px;
+  }
+}

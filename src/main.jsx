@@ -2060,6 +2060,24 @@ function MoveScanProductPage() {
   return (
     <main className="movescan-v2-shell" aria-label="MoveScan marketing page">
       <div className="movescan-v2-page" dangerouslySetInnerHTML={{ __html: MOVESCAN_V2_HTML }} />
+      <section className="movescan-social-section" aria-label="Official MoveScan social links">
+        <div className="movescan-social-inner">
+          <p>Follow MoveScan</p>
+          <div className="movescan-social-links">
+            <a href="https://www.youtube.com/@MoveScanai" target="_blank" rel="noopener noreferrer" aria-label="MoveScan on YouTube">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22.5 6.7a3 3 0 0 0-2.1-2.1C18.5 4.1 12 4.1 12 4.1s-6.5 0-8.4.5a3 3 0 0 0-2.1 2.1A31.2 31.2 0 0 0 1 12a31.2 31.2 0 0 0 .5 5.3 3 3 0 0 0 2.1 2.1c1.9.5 8.4.5 8.4.5s6.5 0 8.4-.5a3 3 0 0 0 2.1-2.1A31.2 31.2 0 0 0 23 12a31.2 31.2 0 0 0-.5-5.3Z" />
+                <path d="m10 15.4 5.2-3.4L10 8.6v6.8Z" />
+              </svg>
+            </a>
+            <a href="https://www.facebook.com/Movescanai" target="_blank" rel="noopener noreferrer" aria-label="MoveScan on Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.1 8.1H17V5h-2.7c-3 0-4.6 1.8-4.6 4.6v2H7v3.5h2.7V22h3.6v-6.9h2.9l.5-3.5h-3.4V10c0-1 .3-1.9 1.8-1.9Z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
 
       {isDemoModalOpen ? (
         <div className="movescan-demo-modal" role="dialog" aria-modal="true" aria-label="MoveScan demo video" onClick={() => setIsDemoModalOpen(false)}>
