@@ -320,43 +320,47 @@ async function recordRecipientEvent(env, request, { token, eventName, sourcePath
   });
 }
 
-const DEFAULT_OUTREACH_SUBJECT = 'Does this moving estimate look right to you?';
-const OUTREACH_PREHEADER = 'Phone scan \u2192 instant moving estimate.';
+const DEFAULT_OUTREACH_SUBJECT = 'What if customers came to you estimate-ready?';
+const OUTREACH_PREHEADER = 'Estimate-ready customers for your moving company.';
+const OUTREACH_CTA_LABEL = 'Watch the MoveScan Demo →';
 const DEFAULT_OUTREACH_BODY = `Hi,
 
-Quick question — **does this estimate look reasonable to you?**
+What if customers didn't have to call five moving companies and explain their move five different times?
 
-**Example MoveScan Instant Estimate**
+**That's what we're building with MoveScan.**
 
-**Job:** Unload Only
-**Source:** 5' × 12' storage unit — 100% full
-**Estimated Volume:** 480 cu. ft.
+The idea is simple:
 
-**Recommended Truck:** 15 ft. truck — approx. 70% full
-**Recommended Crew:** 2 movers
-**Billable Labor:** 2-hour minimum
+A customer scans their home once with their phone. MoveScan uses AI to build their moving inventory and collects the details needed to estimate the job.
 
-**Moving Labor:** $250.00
-**Tax:** $20.63
+Then, instead of contacting moving companies one by one, the customer can request estimates from participating movers.
 
-**Estimated Total: $270.63**
+**Each moving company uses its own pricing.**
 
-*Truck recommendation only — truck charges are not included.*
+When a customer requests an estimate from your company, MoveScan applies **your rates, your minimums, your crew rules, your travel charges, and your other pricing settings** to that customer's move.
 
-Here's the interesting part: **no estimator had to build this estimate.**
+That means the same customer can request estimates from multiple moving companies — and each company can provide an estimate based on its own pricing.
 
-MoveScan generated it automatically from the customer's job information using the moving company's own pricing rules.
+**The customer gets choices. You get an estimate-ready opportunity.**
 
-For a full-service move, the customer simply walks room by room with their phone. **MoveScan's AI identifies the furniture and builds the inventory automatically**, then uses your company's pricing to generate the estimate.
+And you don't have to wait for the customer side of MoveScan to launch to start using it.
 
-For jobs that don't require a room scan — like the unload example above — MoveScan collects the storage/truck, capacity, and access information it needs instead.
+MoveScan already lets you add instant moving estimates directly to your own website, giving customers an estimate 24/7 without waiting for a callback or scheduling an in-home estimate.
 
-The result is the same: your customers can get an instant moving estimate **24/7**, without waiting for a callback or spending 20 minutes going over everything on the phone.
+We're now onboarding moving companies while we build the consumer side of the MoveScan network.
 
-You can try MoveScan with **5 free estimates**.
+**No credit card is required, and your first 5 estimates are free.**
 
-**Mike St. Pierre**
-**MoveScan Founder**`;
+See exactly how MoveScan works:
+
+**Watch the MoveScan Demo →**
+
+The way customers shop for movers is changing.
+
+**We want your company to be ready when they do.**
+
+Mike St. Pierre
+MoveScan Founder`;
 
 function normalizeOutreachSubject(value) {
   return cleanHeaderText(value || DEFAULT_OUTREACH_SUBJECT, 180) || DEFAULT_OUTREACH_SUBJECT;
@@ -413,14 +417,15 @@ function buildOutreachEmail({ productUrl, pixelUrl, subject, bodyText }) {
   const safePreheader = escapeHtml(OUTREACH_PREHEADER);
   const paragraphs = normalizedBody.split(/\n{2,}/).map((part) => part.trim()).filter(Boolean);
   const textParts = paragraphs.length ? paragraphs.map(stripEmailMarkdown) : [stripEmailMarkdown(DEFAULT_OUTREACH_BODY)];
-  textParts.push('See MoveScan in Action: ' + trackedProductUrl);
+  textParts.push(stripEmailMarkdown(OUTREACH_CTA_LABEL) + ': ' + trackedProductUrl);
   const text = textWithTrackedLinks(textParts.join('\n\n'), trackedProductUrl);
   const htmlParts = [];
   paragraphs.forEach((paragraph) => {
+        if (/^(\*\*)?Watch the MoveScan Demo →(\*\*)?$/i.test(paragraph.trim())) return;
     if (/^(\*\*See MoveScan in action:\*\*\s*)?https:\/\/aiguylabs\.com\/products\/movescan\/?$/i.test(paragraph.trim())) return;
     htmlParts.push(renderEmailParagraph(paragraph, safeUrl));
   });
-  htmlParts.push('<p style="margin:28px 0 0;text-align:center;"><a href="' + safeUrl + '" style="display:inline-block;background:#1264d8;color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;line-height:1.2;padding:14px 22px;border-radius:6px;">See MoveScan in Action</a></p>');
+  htmlParts.push('<p style="margin:28px 0 0;text-align:center;"><a href="' + safeUrl + '" style="display:inline-block;background:#1264d8;color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;line-height:1.2;padding:14px 22px;border-radius:6px;">' + escapeHtml(OUTREACH_CTA_LABEL) + '</a></p>');
   const html = `<!doctype html>
 <html lang="en">
   <body style="margin:0;padding:24px;background:#f4f7fb;color:#111827;font-family:Arial,sans-serif;">
