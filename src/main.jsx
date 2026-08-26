@@ -2757,7 +2757,7 @@ function getRecipientStatusLabel(recipient) {
   return 'Not Sent';
 }
 
-const DEFAULT_MOVESCAN_OUTREACH_SUBJECT = 'Does this estimate look correct to you?';
+const DEFAULT_MOVESCAN_OUTREACH_SUBJECT = 'Does this moving estimate look right to you?';
 const DEFAULT_MOVESCAN_OUTREACH_BODY = `Hi,
 
 Quick question — **does this estimate look reasonable to you?**
@@ -2779,20 +2779,17 @@ Quick question — **does this estimate look reasonable to you?**
 
 *Truck recommendation only — truck charges are not included.*
 
-What makes this different is how the estimate was created.
+Here's the interesting part: **no estimator had to build this estimate.**
 
-**MoveScan generated it automatically from the customer's move details.**
+MoveScan generated it automatically from the customer's job information using the moving company's own pricing rules.
 
-MoveScan lets moving companies give customers instant estimates from their phone while using **the moving company's own pricing rules**.
+For a full-service move, the customer simply walks room by room with their phone. **MoveScan's AI identifies the furniture and builds the inventory automatically**, then uses your company's pricing to generate the estimate.
 
-For full-service moves, customers can quickly scan their rooms and MoveScan's AI builds the inventory. For jobs like this unload, it collects the truck/storage and access details needed to produce the estimate without requiring a walkthrough.
+For jobs that don't require a room scan — like the unload example above — MoveScan collects the storage/truck, capacity, and access information it needs instead.
 
-Instead of spending 20 minutes on the phone figuring out what someone has, your website can be generating estimates **24/7**.
+The result is the same: your customers can get an instant moving estimate **24/7**, without waiting for a callback or spending 20 minutes going over everything on the phone.
 
-**See MoveScan in action:**
-https://aiguylabs.com/products/movescan
-
-You can start with **5 free estimates**.
+You can try MoveScan with **5 free estimates**.
 
 **Mike St. Pierre**
 **MoveScan Founder**`;
